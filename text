@@ -1,0 +1,481 @@
+src/
+│
+├── app/
+│   ├── (public)/
+│   │   ├── page.jsx
+│   │   ├── about/
+│   │   ├── assessment/
+│   │   ├── resources/
+│   │   ├── blog/
+│   │   ├── contact/
+│   │   └── coaching/
+│   │
+│   ├── (auth)/
+│   │   ├── login/
+│   │   ├── register/
+│   │   ├── forgot-password/
+│   │   └── reset-password/
+│   │
+│   ├── dashboard/
+│   │   ├── layout.jsx
+│   │   ├── page.jsx
+│   │   ├── assessments/
+│   │   ├── progress/
+│   │   ├── profile/
+│   │   ├── settings/
+│   │   └── purchases/
+│   │
+│   ├── admin/
+│   │   ├── layout.jsx
+│   │   ├── page.jsx
+│   │   ├── users/
+│   │   ├── assessments/
+│   │   ├── categories/
+│   │   ├── products/
+│   │   ├── orders/
+│   │   ├── analytics/
+│   │   ├── newsletter/
+│   │   └── settings/
+│   │
+│   ├── api/
+│   │
+│   ├── globals.css
+│   ├── layout.jsx
+│   └── loading.jsx
+│
+│
+├── components/
+│   │
+│   ├── shared/
+│   │   ├── navbar/
+│   │   ├── footer/
+│   │   ├── logo/
+│   │   ├── containers/
+│   │   └── section-heading/
+│   │
+│   ├── home/
+│   │   ├── hero/
+│   │   ├── trusted/
+│   │   ├── assessment-preview/
+│   │   ├── features/
+│   │   ├── about-dave/
+│   │   ├── book/
+│   │   ├── testimonials/
+│   │   ├── newsletter/
+│   │   └── final-cta/
+│   │
+│   ├── assessment/
+│   │   ├── assessment-card/
+│   │   ├── question-card/
+│   │   ├── progress-bar/
+│   │   ├── result-card/
+│   │   └── score-chart/
+│   │
+│   ├── dashboard/
+│   │   ├── sidebar/
+│   │   ├── topbar/
+│   │   ├── progress/
+│   │   ├── stats/
+│   │   └── activity/
+│   │
+│   ├── admin/
+│   │   ├── tables/
+│   │   ├── charts/
+│   │   ├── forms/
+│   │   └── analytics/
+│   │
+│   ├── forms/
+│   │   ├── login-form/
+│   │   ├── register-form/
+│   │   ├── contact-form/
+│   │   └── assessment-form/
+│   │
+│   └── ui/
+│       └── shadcn components
+│
+│
+├── hooks/
+│   ├── use-auth.js
+│   ├── use-user.js
+│   ├── use-assessment.js
+│   ├── use-toast.js
+│   └── use-theme.js
+│
+│
+├── services/
+│   ├── auth.service.js
+│   ├── user.service.js
+│   ├── assessment.service.js
+│   ├── analytics.service.js
+│   └── payment.service.js
+│
+│
+├── store/
+│   ├── auth-store.js
+│   ├── assessment-store.js
+│   └── ui-store.js
+│
+│
+├── lib/
+│   ├── axios.js
+│   ├── utils.js
+│   ├── constants.js
+│   ├── validations.js
+│   └── permissions.js
+│
+│
+├── config/
+│   ├── site.js
+│   ├── nav-links.js
+│   └── dashboard-nav.js
+│
+│
+├── data/
+│   ├── testimonials.js
+│   ├── faqs.js
+│   └── features.js
+│
+│
+├── providers/
+│   ├── theme-provider.jsx
+│   ├── auth-provider.jsx
+│   └── toast-provider.jsx
+│
+│
+├── styles/
+│   └── animations.css
+│
+│
+├── types/
+│   └── index.js
+│
+│
+└── middleware.js
+
+
+
+
+
+===============================================================================================
+
+Navbar এ কী কী Menu রাখবা
+
+Recommended navbar:
+
+Home
+About
+Assessment
+Resources
+Book
+Coaching
+Blog
+Contact
+প্রতিটার কাজ কী
+Home
+
+Main landing page।
+
+About
+
+Client এর story।
+
+এখানে থাকবে:
+
+Dave এর background
+industrial psychologist experience
+retirement transition mission
+why he created this platform
+Assessment
+
+Main CTA page।
+
+এখানে:
+
+retirement readiness assessment
+progress tracking
+personalized insights
+
+এই menu সবচেয়ে important।
+
+Resources
+
+Free educational content।
+
+Examples:
+
+retirement guides
+worksheets
+checklists
+videos
+downloadable PDFs
+Book
+
+Client এর book selling section।
+
+কারণ সে already TikTok/Facebook এ book sell করছে।
+
+এখানে:
+
+book preview
+chapters
+testimonials
+purchase CTA
+Coaching
+
+Future monetization section।
+
+এখন simple রাখতে পারো:
+
+1-on-1 guidance
+consultation
+mentorship
+retirement transition support
+Blog
+
+SEO এর জন্য VERY important।
+
+Topics:
+
+retirement psychology
+emotional transition
+purpose after retirement
+lifestyle redesign
+identity crisis
+
+এই blog future এ huge traffic আনতে পারে।
+
+Contact
+
+Simple:
+
+form
+email
+newsletter signup
+Navbar CTA Button
+
+Right side এ button রাখবা:
+
+Take Assessment
+
+বা
+
+Start Your Retirement Readiness Assessment
+
+এইটা primary CTA হবে।
+
+Landing Page Structure
+
+এখন পুরো landing page structure দিলাম।
+
+1. Hero Section
+
+সবচেয়ে important section।
+
+Left Side
+
+Big headline:
+
+Example:
+
+Transition Into Retirement With Confidence & Purpose
+
+Subheading:
+
+Discover personalized insights, readiness assessments,
+and guidance designed to help you thrive in retirement.
+
+Buttons:
+
+Take Assessment
+Learn More
+Right Side
+
+Image:
+
+older professional couple
+calm lifestyle
+beach/walking/laptop/coffee vibe
+
+NOT:
+
+overly old people
+hospital vibe
+depressing retirement look
+2. Trust/Statistics Section
+
+Example:
+
+30+ Years of Behavioral Psychology Experience
+Helping Professionals Navigate Retirement Transition
+
+Cards:
+
+Psychology-Based Guidance
+Progress Tracking
+Personalized Assessments
+Expert Insights
+3. “Why Retirement Feels Difficult” Section
+
+Emotional connection section।
+
+Topics:
+
+loss of identity
+lack of structure
+purpose confusion
+emotional transition
+
+This section will emotionally hook users.
+
+4. Assessment System Section
+
+MOST IMPORTANT SECTION.
+
+Explain:
+
+how assessment works
+personalized insights
+progress tracking
+readiness scoring
+
+Possible flow UI:
+
+Step 1 → Answer Questions
+Step 2 → Get Personalized Insights
+Step 3 → Track Your Progress
+
+CTA:
+
+Start Assessment
+5. Features Section
+
+Cards/grid:
+
+Retirement Readiness Assessments
+Personalized Progress Tracking
+Expert Psychological Guidance
+Structured Growth Plans
+Educational Resources
+Community & Support
+6. About Dave Section
+
+Very important for trust.
+
+Use:
+
+professional image
+short story
+psychology background
+why he created platform
+
+This makes website human.
+
+7. Book Promotion Section
+
+Since client already selling book.
+
+Section:
+
+book mockup
+short description
+benefits
+Buy Now button
+8. Testimonials Section
+
+Later client reviews add করবে।
+
+Now placeholder রাখতে পারো।
+
+9. Blog / Resources Preview
+
+3 latest articles show করবা।
+
+Example:
+
+Finding Purpose After Retirement
+Building Structure In Daily Life
+The Psychology of Transition
+10. Newsletter Section
+
+Lead generation।
+
+Headline:
+
+Get Weekly Retirement Transition Insights
+
+Input:
+
+email
+subscribe button
+11. Final CTA Section
+
+Strong emotional CTA।
+
+Example:
+
+Retirement Is Not The End Of Your Story
+It’s The Beginning Of A New Chapter
+
+Button:
+
+Take Your Assessment
+Footer এ কী রাখবা
+Quick Links
+Resources
+Assessment
+Book
+Contact
+Privacy Policy
+Terms
+Social Links
+Newsletter
+Future Features মাথায় রেখে Design করবা
+
+Because future এ likely আসবে:
+
+membership
+coaching booking
+community
+AI insights
+courses
+video lessons
+
+So architecture scalable রাখবা।
+
+Important UX Advice
+
+Audience older professionals।
+
+So:
+
+✅ bigger font
+✅ high contrast
+✅ calm colors
+✅ clean spacing
+✅ easy navigation
+✅ no clutter
+
+Avoid:
+❌ flashy animation
+❌ tiny fonts
+❌ complex layout
+❌ too much scrolling confusion
+
+Best Color Direction
+Navy Blue
+Soft White
+Warm Gray
+Muted Green
+Light Beige
+Most Important Sections Priority
+
+If MVP বানাও first:
+
+Hero
+Assessment
+About
+Book
+Newsletter
+Contact
+
+এগুলো থাকলেই strong start হবে।
