@@ -2,7 +2,10 @@ import AboutDaveSection from '@/components/home/about-dave/about-dave-section'
 import AssessmentPreviewSection from '@/components/home/assessment-preview/assessment-preview-section'
 import BookSection from '@/components/home/book/book-section'
 import HeroSection from '@/components/home/hero/hero'
+import SupportSection from '@/components/home/hero/support-section'
+import NewsletterSection from '@/components/home/newsletter/newsletter-section'
 import TrustSection from '@/components/home/trust/trust-section'
+import Footer from '@/components/shared/footer/footer'
 import Navbar from '@/components/shared/navbar/navbar'
 import React from 'react'
 
@@ -15,6 +18,9 @@ const Home = () => {
       <AssessmentPreviewSection />
       <AboutDaveSection />
       <BookSection />
+      <SupportSection />
+      <NewsletterSection />
+      <Footer />
     </>
   )
 }
