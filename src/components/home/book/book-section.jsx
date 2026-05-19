@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Marquee from "react-fast-marquee";
 import { ArrowRight, BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ const BookCard = ({ book }) => {
           alt={book.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="320px"
+          sizes="(max-width: 640px) 290px, 320px"
         />
 
         {/* Overlay */}
@@ -87,8 +88,6 @@ const BookCard = ({ book }) => {
 };
 
 const BookSection = () => {
-  const carouselBooks = [...books, ...books];
-
   return (
     <section className="relative overflow-hidden bg-[#1B2B4B] py-20 md:py-28 lg:py-32">
       {/* Background Glow */}
@@ -117,20 +116,24 @@ const BookSection = () => {
         {/* Carousel */}
         <div className="relative">
           {/* Left Fade */}
-          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-24 bg-gradient-to-r from-[#1B2B4B] to-transparent" />
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-[#1B2B4B] to-transparent sm:w-24" />
 
           {/* Right Fade */}
-          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-24 bg-gradient-to-l from-[#1B2B4B] to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-[#1B2B4B] to-transparent sm:w-24" />
 
           <div className="overflow-hidden py-4">
-            <div className="flex w-max gap-6 animate-book-marquee hover:[animation-play-state:paused]">
-              {carouselBooks.map((book, index) => (
-                <BookCard
-                  key={`${book.title}-${index}`}
-                  book={book}
-                />
+            <Marquee
+              speed={40}
+              gradient={false}
+              pauseOnHover={true}
+              autoFill={true}
+            >
+              {books.map((book, index) => (
+                <div key={`${book.title}-${index}`} className="mx-3">
+                  <BookCard book={book} />
+                </div>
               ))}
-            </div>
+            </Marquee>
           </div>
         </div>
 
@@ -147,23 +150,6 @@ const BookSection = () => {
           </Button>
         </div>
       </div>
-
-      {/* Animation */}
-      <style jsx global>{`
-        @keyframes book-marquee {
-          0% {
-            transform: translateX(0);
-          }
-
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .animate-book-marquee {
-          animation: book-marquee 28s linear infinite;
-        }
-      `}</style>
     </section>
   );
 };
