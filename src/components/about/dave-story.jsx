@@ -18,7 +18,7 @@ const DaveStory = () => {
         <div className="relative order-2 lg:order-1">
           <div className="overflow-hidden rounded-[32px] shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             <Image
-              src="/images/about/dave-story.jpg"
+              src="/images/about/dave-story.png"
               alt="Dave, retirement transition specialist"
               width={900}
               height={1050}

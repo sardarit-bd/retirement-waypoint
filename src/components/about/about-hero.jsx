@@ -26,7 +26,7 @@ const AboutHero = () => {
       <div className="absolute left-0 top-0 z-[3] h-72 w-72 rounded-full bg-[#C9A84C]/10 blur-3xl" />
       <div className="absolute right-0 top-20 z-[3] h-96 w-96 rounded-full bg-[#1B2B4B]/5 blur-3xl" />
 
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-1 lg:px-8">
         <div className="text-center lg:text-left">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-[#C9A84C]/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur">
             <Sparkles className="h-4 w-4 text-[#C9A84C]" />
@@ -45,7 +45,7 @@ const AboutHero = () => {
           </p>
         </div>
 
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute -inset-4 rounded-[40px] bg-[#C9A84C]/15 blur-2xl" />
 
           <div className="relative overflow-hidden rounded-[32px] shadow-[0_30px_80px_rgba(27,43,75,0.25)]">
@@ -60,7 +60,7 @@ const AboutHero = () => {
 
             <div className="absolute inset-0 bg-gradient-to-t from-[#1B2B4B]/35 via-transparent to-transparent" />
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

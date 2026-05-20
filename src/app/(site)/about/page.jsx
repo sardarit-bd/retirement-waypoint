@@ -9,7 +9,7 @@ import FinalCTA from "@/components/about/final-cta";
 export default function AboutPage() {
   return (
     <main className="overflow-hidden bg-white">
-      <AboutHero />
+      {/* <AboutHero /> */}
       <DaveStory />
       <MissionVision />
       <ProfessionalTimeline />

@@ -12,8 +12,8 @@ const LifestyleCTA = () => {
         className="object-cover"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-[#1B2B4B]/70" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1B2B4B]/85 via-[#1B2B4B]/35 to-transparent" />
+      <div className="absolute inset-0 bg-[#1B2B4B]/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1B2B4B]/75 via-[#1B2B4B]/35 to-transparent" />
 
       <div className="relative z-10 flex h-full items-center justify-center px-4 text-center">
         <div className="max-w-4xl">
