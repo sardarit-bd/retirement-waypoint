@@ -135,3 +135,11 @@
   -webkit-text-stroke: 1px rgb(255, 255, 255);
   text-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
 }
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  overflow-x: hidden;
+}
