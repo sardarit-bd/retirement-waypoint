@@ -12,6 +12,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import Image from "next/image";
 
 const navLinks = [
     { name: "Home", href: "/" },
@@ -56,17 +57,21 @@ const Navbar = () => {
         <>
             <header className="fixed left-0 right-0 top-5 z-50 px-4">
                 <div
-                    className={`mx-auto max-w-7xl rounded-full border border-white/20 transition-all duration-300 ${
-                        scrolled
+                    className={`mx-auto max-w-7xl rounded-full border border-white/20 transition-all duration-300 ${scrolled
                             ? "bg-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.18)] backdrop-blur-2xl"
                             : "bg-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-2xl"
-                    }`}
+                        }`}
                 >
-                    <div className="flex h-16 items-center justify-between px-5 sm:px-6 lg:px-8">
+                    <div className="flex h-18 items-center justify-between px-5 sm:px-6 lg:px-8">
                         <Link href="/" className="group shrink-0 cursor-pointer">
-                            <span className="text-base font-semibold tracking-tight text-white transition-colors duration-300 group-hover:text-white/80 sm:text-lg md:text-xl">
-                                Retirement Waypoint
-                            </span>
+                            <Image
+                                src="/logo.png"
+                                alt="Retirement Waypoint Logo"
+                                width={180}
+                                height={50}
+                                className="h-19 w-auto transition-opacity duration-300 group-hover:opacity-80"
+                                priority
+                            />
                         </Link>
 
                         <nav className="hidden items-center gap-1 md:flex">
