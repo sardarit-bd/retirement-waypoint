@@ -158,7 +158,7 @@ const Footer = () => {
         <div className="mt-14 border-t border-white/10 pt-6">
           <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
             <p className="text-sm text-white/60">
-              © {new Date().getFullYear()} Retirement Waypoint. All rights
+              &copy; {new Date().getFullYear()} Retirement Waypoint. All rights
               reserved.
             </p>
 

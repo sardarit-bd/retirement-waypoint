@@ -7,6 +7,7 @@ import { ArrowRight, BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
 
 const books = [
   {
@@ -72,6 +73,14 @@ const BookCard = ({ book }) => {
 };
 
 const BookSection = () => {
+    const [popupOpen, setPopupOpen] = useState(false);
+
+
+  const handlePopupOpen = () => {
+    setPopupOpen(true);
+  };
+
+
   return (
     <section className="relative overflow-hidden bg-[#1B2B4B] py-20 md:py-28 lg:py-32">
       <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-[#C9A84C]/15 blur-3xl" />
@@ -117,16 +126,39 @@ const BookSection = () => {
 
         <div className="mt-14 text-center">
           <Button
+            onClick={handlePopupOpen}
             className="group cursor-pointer rounded-full bg-[#C9A84C] px-8 py-6 text-base font-semibold text-[#1B2B4B] shadow-xl transition-all duration-300 hover:bg-[#D6B45A] hover:shadow-2xl"
             asChild
           >
-            <Link href="/resources">
+            <Link href="/">
               View All Resources
               <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </Button>
         </div>
       </div>
+
+      {popupOpen && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60">
+          <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
+            <h2 className="text-2xl font-bold text-[#04103A]">
+              Coming Soon
+            </h2>
+
+            <p className="mt-3 text-gray-600">
+              This page is currently under development.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setPopupOpen(false)}
+              className="mt-6 rounded-full bg-[#04103A] px-6 py-2 font-semibold text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

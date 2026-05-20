@@ -9,8 +9,17 @@ import {
   Target,
   CheckCircle2,
 } from "lucide-react";
+import { useState } from "react";
 
 const HeroSection = () => {
+  const [popupOpen, setPopupOpen] = useState(false);
+
+
+
+  const handlePopupOpen = () => {
+    setPopupOpen(true);
+  };
+
   const trustPoints = [
     {
       icon: TrendingUp,
@@ -78,11 +87,12 @@ const HeroSection = () => {
               <div className="mb-9 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
                 <Button
                   variant="ghost"
+                  onClick={handlePopupOpen}
                   className="group w-full cursor-pointer rounded-full bg-white px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:!bg-[#04103A] hover:!text-white hover:shadow-2xl sm:w-auto md:text-lg"
                   asChild
                 >
                   <Link
-                    href="/assessment"
+                    href="/"
                     className="flex items-center justify-center"
                   >
                     <span>Take Assessment</span>
@@ -93,11 +103,12 @@ const HeroSection = () => {
 
                 <Button
                   variant="outline"
+                  onClick={handlePopupOpen}
                   className="w-full cursor-pointer rounded-full border border-white/40 bg-white/10 px-8 py-6 text-base font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 hover:text-white sm:w-auto md:text-lg"
                   asChild
                 >
                   <Link
-                    href="/resources"
+                    href="/"
                     className="flex items-center justify-center"
                   >
                     Explore Resources
@@ -127,6 +138,28 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {popupOpen && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60">
+          <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
+            <h2 className="text-2xl font-bold text-[#04103A]">
+              Coming Soon
+            </h2>
+
+            <p className="mt-3 text-gray-600">
+              This page is currently under development.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setPopupOpen(false)}
+              className="mt-6 rounded-full bg-[#04103A] px-6 py-2 font-semibold text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

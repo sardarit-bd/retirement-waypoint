@@ -12,9 +12,15 @@ import {
   CheckCircle2,
   ArrowRight,
 } from "lucide-react";
+import Link from "next/link";
 
 const AssessmentPreviewSection = () => {
   const [selectedOption, setSelectedOption] = useState("Somewhat Confident");
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  const handlePopupOpen = () => {
+    setPopupOpen(true);
+  };
 
   const steps = [
     {
@@ -99,13 +105,14 @@ const AssessmentPreviewSection = () => {
 
             {/* CTA Button */}
             <Button
+              onClick={handlePopupOpen}
               className="bg-[#C9A84C] hover:bg-[#B8963E] text-[#1B2B4B] rounded-full px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
               asChild
             >
-              <a href="/assessment">
+              <Link href="/">
                 Start Assessment
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
+              </Link>
             </Button>
           </div>
 
@@ -159,11 +166,10 @@ const AssessmentPreviewSection = () => {
                           <button
                             key={option.value}
                             onClick={() => setSelectedOption(option.value)}
-                            className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
-                              isSelected
+                            className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${isSelected
                                 ? "bg-[#C9A84C]/20 border-2 border-[#C9A84C] text-white"
                                 : "bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
-                            }`}
+                              }`}
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-medium">{option.label}</span>
@@ -227,6 +233,31 @@ const AssessmentPreviewSection = () => {
           animation-delay: 1s;
         }
       `}</style>
+
+
+
+
+      {popupOpen && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60">
+          <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
+            <h2 className="text-2xl font-bold text-[#04103A]">
+              Coming Soon
+            </h2>
+
+            <p className="mt-3 text-gray-600">
+              This page is currently under development.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setPopupOpen(false)}
+              className="mt-6 rounded-full bg-[#04103A] px-6 py-2 font-semibold text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
