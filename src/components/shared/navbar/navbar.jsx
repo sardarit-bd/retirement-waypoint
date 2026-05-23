@@ -50,7 +50,7 @@ const Navbar = () => {
     };
 
     const isComingSoonRoute = (href) => {
-        return ["/assessment", "/resources", "/book", "/coaching", "/contact"].includes(href);
+        return [ "/resources", "/book", "/coaching", "/contact"].includes(href);
     };
 
     return (
@@ -65,7 +65,7 @@ const Navbar = () => {
                     <div className="flex h-18 items-center justify-between px-5 sm:px-6 lg:px-8">
                         <Link href="/" className="group shrink-0 cursor-pointer">
                             <Image
-                                src="/logo.png"
+                                src="/logo-01.png"
                                 alt="Retirement Waypoint Logo"
                                 width={180}
                                 height={50}
