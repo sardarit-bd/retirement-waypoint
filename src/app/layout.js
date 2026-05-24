@@ -33,15 +33,42 @@ export default function RootLayout({ children }) {
         {/* <SmoothScroll /> */}
         {children}
         <Toaster
-          position="button-center"
+          position="bottom-center"
           toastOptions={{
             duration: 3000,
+
             style: {
               background: "rgba(27,43,75,0.85)",
               color: "#fff",
               backdropFilter: "blur(18px)",
               border: "1px solid rgba(201,168,76,0.25)",
               borderRadius: "16px",
+            },
+
+            success: {
+              style: {
+                background: "rgba(27,43,75,0.9)",
+                color: "#22C55E",
+                border: "1px solid rgba(34,197,94,0.25)",
+              },
+
+              iconTheme: {
+                primary: "#22C55E",
+                secondary: "#fff",
+              },
+            },
+
+            error: {
+              style: {
+                background: "rgba(27,43,75,0.9)",
+                color: "#EF4444",
+                border: "1px solid rgba(239,68,68,0.25)",
+              },
+
+              iconTheme: {
+                primary: "#EF4444",
+                secondary: "#fff",
+              },
             },
           }}
         />

@@ -50,7 +50,7 @@ const Navbar = () => {
     };
 
     const isComingSoonRoute = (href) => {
-        return [ "/resources", "/book", "/coaching", "/contact"].includes(href);
+        return ["/coaching", "/contact"].includes(href);
     };
 
     return (
