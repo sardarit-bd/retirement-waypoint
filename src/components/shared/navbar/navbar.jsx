@@ -2,32 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import Image from "next/image";
+import { themeChangeSections } from "@/lib/themeChangeSections";
+import { navLinks } from "@/lib/navLinks";
 
-const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Assessment", href: "/assessment" },
-  { name: "Resources", href: "/resources" },
-  { name: "Book", href: "/book" },
-  { name: "Coaching", href: "/coaching" },
-  { name: "Contact", href: "/contact" },
-];
 
 const Navbar = () => {
+  const pathname = usePathname();
+
   const [scrolled, setScrolled] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [comingSoonOpen, setComingSoonOpen] = useState(false);
   const [darkNavbar, setDarkNavbar] = useState(false);
 
   useEffect(() => {
@@ -40,21 +29,6 @@ const Navbar = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const themeChangeSections = [
-    "mission-vision",
-    "professional-timeline",
-    "download-resources",
-    "learning-resources",
-    "articles-resources",
-    "book-filters",
-    "book-store",
-    "book-reviews",
-    "tabs-section",
-    "video-section",
-    "cta-section",
-    "contact-information-section",
-  ];
 
   useEffect(() => {
     const handleNavbarColor = () => {
@@ -89,16 +63,15 @@ const Navbar = () => {
     setIsDrawerOpen(false);
   };
 
-  const handleComingSoon = () => {
-    setComingSoonOpen(true);
-    setIsDrawerOpen(false);
+  const isActiveLink = (href) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const isComingSoonRoute = (href) => {
-    return [].includes(href);
-  };
-
-  const navTextClass = darkNavbar
+  const desktopNavTextClass = darkNavbar
     ? "text-[#1B2B4B]/85 hover:bg-[#1B2B4B]/10 hover:text-[#1B2B4B]"
     : "text-white/85 hover:bg-white/10 hover:text-white";
 
@@ -115,6 +88,7 @@ const Navbar = () => {
           }`}
         >
           <div className="flex h-18 items-center justify-between px-5 sm:px-6 lg:px-8">
+            {/* Logo */}
             <Link href="/" className="group shrink-0 cursor-pointer">
               <Image
                 src={darkNavbar ? "/logo-02.png" : "/logo-01.png"}
@@ -126,29 +100,26 @@ const Navbar = () => {
               />
             </Link>
 
+            {/* Desktop Version */}
             <nav className="hidden items-center gap-1 md:flex">
-              {navLinks.map(({ name, href }) =>
-                isComingSoonRoute(href) ? (
-                  <button
-                    key={name}
-                    type="button"
-                    onClick={handleComingSoon}
-                    className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 lg:text-base ${navTextClass}`}
-                  >
-                    {name}
-                  </button>
-                ) : (
-                  <Link
-                    key={name}
-                    href={href}
-                    className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 lg:text-base ${navTextClass}`}
-                  >
-                    {name}
-                  </Link>
-                ),
-              )}
+              {navLinks.map(({ name, href }) => (
+                <Link
+                  key={name}
+                  href={href}
+                  className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 lg:text-base ${
+                    isActiveLink(href)
+                      ? darkNavbar
+                        ? "bg-[#1B2B4B]/10 text-[#1B2B4B]"
+                        : "bg-white/15 text-white"
+                      : desktopNavTextClass
+                  }`}
+                >
+                  {name}
+                </Link>
+              ))}
             </nav>
 
+            {/* Mobile Version */}
             <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -167,54 +138,56 @@ const Navbar = () => {
 
               <SheetContent
                 side="right"
-                className="w-[290px] border-l border-white/20 bg-[#04103A]/90 p-0 text-white backdrop-blur-2xl sm:w-[360px]"
+                className="w-[290px] border-l border-white/20 bg-[#04103A]/95 p-0 text-white backdrop-blur-2xl sm:w-[360px]"
               >
                 <div className="flex h-full flex-col">
-                  <Link href="/" className="group shrink-0 cursor-pointer">
-                    <Image
-                      src={darkNavbar ? "/logo-02.png" : "/logo-01.png"}
-                      alt="Retirement Waypoint Logo"
-                      width={180}
-                      height={50}
-                      className="h-19 w-auto transition-opacity duration-300 group-hover:opacity-80"
-                      priority
-                    />
-                  </Link>
+                  {/* Mobile Logo */}
+                  <div className="border-b border-white/10 px-6 py-5">
+                    <Link
+                      href="/"
+                      onClick={handleLinkClick}
+                      className="group inline-block cursor-pointer"
+                    >
+                      <Image
+                        src="/logo-01.png"
+                        alt="Retirement Waypoint Logo"
+                        width={180}
+                        height={50}
+                        className="h-19 w-auto transition-opacity duration-300 group-hover:opacity-80"
+                        priority
+                      />
+                    </Link>
+                  </div>
 
+                  {/* Mobile Menu Links */}
                   <nav className="flex-1 px-4 py-6">
                     <div className="flex flex-col gap-2">
-                      {navLinks.map(({ name, href }) =>
-                        isComingSoonRoute(href) ? (
-                          <button
-                            key={name}
-                            type="button"
-                            onClick={handleComingSoon}
-                            className="cursor-pointer rounded-2xl px-4 py-3 text-left text-base font-medium text-white/85 transition-all duration-300 hover:bg-white/10 hover:text-white"
-                          >
-                            {name}
-                          </button>
-                        ) : (
-                          <Link
-                            key={name}
-                            href={href}
-                            onClick={handleLinkClick}
-                            className="cursor-pointer rounded-2xl px-4 py-3 text-base font-medium text-white/85 transition-all duration-300 hover:bg-white/10 hover:text-white"
-                          >
-                            {name}
-                          </Link>
-                        ),
-                      )}
+                      {navLinks.map(({ name, href }) => (
+                        <Link
+                          key={name}
+                          href={href}
+                          onClick={handleLinkClick}
+                          className={`cursor-pointer rounded-2xl px-4 py-3 text-base font-medium transition-all duration-300 ${
+                            isActiveLink(href)
+                              ? "bg-white text-[#04103A] shadow-md"
+                              : "text-white/85 hover:bg-white/10 hover:text-white"
+                          }`}
+                        >
+                          {name}
+                        </Link>
+                      ))}
                     </div>
                   </nav>
 
+                  {/* Mobile Bottom Button */}
                   <div className="border-t border-white/10 px-6 py-6">
-                    <button
-                      type="button"
-                      onClick={handleComingSoon}
+                    <Link
+                      href="/assessment"
+                      onClick={handleLinkClick}
                       className="flex w-full cursor-pointer items-center justify-center rounded-full bg-white py-3 text-base font-semibold text-[#04103A] shadow-lg transition-all duration-300 hover:bg-white/90"
                     >
                       Take Assessment
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </SheetContent>
@@ -222,21 +195,6 @@ const Navbar = () => {
           </div>
         </div>
       </header>
-
-      <Dialog open={comingSoonOpen} onOpenChange={setComingSoonOpen}>
-        <DialogContent className="border-none bg-[#04103A] text-white sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
-              Coming Soon
-            </DialogTitle>
-
-            <DialogDescription className="pt-2 text-base text-white/70">
-              This page is currently under development and will be available
-              soon.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
 
       <div className="h-0" />
     </>

@@ -130,7 +130,7 @@ const BookSection = () => {
             asChild
           >
             <Link
-              href="/assessment"
+              href="/book"
               className="flex items-center justify-center"
             >
               <span>View All Resources</span>
