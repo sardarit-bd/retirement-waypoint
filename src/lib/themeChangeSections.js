@@ -1,6 +1,7 @@
 export const themeChangeSections = [
     "mission-vision",
     "professional-timeline",
+    "final-cta",
     "download-resources",
     "learning-resources",
     "articles-resources",
