@@ -47,7 +47,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-      <section className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8">
+      <section id="contact-information-section" className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-[32px] bg-white p-6 shadow-2xl sm:p-8">
             <h2 className="text-2xl font-bold text-[#1B2B4B]">

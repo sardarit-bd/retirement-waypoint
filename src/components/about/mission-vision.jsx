@@ -5,7 +5,7 @@ import { HeartHandshake, Lightbulb } from "lucide-react";
 
 const MissionVision = () => {
   return (
-    <section className="bg-[#F8F5EF] py-20 sm:py-24 lg:py-28">
+    <section id="mission-vision" className="bg-[#F8F5EF] py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-[#1B2B4B] sm:text-4xl">
@@ -13,7 +13,7 @@ const MissionVision = () => {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-[#1B2B4B]/65 sm:text-lg">
             Retirement Waypoint exists to bring emotional clarity, structure,
-            and purpose to one of life's most meaningful transitions.
+            and purpose to one of life&apos;s most meaningful transitions.
           </p>
         </div>
 

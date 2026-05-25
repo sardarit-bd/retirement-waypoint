@@ -76,8 +76,9 @@ const AssessmentPreviewSection = () => {
 
             {/* Description */}
             <p className="text-base sm:text-lg text-white/70 mb-8 leading-relaxed">
-              Gain personalized insights into your emotional readiness, lifestyle
-              structure, purpose, and confidence as you prepare for retirement.
+              Gain personalized insights into your emotional readiness,
+              lifestyle structure, purpose, and confidence as you prepare for
+              retirement.
             </p>
 
             {/* Steps */}
@@ -105,13 +106,18 @@ const AssessmentPreviewSection = () => {
 
             {/* CTA Button */}
             <Button
-              onClick={handlePopupOpen}
-              className="bg-[#C9A84C] hover:bg-[#B8963E] text-[#1B2B4B] rounded-full px-8 py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+              variant="ghost"
+              // onClick={handlePopupOpen}
+              className="group w-full cursor-pointer rounded-full bg-[#C9A84C] px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:!bg-[#04103A] hover:!text-white hover:shadow-2xl sm:w-auto md:text-lg"
               asChild
             >
-              <Link href="/">
-                Start Assessment
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              <Link
+                href="/assessment"
+                className="flex items-center justify-center"
+              >
+                <span>Start Assessment</span>
+
+                <ArrowRight className="ml-2 h-5 w-5 stroke-current transition-all duration-300 group-hover:translate-x-2" />
               </Link>
             </Button>
           </div>
@@ -154,8 +160,8 @@ const AssessmentPreviewSection = () => {
                   {/* Question */}
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold text-white mb-4">
-                      How confident do you feel about your sense of purpose after
-                      retirement?
+                      How confident do you feel about your sense of purpose
+                      after retirement?
                     </h3>
 
                     {/* Answer Options */}
@@ -166,13 +172,16 @@ const AssessmentPreviewSection = () => {
                           <button
                             key={option.value}
                             onClick={() => setSelectedOption(option.value)}
-                            className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${isSelected
+                            className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
+                              isSelected
                                 ? "bg-[#C9A84C]/20 border-2 border-[#C9A84C] text-white"
                                 : "bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
-                              }`}
+                            }`}
                           >
                             <div className="flex items-center justify-between">
-                              <span className="font-medium">{option.label}</span>
+                              <span className="font-medium">
+                                {option.label}
+                              </span>
                               {isSelected && (
                                 <CheckCircle2 className="h-5 w-5 text-[#C9A84C]" />
                               )}
@@ -219,7 +228,8 @@ const AssessmentPreviewSection = () => {
       {/* Custom Animation Styles */}
       <style jsx>{`
         @keyframes pulse {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0.5;
           }
           50% {
@@ -234,15 +244,10 @@ const AssessmentPreviewSection = () => {
         }
       `}</style>
 
-
-
-
       {popupOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60">
           <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
-            <h2 className="text-2xl font-bold text-[#04103A]">
-              Coming Soon
-            </h2>
+            <h2 className="text-2xl font-bold text-[#04103A]">Coming Soon</h2>
 
             <p className="mt-3 text-gray-600">
               This page is currently under development.

@@ -9,6 +9,7 @@ import {
   Lightbulb,
   PlayCircle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const featuredResources = [
   {
@@ -46,7 +47,7 @@ const blogs = [
 const ResourcesPage = () => {
   return (
     <main className="overflow-hidden bg-[#F8F5EF]">
-      <section className="relative bg-[#1B2B4B] px-4 pb-24 pt-40 text-white sm:px-6 lg:px-8">
+      {/* <section className="relative bg-[#1B2B4B] px-4 pb-24 pt-40 text-white sm:px-6 lg:px-8">
         <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-[#C9A84C]/15 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
 
@@ -95,18 +96,15 @@ const ResourcesPage = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-[#1B2B4B]/70 to-transparent" />
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section
-        id="featured-resources"
-        className="px-4 py-20 sm:px-6 lg:px-8"
-      >
+      <section id="featured-resources" className="bg-[#1B2B4B] px-4 py-20 pt-40 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
             <p className="mb-3 text-sm font-bold uppercase tracking-widest text-[#C9A84C]">
               Featured Resources
             </p>
-            <h2 className="text-3xl font-bold text-[#1B2B4B] sm:text-4xl">
+            <h2 className="text-3xl font-bold text-white sm:text-4xl">
               Start With Practical Guidance
             </h2>
           </div>
@@ -150,7 +148,7 @@ const ResourcesPage = () => {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
+      <section id="download-resources" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <p className="mb-3 text-sm font-bold uppercase tracking-widest text-[#C9A84C]">
@@ -194,7 +192,7 @@ const ResourcesPage = () => {
         </div>
       </section>
 
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      <section id="learning-resources" className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
             <p className="mb-3 text-sm font-bold uppercase tracking-widest text-[#C9A84C]">
@@ -272,7 +270,7 @@ const ResourcesPage = () => {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20 text-center sm:px-6 lg:px-8">
+      <section id="articles-resources" className="bg-white px-4 py-20 text-center sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-3xl font-bold text-[#1B2B4B] sm:text-4xl">
             Not Sure Where To Start?
@@ -282,13 +280,21 @@ const ResourcesPage = () => {
             your next chapter need the most attention.
           </p>
 
-          <Link
-            href="/assessment"
-            className="mt-8 inline-flex cursor-pointer items-center rounded-full bg-[#C9A84C] px-8 py-3 font-semibold text-[#1B2B4B] transition hover:bg-[#D6B45A]"
+          <Button
+            variant="ghost"
+            // onClick={handlePopupOpen}
+            className="group w-full cursor-pointer rounded-full bg-[#C9A84C] mt-6 px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-lg"
+            asChild
           >
-            Take Assessment
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+            <Link
+              href="/assessment"
+              className="flex items-center justify-center"
+            >
+              <span>Take Assessment</span>
+
+              <ArrowRight className="ml-2 h-5 w-5 stroke-current transition-all duration-300 group-hover:translate-x-2" />
+            </Link>
+          </Button>
         </div>
       </section>
     </main>

@@ -87,12 +87,12 @@ const HeroSection = () => {
               <div className="mb-9 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
                 <Button
                   variant="ghost"
-                  onClick={handlePopupOpen}
+                  // onClick={handlePopupOpen}
                   className="group w-full cursor-pointer rounded-full bg-white px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:!bg-[#04103A] hover:!text-white hover:shadow-2xl sm:w-auto md:text-lg"
                   asChild
                 >
                   <Link
-                    href="/"
+                    href="/assessment"
                     className="flex items-center justify-center"
                   >
                     <span>Take Assessment</span>
@@ -103,12 +103,12 @@ const HeroSection = () => {
 
                 <Button
                   variant="outline"
-                  onClick={handlePopupOpen}
+                  // onClick={handlePopupOpen}
                   className="w-full cursor-pointer rounded-full border border-white/40 bg-white/10 px-8 py-6 text-base font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 hover:text-white sm:w-auto md:text-lg"
                   asChild
                 >
                   <Link
-                    href="/"
+                    href="/resources"
                     className="flex items-center justify-center"
                   >
                     Explore Resources

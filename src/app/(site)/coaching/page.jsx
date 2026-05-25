@@ -81,7 +81,7 @@ const CoachingPage = () => {
       </section>
 
       {/* Video Section */}
-      <section className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8">
+      <section id="video-section" className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.4fr_0.8fr]">
           {/* Video Player */}
           <div className="overflow-hidden rounded-[32px] bg-white shadow-2xl">
@@ -168,7 +168,7 @@ const CoachingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-white px-4 py-16 text-center sm:px-6 lg:px-8">
+      <section id="cta-section" className="bg-white px-4 py-16 text-center sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-3xl font-bold text-[#1B2B4B]">
             Need Personalized Guidance?

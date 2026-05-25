@@ -36,7 +36,7 @@ const reviews = [
 
 export const BookReviews = () => {
   return (
-    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+    <section id="book-reviews" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-semibold text-[#1B2B4B]">

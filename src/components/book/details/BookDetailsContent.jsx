@@ -300,7 +300,7 @@ export function BookDetailsContent({ book, bookId, router }) {
       </section>
 
       {/* Tabs Section */}
-      <section className="px-4 py-12 sm:px-6 lg:px-8">
+      <section id="tabs-section" className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <Tabs defaultValue="description" className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-[#1B2B4B]/5">

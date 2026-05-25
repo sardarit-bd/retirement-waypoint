@@ -16,13 +16,19 @@ export const BookCTA = () => {
           understand your personal readiness profile.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Button
+           <Button
+            variant="ghost"
+            // onClick={handlePopupOpen}
+            className="group w-full cursor-pointer rounded-full bg-[#C9A84C] px-6 py-4 font-semibold text-sm! text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-lg"
             asChild
-            className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]"
           >
-            <Link href="/assessment">
-              Take Assessment
-              <ArrowRight className="ml-2 h-5 w-5" />
+            <Link
+              href="/assessment"
+              className="flex items-center justify-center"
+            >
+              <span>Take Assessment</span>
+
+              <ArrowRight className="ml-2 h-5 w-5 stroke-current transition-all duration-300 group-hover:translate-x-2" />
             </Link>
           </Button>
           {/* Placeholder for dashboard library - future implementation */}

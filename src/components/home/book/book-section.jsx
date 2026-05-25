@@ -73,13 +73,11 @@ const BookCard = ({ book }) => {
 };
 
 const BookSection = () => {
-    const [popupOpen, setPopupOpen] = useState(false);
-
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const handlePopupOpen = () => {
     setPopupOpen(true);
   };
-
 
   return (
     <section className="relative overflow-hidden bg-[#1B2B4B] py-20 md:py-28 lg:py-32">
@@ -126,13 +124,18 @@ const BookSection = () => {
 
         <div className="mt-14 text-center">
           <Button
-            onClick={handlePopupOpen}
-            className="group cursor-pointer rounded-full bg-[#C9A84C] px-8 py-6 text-base font-semibold text-[#1B2B4B] shadow-xl transition-all duration-300 hover:bg-[#D6B45A] hover:shadow-2xl"
+            variant="ghost"
+            // onClick={handlePopupOpen}
+            className="group w-full cursor-pointer rounded-full text-sm! bg-white px-5 py-5 font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-lg"
             asChild
           >
-            <Link href="/">
-              View All Resources
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            <Link
+              href="/assessment"
+              className="flex items-center justify-center"
+            >
+              <span>View All Resources</span>
+
+              <ArrowRight className="ml-2 h-5 w-5 stroke-current transition-all duration-300 group-hover:translate-x-2" />
             </Link>
           </Button>
         </div>
@@ -141,9 +144,7 @@ const BookSection = () => {
       {popupOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60">
           <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
-            <h2 className="text-2xl font-bold text-[#04103A]">
-              Coming Soon
-            </h2>
+            <h2 className="text-2xl font-bold text-[#04103A]">Coming Soon</h2>
 
             <p className="mt-3 text-gray-600">
               This page is currently under development.

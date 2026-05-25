@@ -15,7 +15,7 @@ const categories = [
 
 export const BookFilters = ({ activeCategory, setActiveCategory }) => {
   return (
-    <section className="relative z-10 px-4 sm:px-6 lg:px-8">
+    <section id="book-filters" className="relative z-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl -translate-y-6">
         <div className="rounded-2xl border border-[#1B2B4B]/10 bg-white p-3 shadow-lg">
           <div className="flex items-center gap-3">
