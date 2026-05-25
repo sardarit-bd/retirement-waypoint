@@ -1,9 +1,211 @@
-import React from 'react'
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Mail,
+  MapPin,
+  Phone,
+  Send,
+  MessageCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ContactPage = () => {
-  return (
-    <div>ContactPage</div>
-  )
-}
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
-export default ContactPage
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Contact form:", form);
+    alert("Message sent successfully!");
+    setForm({ name: "", email: "", subject: "", message: "" });
+  };
+
+  return (
+    <main className="min-h-screen bg-[#F8F5EF]">
+      <section className="bg-[#1B2B4B] px-4 pb-20 pt-40 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-xl">
+            <MessageCircle className="h-4 w-4 text-[#C9A84C]" />
+            Contact Retirement Waypoint
+          </div>
+
+          <h1 className="mx-auto max-w-4xl text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+            Let’s Start The Conversation
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/70">
+            Have questions about assessments, books, or retirement transition
+            guidance? Send a message and we’ll get back to you.
+          </p>
+        </div>
+      </section>
+
+      <section id="contact-information-section" className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="rounded-[32px] bg-white p-6 shadow-2xl sm:p-8">
+            <h2 className="text-2xl font-bold text-[#1B2B4B]">
+              Contact Information
+            </h2>
+
+            <p className="mt-3 leading-7 text-[#1B2B4B]/65">
+              Reach out for questions, support, or collaboration opportunities.
+            </p>
+
+            <div className="mt-8 space-y-5">
+              <div className="flex gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#C9A84C]/20 text-[#C9A84C]">
+                  <Mail className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#1B2B4B]">Email</h3>
+                  <p className="mt-1 text-sm text-[#1B2B4B]/60">
+                    dave@retirementwaypoint.com
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#C9A84C]/20 text-[#C9A84C]">
+                  <Phone className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#1B2B4B]">Phone</h3>
+                  <p className="mt-1 text-sm text-[#1B2B4B]/60">
+                    +1 (000) 000-0000
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#C9A84C]/20 text-[#C9A84C]">
+                  <MapPin className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#1B2B4B]">Location</h3>
+                  <p className="mt-1 text-sm text-[#1B2B4B]/60">
+                    Rosarito Beach, México
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 rounded-3xl bg-[#1B2B4B] p-6 text-white">
+              <h3 className="text-xl font-bold">
+                Not Sure Where To Start?
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-white/70">
+                Take the retirement readiness assessment to understand your
+                current transition profile.
+              </p>
+
+              <Link
+                href="/assessment"
+                className="mt-5 inline-flex cursor-pointer items-center rounded-full bg-[#C9A84C] px-5 py-2.5 text-sm font-semibold text-[#1B2B4B] transition hover:bg-[#D6B45A]"
+              >
+                Take Assessment
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-[32px] bg-white p-6 shadow-2xl sm:p-8"
+          >
+            <h2 className="text-2xl font-bold text-[#1B2B4B]">
+              Send A Message
+            </h2>
+
+            <p className="mt-3 leading-7 text-[#1B2B4B]/65">
+              Fill out the form below and we’ll respond as soon as possible.
+            </p>
+
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Full Name
+                </label>
+                <input
+                  required
+                  type="text"
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm({ ...form, name: e.target.value })
+                  }
+                  placeholder="Your name"
+                  className="h-13 w-full rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] px-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Email Address
+                </label>
+                <input
+                  required
+                  type="email"
+                  value={form.email}
+                  onChange={(e) =>
+                    setForm({ ...form, email: e.target.value })
+                  }
+                  placeholder="you@example.com"
+                  className="h-13 w-full rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] px-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Subject
+                </label>
+                <input
+                  required
+                  type="text"
+                  value={form.subject}
+                  onChange={(e) =>
+                    setForm({ ...form, subject: e.target.value })
+                  }
+                  placeholder="How can we help?"
+                  className="h-13 w-full rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] px-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Message
+                </label>
+                <textarea
+                  required
+                  rows={7}
+                  value={form.message}
+                  onChange={(e) =>
+                    setForm({ ...form, message: e.target.value })
+                  }
+                  placeholder="Write your message..."
+                  className="w-full resize-none rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="mt-6 h-13 cursor-pointer rounded-full bg-[#C9A84C] px-8 text-base font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]"
+            >
+              Send Message
+              <Send className="ml-2 h-5 w-5" />
+            </Button>
+          </form>
+        </div>
+      </section>
+    </main>
+  );
+};
+
+export default ContactPage;

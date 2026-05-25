@@ -11,7 +11,7 @@ const credentials = [
 
 const DaveStory = () => {
   return (
-    <section id="story" className="relative bg-[#1B2B4B] py-20 sm:py-24 lg:py-28">
+    <section id="story" className="relative bg-[#1B2B4B] py-28 sm:py-24 lg:py-28">
       <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#C9A84C]/10 blur-3xl" />
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">

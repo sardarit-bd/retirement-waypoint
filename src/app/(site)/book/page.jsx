@@ -129,7 +129,7 @@ function BookPageContent() {
         cartItems={cartItems}
       />
       <BookReviews />
-      <BookCTA />
+      {/* <BookCTA /> */}
     </main>
   );
 }
