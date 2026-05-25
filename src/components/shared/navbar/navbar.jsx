@@ -50,7 +50,7 @@ const Navbar = () => {
     };
 
     const isComingSoonRoute = (href) => {
-        return ["/coaching", "/contact"].includes(href);
+        return [].includes(href);
     };
 
     return (
@@ -97,14 +97,14 @@ const Navbar = () => {
                             )}
                         </nav>
 
-                        <div className="hidden md:block">
+                        {/* <div className="hidden md:block">
                             <Button
                                 onClick={handleComingSoon}
                                 className="cursor-pointer rounded-full bg-white px-6 py-2 text-sm font-semibold text-[#04103A] shadow-lg transition-all duration-300 hover:bg-white/90 hover:shadow-xl lg:text-base"
                             >
                                 Take Assessment
                             </Button>
-                        </div>
+                        </div> */}
 
                         <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
                             <SheetTrigger asChild>
