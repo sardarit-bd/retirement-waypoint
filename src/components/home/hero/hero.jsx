@@ -14,8 +14,6 @@ import { useState } from "react";
 const HeroSection = () => {
   const [popupOpen, setPopupOpen] = useState(false);
 
-
-
   const handlePopupOpen = () => {
     setPopupOpen(true);
   };
@@ -47,7 +45,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <div
           className="h-full w-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/hero-bg.png')" }}
         />
       </div>
 
@@ -74,11 +72,11 @@ const HeroSection = () => {
                 </span>
               </div>
 
-              <h1 className="outline-text mb-6 text-[38px] font-bold leading-[1.15] tracking-tight sm:mb-8 sm:text-5xl lg:text-5xl">
+              <h1 className="mb-6 text-[38px] font-bold leading-[1.15] tracking-tight text-white sm:mb-8 sm:text-5xl lg:text-5xl">
                 Navigate Retirement With Confidence, Purpose, and Clarity
               </h1>
 
-              <p className="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-white/80 sm:text-lg md:text-xl lg:mx-0">
+              <p className="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-white sm:text-lg md:text-xl lg:mx-0">
                 Retirement Waypoint helps professionals understand their
                 readiness, rediscover purpose, and build a meaningful next
                 chapter through guided assessments and expert insights.
@@ -142,9 +140,7 @@ const HeroSection = () => {
       {popupOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60">
           <div className="w-[90%] max-w-md rounded-2xl bg-white p-6 text-center shadow-xl">
-            <h2 className="text-2xl font-bold text-[#04103A]">
-              Coming Soon
-            </h2>
+            <h2 className="text-2xl font-bold text-[#04103A]">Coming Soon</h2>
 
             <p className="mt-3 text-gray-600">
               This page is currently under development.
