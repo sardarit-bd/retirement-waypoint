@@ -14,7 +14,7 @@ const TrustSection = () => {
   const statsData = [
     {
       icon: Briefcase,
-      value: "30+",
+      value: "40+",
       label: "Years Experience",
       description:
         "Behavioral psychology experience focused on people, purpose, and life transitions.",

@@ -66,7 +66,7 @@ const AboutDaveSection = () => {
                   <div className="w-16 h-1 bg-[#C9A84C] rounded-full mb-6" />
 
                   <p className="text-lg md:text-xl text-[#1B2B4B]/80 font-medium leading-relaxed mb-5">
-                    Dave is a PhD industrial psychologist with 30+ years of
+                    Dave is a PhD industrial psychologist with 40+ years of
                     experience helping people understand work, identity,
                     motivation, and life transitions.
                   </p>

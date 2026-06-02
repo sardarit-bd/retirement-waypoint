@@ -30,6 +30,9 @@ import { BookStore } from "../Book-Store";
 import { BookReviews } from "../Book-Reviews";
 import getSamplePreview from "./GetSamplePreview";
 import { books as allBooks } from "@/data/books";
+import { FaMinus } from "react-icons/fa";
+import { GoPlus } from "react-icons/go";
+import { FiMinus } from "react-icons/fi";
 
 
 function loadCartFromStorage() {
@@ -88,11 +91,11 @@ export function BookDetailsContent({ book, bookId, router }) {
   return (
     <main className="min-h-screen bg-[#F8F5EF]">
       {/* Back Button */}
-      <div className="bg-[#1B2B4B] px-4 pt-24 sm:px-6 lg:px-8">
+      <div className="bg-[#1B2B4B] px-4 pt-32 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <Button
             variant="ghost"
-            className="mb-4 text-white/70 hover:bg-white/10 hover:text-white"
+            className="mb-4 text-white/70 hover:bg-white/10 hover:text-white cursor-pointer"
             onClick={() => router.back()}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -102,7 +105,7 @@ export function BookDetailsContent({ book, bookId, router }) {
       </div>
 
       {/* Book Details Hero */}
-      <section className="bg-[#1B2B4B] px-4 pb-16 text-white sm:px-6 lg:px-8">
+      <section className="bg-[#1B2B4B] pt-6 px-4 pb-16 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
             {/* Book Cover */}
@@ -192,7 +195,7 @@ export function BookDetailsContent({ book, bookId, router }) {
                   <DialogTrigger asChild>
                     <Button
                       variant="outline"
-                      className="border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C]/10"
+                      className="cursor-pointer border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C]/10 transition-all duration-300 hover:text-white!"
                     >
                       <BookOpen className="mr-2 h-4 w-4" />
                       Read Sample
@@ -233,7 +236,7 @@ export function BookDetailsContent({ book, bookId, router }) {
                   <Button
                     onClick={addToCart}
                     disabled={!book.stock}
-                    className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] disabled:opacity-50"
+                    className="cursor-pointer border-[#C9A84C] text-[#C9A84C] hover:bg-[#C9A84C]/10 transition-all duration-300 hover:text-white!"
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
                     Add to Cart
@@ -244,9 +247,9 @@ export function BookDetailsContent({ book, bookId, router }) {
                       variant="outline"
                       size="icon"
                       onClick={() => updateQuantity(quantity - 1)}
-                      className="border-[#C9A84C] text-[#C9A84C]"
+                      className="border-[#C9A84C] text-[#C9A84C] cursor-pointer"
                     >
-                      -
+                      <FiMinus />
                     </Button>
                     <span className="w-8 text-center font-semibold text-white">
                       {quantity}
@@ -255,28 +258,28 @@ export function BookDetailsContent({ book, bookId, router }) {
                       variant="outline"
                       size="icon"
                       onClick={() => updateQuantity(quantity + 1)}
-                      className="border-[#C9A84C] text-[#C9A84C]"
+                      className="border-[#C9A84C] text-[#C9A84C] cursor-pointer"
                     >
-                      +
+                      <GoPlus className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       onClick={removeFromCart}
-                      className="text-red-400 hover:bg-red-400/10 hover:text-red-300"
+                      className="text-red-400 hover:bg-red-400/10 hover:text-red-300 cursor-pointer"
                     >
                       Remove
                     </Button>
                   </div>
                 )}
 
-                <Button variant="outline" className="border-white/20 text-white">
+                {/* <Button variant="outline" className="border-white/20 text-white">
                   <Heart className="mr-2 h-4 w-4" />
                   Wishlist
                 </Button>
 
                 <Button variant="ghost" className="text-white/60">
                   <Share2 className="h-4 w-4" />
-                </Button>
+                </Button> */}
               </div>
 
               {/* Delivery Info - USA Focused */}
@@ -369,7 +372,7 @@ export function BookDetailsContent({ book, bookId, router }) {
       </section>
 
       {/* Related Books Section */}
-      <section className="px-4 pb-20 sm:px-6 lg:px-8">
+      <section id="related-books" className="px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <h2 className="mb-6 text-2xl font-bold text-[#1B2B4B]">
             You May Also Like

@@ -68,7 +68,7 @@ const HeroSection = () => {
               <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white/90 backdrop-blur-xl sm:text-sm">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
                 <span className="line-clamp-1">
-                  Retirement readiness made clearer
+                  Retirement made clearer
                 </span>
               </div>
 
@@ -86,7 +86,7 @@ const HeroSection = () => {
                 <Button
                   variant="ghost"
                   // onClick={handlePopupOpen}
-                  className="group w-full cursor-pointer rounded-full bg-white px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:!bg-[#04103A] hover:!text-white hover:shadow-2xl sm:w-auto md:text-lg"
+                  className="group w-full cursor-pointer rounded-full bg-white px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A]! hover:text-white! hover:shadow-2xl sm:w-auto md:text-lg"
                   asChild
                 >
                   <Link

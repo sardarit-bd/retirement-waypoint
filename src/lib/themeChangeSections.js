@@ -12,5 +12,7 @@ export const themeChangeSections = [
     "video-section",
     "cta-section",
     "contact-information-section",
+    "coaching-introduction",
+    "related-books",
   ];
 
