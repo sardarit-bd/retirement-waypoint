@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Brain } from "lucide-react";
 
 const credentials = [
-  "30+ Years Experience",
+  "40+ Years Experience",
   "Industrial Psychologist",
   "Retirement Transition Specialist",
 ];
