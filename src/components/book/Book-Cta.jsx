@@ -32,7 +32,7 @@ export const BookCTA = () => {
             </Link>
           </Button>
           {/* Placeholder for dashboard library - future implementation */}
-          <Button
+          {/* <Button
             variant="outline"
             className="border-white/20 text-white hover:bg-white/10 hover:text-white"
             onClick={() =>
@@ -42,7 +42,7 @@ export const BookCTA = () => {
             }
           >
             My Library
-          </Button>
+          </Button> */}
         </div>
         {/* Hidden placeholder for future PDF reader integration */}
         <div className="hidden" aria-hidden="true">
