@@ -29,7 +29,7 @@ export const BookFilters = ({ activeCategory, setActiveCategory }) => {
                   <Button
                     key={category}
                     variant={activeCategory === category ? "default" : "outline"}
-                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
+                    className={`rounded-full px-5 py-2 text-sm font-medium transition-all cursor-pointer ${
                       activeCategory === category
                         ? "bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]"
                         : "border-[#1B2B4B]/10 bg-[#F8F5EF] text-[#1B2B4B]/70 hover:border-[#C9A84C] hover:text-[#1B2B4B]"

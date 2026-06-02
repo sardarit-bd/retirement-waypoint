@@ -165,7 +165,7 @@ export const BookHero = ({
                   className="h-11 border-white/20 bg-white/10 pl-9 text-white placeholder:text-white/40 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
                 />
               </div>
-              <Button className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]">
+              <Button className="bg-[#C9A84C] cursor-pointer text-[#1B2B4B] hover:bg-[#D6B45A]">
                 Search
               </Button>
             </div>

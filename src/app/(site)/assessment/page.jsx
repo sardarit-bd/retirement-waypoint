@@ -30,8 +30,16 @@ const AssessmentPage = () => {
           Choose Your Assessment
         </h1>
 
-        <p className="mx-auto mb-12 max-w-2xl text-white/70">
-          Select the assessment that best matches your current retirement stage.
+        <p className="mx-auto mb-4 max-w-2xl text-white/70">
+          Select the assessment that best matches your current retirement
+          stage.
+        </p>
+
+        <p className="mx-auto mb-12 max-w-4xl text-base leading-relaxed text-white/70">
+          Each assessment draws on psychological research and includes
+          reflection questions that will be analyzed alongside the assessment
+          items to provide a complete and transparent measure of your current
+          retirement readiness and overall status.
         </p>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -48,7 +56,7 @@ const AssessmentPage = () => {
               <p className="mb-6 text-white/65">{item.desc}</p>
 
               <span className="font-semibold text-[#C9A84C]">
-                Start assessment →
+                Start Assessment →
               </span>
             </Link>
           ))}
