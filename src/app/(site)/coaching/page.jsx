@@ -151,7 +151,7 @@ const CoachingPage = () => {
 
             <Button
               asChild
-              className="group mt-10 cursor-pointer rounded-full bg-[#C9A84C] px-8 py-6 text-base font-semibold text-[#1B2B4B]  transition-all duration-300 hover:bg-[#04103A]! hover:text-white! hover:shadow-2xl"
+              className="group mt-10 cursor-pointer rounded-full bg-[#C9A84C] px-8 py-6 text-base font-semibold text-[#1B2B4B]  transition-all duration-300 hover:bg-[#04103A]! hover:text-white!"
             >
               <Link href="/contact">
                 Work With Me
