@@ -303,7 +303,7 @@ export default function AssessmentForm({ assessment }) {
   if (screen === "results") {
     return (
       <AssessmentShell>
-        <div className="mx-auto max-w-4xl space-y-5">
+        <div className="mx-auto max-w-7xl space-y-5">
           <div className={`${glassCard} p-8 text-center`}>
             <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#C9A84C] text-[#1B2B4B]">
               <Award className="h-7 w-7" />
@@ -508,7 +508,7 @@ export default function AssessmentForm({ assessment }) {
           </div>
         </div>
 
-        <div className={`${glassCard} mb-5 p-5`}>
+        {/* <div className={`${glassCard} mb-5 p-5`}>
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-white/45">
             Live Scoring
           </p>
@@ -546,7 +546,7 @@ export default function AssessmentForm({ assessment }) {
               );
             })}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-between gap-3">
           <button
