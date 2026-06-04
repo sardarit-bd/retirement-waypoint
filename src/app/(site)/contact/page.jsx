@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Lottie from "lottie-react";
 import {
   ArrowRight,
   Mail,
@@ -11,6 +12,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import sendAnimation from "@/animations/message-sent.json";
 
 const ContactPage = () => {
   const [form, setForm] = useState({
@@ -20,11 +22,25 @@ const ContactPage = () => {
     message: "",
   });
 
+  const [isSending, setIsSending] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    setIsSending(true);
+
     console.log("Contact form:", form);
-    alert("Message sent successfully!");
-    setForm({ name: "", email: "", subject: "", message: "" });
+
+    setTimeout(() => {
+      setIsSending(false);
+
+      setForm({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    }, 2500);
   };
 
   return (
@@ -47,7 +63,10 @@ const ContactPage = () => {
         </div>
       </section>
 
-      <section id="contact-information-section" className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8">
+      <section
+        id="contact-information-section"
+        className="-mt-10 px-4 pb-20 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="rounded-[32px] bg-white p-6 shadow-2xl sm:p-8">
             <h2 className="text-2xl font-bold text-[#1B2B4B]">
@@ -97,9 +116,7 @@ const ContactPage = () => {
             </div>
 
             <div className="mt-10 rounded-3xl bg-[#1B2B4B] p-6 text-white">
-              <h3 className="text-xl font-bold">
-                Not Sure Where To Start?
-              </h3>
+              <h3 className="text-xl font-bold">Not Sure Where To Start?</h3>
 
               <p className="mt-3 text-sm leading-7 text-white/70">
                 Take the retirement readiness assessment to understand your
@@ -196,10 +213,22 @@ const ContactPage = () => {
 
             <Button
               type="submit"
-              className="mt-6 h-13 cursor-pointer rounded-full bg-[#C9A84C] px-8 text-base font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]"
+              disabled={isSending}
+              className="group mt-6 h-13 cursor-pointer rounded-full bg-[#C9A84C] px-4 text-base font-semibold text-[#1B2B4B] transition-all duration-300 hover:bg-[#04103A] hover:text-white disabled:pointer-events-none disabled:opacity-90"
             >
               Send Message
-              <Send className="ml-2 h-5 w-5" />
+
+              <span className="flex h-10 w-10 items-center justify-center overflow-visible">
+                {isSending ? (
+                  <Lottie
+                    animationData={sendAnimation}
+                    loop={false}
+                    className="h-10 w-10"
+                  />
+                ) : (
+                  <Send className="h-5 w-5 transition-all duration-300 group-hover:translate-x-2" />
+                )}
+              </span>
             </Button>
           </form>
         </div>
