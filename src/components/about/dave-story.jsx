@@ -39,7 +39,7 @@ const DaveStory = () => {
 
           <div className="mt-6 space-y-5 text-base leading-relaxed text-white/72 sm:text-lg">
             <p>
-              Dave is a PhD industrial psychologist with 30+ years of
+              Dave is a PhD industrial psychologist with 40+ years of
               experience helping people understand work, motivation,
               leadership, identity, and life transitions.
             </p>
