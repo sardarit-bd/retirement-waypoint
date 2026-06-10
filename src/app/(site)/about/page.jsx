@@ -12,7 +12,7 @@ export default function AboutPage() {
       {/* <AboutHero /> */}
       <DaveStory />
       <MissionVision />
-      <ProfessionalTimeline />
+      {/* <ProfessionalTimeline /> */}
       <CoreValues />
       <LifestyleCTA />
       <FinalCTA />

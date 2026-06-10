@@ -119,10 +119,10 @@ function BookPageContent() {
         onRemoveFromCart={removeFromCart}
         onCheckout={handleCheckout}
       />
-      <BookFilters
+      {/* <BookFilters
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
-      />
+      /> */}
       <BookStore
         books={filteredBooks}
         onAddToCart={addToCart}
