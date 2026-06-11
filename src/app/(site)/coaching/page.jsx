@@ -2,7 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { HiOutlineArrowNarrowRight } from "react-icons/hi";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Compass,
+  Zap,
+  HeartHandshake,
+  GraduationCap,
+  Sparkles,
+  Clock,
+  BookOpen,
+  Mail,
+  Users,
+  MessageCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const rightForYou = [
@@ -19,6 +33,7 @@ const domains = [
     description:
       "Who are you when the title is gone? Reclaiming identity anchored in values, not roles.",
     featured: false,
+    icon: Compass,
   },
   {
     id: 2,
@@ -27,6 +42,7 @@ const domains = [
     description:
       "Energy, flow, and the daily rhythm of a life that feels alive and fully activated.",
     featured: false,
+    icon: Zap,
   },
   {
     id: 3,
@@ -35,6 +51,7 @@ const domains = [
     description:
       "The quality and intentionality of relationships that sustain wellbeing across decades.",
     featured: true,
+    icon: HeartHandshake,
   },
   {
     id: 4,
@@ -43,6 +60,7 @@ const domains = [
     description:
       "Staying curious, challenged, and expanding — the antidote to stagnation in retirement.",
     featured: false,
+    icon: GraduationCap,
   },
   {
     id: 5,
@@ -50,6 +68,65 @@ const domains = [
     subtitle: "What you leave behind",
     description:
       "What you stand for, what you leave behind, and the story you choose to live now.",
+    featured: false,
+    icon: Sparkles,
+  },
+];
+
+const services = [
+  {
+    id: 1,
+    tag: "FOUNDATION",
+    title: "Discovery Session",
+    description:
+      "A single 90-minute coaching conversation anchored in your Five Domains results. Ideal for getting clarity and a directional roadmap.",
+    features: [
+      "Five Domains Assessment",
+      "90-min coaching session",
+      "Written action summary",
+      "Resource recommendations",
+    ],
+    price: "97",
+    period: "one time",
+    buttonText: "Get Started",
+    buttonVariant: "outline",
+    featured: false,
+  },
+  {
+    id: 2,
+    tag: "MOST POPULAR",
+    title: "90-Day Coaching Program",
+    description:
+      "A structured, evidence-based coaching engagement that takes you from transition to intentional thriving. The flagship Retirement Waypoint experience.",
+    features: [
+      "Six 60-min coaching sessions",
+      "Full Five Domains workbook",
+      "Personalized retirement design plan",
+      "Email support between sessions",
+      "Access to all assessments",
+    ],
+    price: "497",
+    period: "90 days",
+    buttonText: "Reserve Your Spot",
+    buttonVariant: "gold",
+    featured: true,
+  },
+  {
+    id: 3,
+    tag: "COMMUNITY",
+    title: "Group Cohort",
+    description:
+      "Six weeks of structured group coaching with peers navigating the same transition. Curriculum built on the Five Domains framework.",
+    features: [
+      "6 weekly group sessions (90 min)",
+      "Cohort of 6–10 participants",
+      "Full workbook & assessments",
+      "Community discussion board",
+    ],
+    price: "97",
+    period: "6 weeks",
+    buttonText: "Join the Waitlist",
+    buttonVariant: "outline",
     featured: false,
   },
 ];
@@ -168,16 +245,10 @@ const CoachingPage = () => {
               <span className="h-1.5 w-1.5 rounded-full bg-[#C9A84C]"></span>
               THE FRAMEWORK
             </span>
-            <h2
-              className="mt-6 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-            >
+            <h2 className="mt-6 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
               Five Domains of Retirement Thriving
             </h2>
-            <p
-              className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/60"
-              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
-            >
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
               Grounded in decades of behavioral science, these five domains
               provide a practical framework for building a meaningful and
               fulfilling retirement.
@@ -186,60 +257,169 @@ const CoachingPage = () => {
 
           {/* Dynamic 5-Column Grid */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
-            {domains.map((domain) => (
-              <div
-                key={domain.id}
-                className={`group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
-                  domain.featured
-                    ? "border border-[#C9A84C]/30 hover:border-[#C9A84C]/70 hover:shadow-[#C9A84C]/20"
-                    : "border border-white/10 hover:border-[#C9A84C]/50 hover:shadow-[#C9A84C]/10"
-                }`}
-              >
-                {/* Top Header Area */}
+            {domains.map((domain) => {
+              const Icon = domain.icon;
+              return (
                 <div
-                  className={`relative overflow-hidden px-5 pb-4 pt-6 ${
+                  key={domain.id}
+                  className={`group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
                     domain.featured
-                      ? "bg-[#C9A84C]/10"
-                      : "bg-[#1B2B4B]/80"
+                      ? "border border-[#C9A84C]/30 hover:border-[#C9A84C]/70 hover:shadow-[#C9A84C]/20"
+                      : "border border-white/10 hover:border-[#C9A84C]/50 hover:shadow-[#C9A84C]/10"
                   }`}
                 >
-                  {/* Decorative circle top-right */}
+                  {/* Top Header Area */}
                   <div
-                    className={`absolute -right-8 -top-8 h-24 w-24 rounded-full ${
-                      domain.featured
-                        ? "bg-[#C9A84C]/10"
-                        : "bg-[#C9A84C]/5"
+                    className={`relative overflow-hidden px-5 pb-4 pt-6 ${
+                      domain.featured ? "bg-[#C9A84C]/10" : "bg-[#1B2B4B]/80"
                     }`}
-                  ></div>
-                  
-                  {/* Category label */}
-                  <div className="mb-3 text-xs font-semibold tracking-[0.2em] text-[#C9A84C] uppercase">
-                    FIVE DOMAINS
+                  >
+                    {/* Decorative circle top-right */}
+                    <div
+                      className={`absolute -right-8 -top-8 h-24 w-24 rounded-full ${
+                        domain.featured ? "bg-[#C9A84C]/10" : "bg-[#C9A84C]/5"
+                      }`}
+                    ></div>
+
+                    {/* Icon */}
+                    <div className="mb-3">
+                      <Icon className="h-8 w-8 text-[#C9A84C]" />
+                    </div>
+
+                    {/* Category label */}
+                    <div className="mb-3 text-xs font-semibold tracking-[0.2em] text-[#C9A84C] uppercase">
+                      FIVE DOMAINS
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-xl font-bold leading-tight text-white">
+                      {domain.title}
+                    </h3>
+
+                    {/* Italic subtitle */}
+                    <p className="mt-1 italic text-white/50 text-sm">
+                      {domain.subtitle}
+                    </p>
                   </div>
-                  
-                  {/* Title */}
-                  <h3
-                    className="text-xl font-bold leading-tight text-white"
-                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                  >
-                    {domain.title}
-                  </h3>
-                  
-                  {/* Italic subtitle */}
-                  <p className="mt-1 font-serif italic text-white/50 text-sm">
-                    {domain.subtitle}
-                  </p>
+
+                  {/* Bottom Content Area */}
+                  <div className="flex flex-1 bg-[#04103A] px-5 pb-6 pt-4">
+                    <p className="text-sm leading-relaxed text-white/60">
+                      {domain.description}
+                    </p>
+                  </div>
                 </div>
-                
-                {/* Bottom Content Area */}
-                <div className="flex flex-1 bg-[#04103A] px-5 pb-6 pt-4">
-                  <p
-                    className="text-sm leading-relaxed text-white/60"
-                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Coaching & Services Section */}
+      <section
+        id="services"
+        className="bg-[#F8F5EF] px-4 py-24 sm:px-6 lg:px-8"
+      >
+        <div className="mx-auto max-w-7xl">
+          {/* Section Header */}
+          <div className="mb-16 text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/80 px-4 py-2 text-sm font-semibold tracking-wide text-[#C9A84C] shadow-sm backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#C9A84C]"></span>
+              COACHING & SERVICES
+            </span>
+            <h2 className="mt-6 text-3xl font-bold leading-tight text-[#1B2B4B] sm:text-4xl lg:text-5xl">
+              How We Work Together
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-[#1B2B4B]/60">
+              Every engagement begins with your Five Domains assessment — a
+              clear picture of where you stand across the dimensions that matter
+              most in retirement.
+            </p>
+          </div>
+
+          {/* 3-Column Grid */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className={`group relative rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
+                  service.featured
+                    ? "border-2 border-[#C9A84C] bg-[#1B2B4B] p-6 text-white shadow-xl hover:shadow-[#C9A84C]/20"
+                    : "border border-[#1B2B4B]/10 bg-white p-6 hover:border-[#C9A84C]/40 hover:shadow-[#1B2B4B]/5"
+                }`}
+              >
+                {service.featured && (
+                  <div className="absolute -top-3 right-6 rounded-full bg-[#C9A84C] px-3 py-1 text-xs font-bold text-[#1B2B4B]">
+                    {service.tag}
+                  </div>
+                )}
+
+                {!service.featured && (
+                  <div className="mb-4 text-xs font-semibold tracking-[0.2em] text-[#C9A84C] uppercase">
+                    {service.tag}
+                  </div>
+                )}
+
+                <h3
+                  className={`mb-2 text-xl font-bold ${
+                    service.featured ? "text-white" : "text-[#1B2B4B]"
+                  }`}
+                >
+                  {service.title}
+                </h3>
+
+                <p
+                  className={`mb-6 text-sm leading-relaxed ${
+                    service.featured ? "text-white/70" : "text-[#1B2B4B]/70"
+                  }`}
+                >
+                  {service.description}
+                </p>
+
+                <ul className="mb-6 space-y-2">
+                  {service.features.map((feature, idx) => (
+                    <li
+                      key={idx}
+                      className={`flex items-start gap-2 text-sm ${
+                        service.featured ? "text-white/70" : "text-[#1B2B4B]/70"
+                      }`}
+                    >
+                      <span className="text-[#C9A84C]">
+                        <HiOutlineArrowNarrowRight />
+                      </span>{" "}
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mb-6">
+                  <span
+                    className={`text-2xl font-bold ${
+                      service.featured ? "text-[#C9A84C]" : "text-[#1B2B4B]"
+                    }`}
                   >
-                    {domain.description}
-                  </p>
+                    {service.price}
+                  </span>
+                  <span
+                    className={`text-sm ${
+                      service.featured ? "text-white/50" : "text-[#1B2B4B]/50"
+                    }`}
+                  >
+                    {" "}
+                    / {service.period}
+                  </span>
                 </div>
+
+                <Link
+                  href={service.link || "/contact"}
+                  className={`w-full rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300 text-center inline-block ${
+                    service.featured
+                      ? "bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]"
+                      : "border border-[#1B2B4B] bg-transparent text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white"
+                  }`}
+                >
+                  {service.buttonText}
+                </Link>
               </div>
             ))}
           </div>
