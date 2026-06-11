@@ -14,5 +14,6 @@ export const themeChangeSections = [
     "contact-information-section",
     "coaching-introduction",
     "related-books",
+    "services",
   ];
 
