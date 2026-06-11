@@ -16,13 +16,13 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Assessment", href: "/assessment" },
-  { label: "Resources", href: "/resources" },
+  // { label: "Resources", href: "/resources" },
   { label: "Book", href: "/book" },
 ];
 
 const supportLinks = [
   { label: "Coaching", href: "/coaching" },
-  { label: "Blog", href: "/blog" },
+  // { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms & Conditions", href: "/terms" },

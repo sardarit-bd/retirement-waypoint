@@ -99,7 +99,7 @@ const HeroSection = () => {
                   </Link>
                 </Button>
 
-                <Button
+                {/* <Button
                   variant="outline"
                   // onClick={handlePopupOpen}
                   className="w-full cursor-pointer rounded-full border border-white/40 bg-white/10 px-8 py-6 text-base font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 hover:text-white sm:w-auto md:text-lg"
@@ -111,7 +111,7 @@ const HeroSection = () => {
                   >
                     Explore Resources
                   </Link>
-                </Button>
+                </Button> */}
               </div>
 
               <div className="flex flex-col items-start justify-center gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 lg:justify-start">

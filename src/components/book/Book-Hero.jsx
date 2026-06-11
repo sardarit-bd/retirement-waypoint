@@ -141,7 +141,7 @@ export const BookHero = ({
           </Sheet>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div className="">
           <div>
             <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               Retirement Waypoint
@@ -153,7 +153,7 @@ export const BookHero = ({
             </p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-2xl">
+          {/* <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-2xl">
             <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
@@ -169,7 +169,7 @@ export const BookHero = ({
                 Search
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
