@@ -9,11 +9,15 @@ import {
   CheckCircle,
   Eye,
   EyeOff,
+  Loader2,
 } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
+import { useAuth } from '@/hooks/useAuth';
+import toast from 'react-hot-toast';
 
 export function SignUpForm({ onToggle }) {
   const [showPassword, setShowPassword] = useState(false);
+  const { register, googleLogin, isLoading, error } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -43,10 +47,14 @@ export function SignUpForm({ onToggle }) {
 
     if (!formData.email) {
       newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
     }
 
     if (!formData.confirmPassword) {
@@ -65,11 +73,38 @@ export function SignUpForm({ onToggle }) {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validate()) {
-      console.log('Sign up:', formData);
+    if (!validate()) return;
+
+    try {
+      await register(
+        formData.name,
+        formData.email,
+        formData.password,
+        formData.confirmPassword
+      );
+      toast.success('🎉 Account created successfully! Welcome to the platform.', {
+        duration: 4000,
+        position: 'top-right',
+      });
+    } catch (err) {
+      toast.error(err.message || 'Failed to create account. Please try again.', {
+        duration: 5000,
+        position: 'top-right',
+      });
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await googleLogin();
+    } catch (err) {
+      toast.error(err.message || 'Google sign up failed. Please try again.', {
+        duration: 5000,
+        position: 'top-right',
+      });
     }
   };
 
@@ -79,13 +114,17 @@ export function SignUpForm({ onToggle }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <h2 className="text-3xl font-bold text-white">
-        Create Account
-      </h2>
+      <h2 className="text-3xl font-bold text-white">Create Account</h2>
 
       <p className="mt-1.5 text-sm text-slate-400">
         Join and start planning your future.
       </p>
+
+      {error && (
+        <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         {/* Full Name */}
@@ -103,14 +142,13 @@ export function SignUpForm({ onToggle }) {
                   name: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              disabled={isLoading}
             />
           </div>
 
           {errors.name && (
-            <p className="mt-1 text-xs text-red-400">
-              {errors.name}
-            </p>
+            <p className="mt-1 text-xs text-red-400">{errors.name}</p>
           )}
         </div>
 
@@ -129,14 +167,13 @@ export function SignUpForm({ onToggle }) {
                   email: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              disabled={isLoading}
             />
           </div>
 
           {errors.email && (
-            <p className="mt-1 text-xs text-red-400">
-              {errors.email}
-            </p>
+            <p className="mt-1 text-xs text-red-400">{errors.email}</p>
           )}
         </div>
 
@@ -155,13 +192,15 @@ export function SignUpForm({ onToggle }) {
                   password: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              disabled={isLoading}
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 disabled:opacity-50"
+              disabled={isLoading}
             >
               {showPassword ? (
                 <EyeOff className="h-5 w-5" />
@@ -172,9 +211,7 @@ export function SignUpForm({ onToggle }) {
           </div>
 
           {errors.password && (
-            <p className="mt-1 text-xs text-red-400">
-              {errors.password}
-            </p>
+            <p className="mt-1 text-xs text-red-400">{errors.password}</p>
           )}
         </div>
 
@@ -193,7 +230,8 @@ export function SignUpForm({ onToggle }) {
                   confirmPassword: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              disabled={isLoading}
             />
           </div>
 
@@ -206,12 +244,20 @@ export function SignUpForm({ onToggle }) {
 
         {/* Submit */}
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: isLoading ? 1 : 1.02 }}
+          whileTap={{ scale: isLoading ? 1 : 0.98 }}
           type="submit"
-          className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20"
+          disabled={isLoading}
+          className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 disabled:hover:scale-100"
         >
-          Create Account
+          {isLoading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Creating Account...
+            </span>
+          ) : (
+            'Create Account'
+          )}
         </motion.button>
       </form>
 
@@ -228,9 +274,11 @@ export function SignUpForm({ onToggle }) {
 
         {/* Google Button */}
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="mt-4 flex w-full items-center justify-center gap-3 cursor-pointer rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 text-sm font-medium text-slate-200 transition-colors hover:bg-slate-700/60"
+          whileHover={{ scale: isLoading ? 1 : 1.02 }}
+          whileTap={{ scale: isLoading ? 1 : 0.98 }}
+          onClick={handleGoogleSignUp}
+          disabled={isLoading}
+          className="mt-4 flex w-full items-center justify-center gap-3 cursor-pointer rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 text-sm font-medium text-slate-200 transition-colors hover:bg-slate-700/60 disabled:opacity-50"
         >
           <FcGoogle className="h-5 w-5" />
           Sign up with Google
@@ -241,6 +289,7 @@ export function SignUpForm({ onToggle }) {
           <button
             onClick={onToggle}
             className="font-medium text-indigo-400 cursor-pointer hover:text-indigo-300"
+            disabled={isLoading}
           >
             Sign In
           </button>

@@ -1,16 +1,16 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/smooth-scroll/smooth-scroll";
 import { Toaster } from "react-hot-toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 export const metadata = {
@@ -27,16 +27,16 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body className="min-h-full font-sans">
         {/* <SmoothScroll /> */}
         {children}
+
         <Toaster
           position="bottom-center"
           toastOptions={{
             duration: 3000,
-
             style: {
               background: "rgba(27,43,75,0.85)",
               color: "#fff",
@@ -51,7 +51,6 @@ export default function RootLayout({ children }) {
                 color: "#22C55E",
                 border: "1px solid rgba(34,197,94,0.25)",
               },
-
               iconTheme: {
                 primary: "#22C55E",
                 secondary: "#fff",
@@ -64,7 +63,6 @@ export default function RootLayout({ children }) {
                 color: "#EF4444",
                 border: "1px solid rgba(239,68,68,0.25)",
               },
-
               iconTheme: {
                 primary: "#EF4444",
                 secondary: "#fff",
