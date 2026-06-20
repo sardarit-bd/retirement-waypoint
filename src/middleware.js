@@ -20,9 +20,14 @@ export async function middleware(request) {
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 
+  // Verification page - allow access even without session
+  if (path === '/verify-email') {
+    return NextResponse.next();
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/auth', '/dashboard/:path*', '/admin/:path*'],
+  matcher: ['/auth', '/dashboard/:path*', '/admin/:path*', '/verify-email'],
 };

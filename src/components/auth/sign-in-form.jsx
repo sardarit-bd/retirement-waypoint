@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Loader2, RefreshCw } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 
 export function SignInForm({ onToggle }) {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, googleLogin, isLoading, error } = useAuth();
+  const { login, googleLogin, isLoading, error, needsVerification, resendVerification } = useAuth();
+  const [isResending, setIsResending] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -52,15 +53,8 @@ export function SignInForm({ onToggle }) {
 
     try {
       await login(formData.email, formData.password, formData.rememberMe);
-      toast.success('👋 Welcome back! You have been signed in successfully.', {
-        duration: 4000,
-        position: 'top-right',
-      });
     } catch (err) {
-      toast.error(err.message || 'Failed to sign in. Please try again.', {
-        duration: 5000,
-        position: 'top-right',
-      });
+      console.error('Sign in error:', err);
     }
   };
 
@@ -68,10 +62,26 @@ export function SignInForm({ onToggle }) {
     try {
       await googleLogin();
     } catch (err) {
-      toast.error(err.message || 'Google sign in failed. Please try again.', {
-        duration: 5000,
+      console.error('Google sign in error:', err);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!formData.email) {
+      toast.error('Please enter your email address to resend verification.', {
+        duration: 4000,
         position: 'top-right',
       });
+      return;
+    }
+
+    setIsResending(true);
+    try {
+      await resendVerification(formData.email);
+    } catch (err) {
+      console.error('Resend verification error:', err);
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -87,7 +97,21 @@ export function SignInForm({ onToggle }) {
         Sign in to continue your journey.
       </p>
 
-      {error && (
+      {needsVerification && (
+        <div className="mt-4 rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm">
+          <p className="text-yellow-400 font-medium">Your email has not been verified yet.</p>
+          <button
+            onClick={handleResendVerification}
+            disabled={isResending}
+            className="mt-2 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 disabled:opacity-50 transition-colors"
+          >
+            <RefreshCw className={`h-4 w-4 ${isResending ? 'animate-spin' : ''}`} />
+            {isResending ? 'Sending...' : 'Resend Verification Email'}
+          </button>
+        </div>
+      )}
+
+      {error && !needsVerification && (
         <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-400">
           {error}
         </div>
@@ -180,7 +204,6 @@ export function SignInForm({ onToggle }) {
             className="text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50"
             disabled={isLoading}
             onClick={() => {
-              // Forgot password - prepare for future implementation
               console.log('Forgot password clicked');
             }}
           >
@@ -188,12 +211,12 @@ export function SignInForm({ onToggle }) {
           </button>
         </div>
 
-        {/* Sign In Button */}
+        {/* Sign In Button - Disabled when needs verification */}
         <motion.button
           whileHover={{ scale: isLoading ? 1 : 1.02 }}
           whileTap={{ scale: isLoading ? 1 : 0.98 }}
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || (needsVerification && !isResending)}
           className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 disabled:hover:scale-100"
         >
           {isLoading ? (

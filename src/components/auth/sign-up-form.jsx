@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   User,
   Mail,
@@ -10,57 +10,57 @@ import {
   Eye,
   EyeOff,
   Loader2,
-} from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
-import { useAuth } from '@/hooks/useAuth';
-import toast from 'react-hot-toast';
+} from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { useAuth } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 export function SignUpForm({ onToggle }) {
   const [showPassword, setShowPassword] = useState(false);
   const { register, googleLogin, isLoading, error } = useAuth();
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const validate = () => {
     const newErrors = {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     };
 
     if (!formData.name) {
-      newErrors.name = 'Full name is required';
+      newErrors.name = "Full name is required";
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = "Please enter a valid email";
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Confirm password is required';
+      newErrors.confirmPassword = "Confirm password is required";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -79,21 +79,20 @@ export function SignUpForm({ onToggle }) {
     if (!validate()) return;
 
     try {
-      await register(
+      const result = await register(
         formData.name,
         formData.email,
         formData.password,
-        formData.confirmPassword
+        formData.confirmPassword,
       );
-      toast.success('🎉 Account created successfully! Welcome to the platform.', {
-        duration: 4000,
-        position: 'top-right',
-      });
+      
+      // Only switch to sign in if registration was successful
+      if (result) {
+        onToggle();
+      }
     } catch (err) {
-      toast.error(err.message || 'Failed to create account. Please try again.', {
-        duration: 5000,
-        position: 'top-right',
-      });
+      // Error is already handled in useAuth with toast
+      console.error("Sign up error:", err);
     }
   };
 
@@ -101,9 +100,9 @@ export function SignUpForm({ onToggle }) {
     try {
       await googleLogin();
     } catch (err) {
-      toast.error(err.message || 'Google sign up failed. Please try again.', {
+      toast.error(err.message || "Google sign up failed. Please try again.", {
         duration: 5000,
-        position: 'top-right',
+        position: "top-right",
       });
     }
   };
@@ -183,7 +182,7 @@ export function SignUpForm({ onToggle }) {
             <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
 
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={formData.password}
               onChange={(e) =>
@@ -221,7 +220,7 @@ export function SignUpForm({ onToggle }) {
             <CheckCircle className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
 
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={(e) =>
@@ -256,7 +255,7 @@ export function SignUpForm({ onToggle }) {
               Creating Account...
             </span>
           ) : (
-            'Create Account'
+            "Create Account"
           )}
         </motion.button>
       </form>
@@ -285,7 +284,7 @@ export function SignUpForm({ onToggle }) {
         </motion.button>
 
         <p className="mt-4 text-center text-sm text-slate-400">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <button
             onClick={onToggle}
             className="font-medium text-indigo-400 cursor-pointer hover:text-indigo-300"
