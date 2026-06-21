@@ -4,6 +4,8 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AuthForm } from "./auth-form";
 import { AuthIllustration } from "./auth-illustration";
+import Image from "next/image";
+import Link from "next/link";
 
 export function AuthPage() {
   const [mode, setMode] = useState("signin");
@@ -19,6 +21,21 @@ export function AuthPage() {
         <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-indigo-600/20 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-purple-600/20 blur-3xl" />
         <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-3xl" />
+      </div>
+
+      {/* Fixed Logo */}
+      <div className="absolute top-5 left-5 sm:top-6 sm:left-6 lg:top-8 lg:left-8 xl:left-12 z-30">
+        <Link href="/" className="inline-block">
+          <Image
+            src="/logo-01.png"
+            alt="Logo"
+            width={0}
+            height={0}
+            sizes="100vw"
+            priority
+            className="h-auto w-36 sm:w-44 md:w-52 lg:w-44 xl:w-52 object-contain cursor-pointer"
+          />
+        </Link>
       </div>
 
       {/* Centered toggle switch */}

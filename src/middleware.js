@@ -1,37 +1,59 @@
-import { NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth-client';
+import { NextResponse } from "next/server";
+import { getServerSession } from "@/lib/auth-server";
 
 export async function middleware(request) {
-  // Always fetch fresh session
-  const session = await getSession();
+  const session = await getServerSession(request.headers);
+
   const isAuthenticated = !!session?.data;
+  const role = session?.data?.user?.role || "user";
   const path = request.nextUrl.pathname;
 
-  // Auth routes - redirect if already authenticated
-  if (path === '/auth' && isAuthenticated) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Prevent authenticated users from visiting auth page
+  if (path === "/auth" && isAuthenticated) {
+    const destination = role === "admin" ? "/admin" : "/dashboard";
+    return NextResponse.redirect(new URL(destination, request.url));
   }
 
-  // Protected routes - redirect to auth if not authenticated
-  if (path.startsWith('/dashboard') && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/auth', request.url));
+  // Protected routes
+  const protectedRoutes = [
+    "/dashboard",
+    "/admin",
+    "/my-books",
+    "/orders",
+    "/invoices",
+    "/reviews",
+    "/profile",
+    "/settings",
+    "/assessments",
+    "/refunds",
+  ];
+
+  if (
+    protectedRoutes.some((route) => path.startsWith(route)) &&
+    !isAuthenticated
+  ) {
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
 
-  if (path.startsWith('/admin') && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/auth', request.url));
+  if (path.startsWith("/admin") && role !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // Add cache control headers to prevent stale data
-  const response = NextResponse.next();
-  
-  if (isAuthenticated) {
-    response.headers.set('Cache-Control', 'no-store, must-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-  }
-
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/auth', '/dashboard/:path*', '/admin/:path*', '/verify-email'],
+  matcher: [
+    "/auth",
+    "/dashboard/:path*",
+    "/admin/:path*",
+    "/my-books/:path*",
+    "/orders/:path*",
+    "/invoices/:path*",
+    "/reviews/:path*",
+    "/profile/:path*",
+    "/settings/:path*",
+    "/assessments/:path*",
+    "/refunds/:path*",
+  ],
 };

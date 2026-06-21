@@ -1,4 +1,3 @@
-// components/Navbar.jsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -36,16 +35,15 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { themeChangeSections } from "@/lib/themeChangeSections";
 import { navLinks } from "@/lib/navLinks";
-import { useSession } from "@/hooks/useSession";
 import { signOut } from "@/lib/auth-client";
+import { useSession } from "@/hooks/useSession";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
-  
-  // ✅ refetch যোগ করা হয়েছে
-  const { session, isLoading, refetch } = useSession();
+
+  const { session, isLoading } = useSession();
   const user = session?.user || null;
   const isAuthenticated = !!user;
 
@@ -98,35 +96,24 @@ const Navbar = () => {
     setIsDrawerOpen(false);
   };
 
-  // ✅ আপডেটেড handleSignOut - refetch যোগ করা হয়েছে
   const handleSignOut = async () => {
     setIsSigningOut(true);
     try {
       await signOut({
-        onSuccess: async () => {
-          // ✅ Force refetch session to update UI immediately
-          await refetch();
-          
-          // ✅ Dispatch custom event for any other listeners
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(new Event("auth:state-change"));
-          }
-          
+        onSuccess: () => {
           toast.success("👋 You have been signed out successfully.", {
             duration: 3000,
             position: "top-right",
           });
+
           setIsDrawerOpen(false);
-          
-          // ✅ Redirect to home and refresh
+
           router.push("/");
           router.refresh();
         },
+
         onError: (ctx) => {
-          toast.error(ctx.error?.message || "Failed to sign out.", {
-            duration: 5000,
-            position: "top-right",
-          });
+          toast.error(ctx.error?.message || "Failed to sign out.");
         },
       });
     } catch (error) {

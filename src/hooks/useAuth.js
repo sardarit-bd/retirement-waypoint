@@ -3,14 +3,18 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signUp, signOut } from "@/lib/auth-client";
-import { useSession } from "./useSession";
+import { useSession } from "@/hooks/useSession";
 import toast from "react-hot-toast";
 
 export function useAuth() {
   const router = useRouter();
-  
-  const { session, refetch: refetchSession, isLoading: sessionLoading } = useSession();
-  
+
+  const {
+    session,
+    refetch: refetchSession,
+    isLoading: sessionLoading,
+  } = useSession();
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [needsVerification, setNeedsVerification] = useState(false);
@@ -28,32 +32,42 @@ export function useAuth() {
             {
               onSuccess: async (ctx) => {
                 const user = ctx?.data?.user;
+
                 if (user && !user.emailVerified) {
                   setNeedsVerification(true);
-                  const errorMsg =
-                    "Please verify your email before signing in.";
+
+                  const errorMsg = "Please verify your email before signing in.";
+
                   setError(errorMsg);
+
                   toast.error(errorMsg, {
                     duration: 5000,
                     position: "top-right",
                   });
+
                   resolve(null);
                   return;
                 }
 
                 await refetchSession();
+
                 toast.success("👋 Welcome back!", {
                   duration: 3000,
                   position: "top-right",
                 });
-                router.push("/dashboard");
+
+                const destination =
+                  user?.role === "admin" ? "/admin" : "/dashboard";
+                router.replace(destination);
+
                 router.refresh();
+
                 resolve(ctx);
               },
+
               onError: (ctx) => {
                 const errorMessage =
-                  ctx.error?.message ||
-                  "Invalid credentials. Please try again.";
+                  ctx.error?.message || "Invalid credentials. Please try again.";
 
                 if (
                   errorMessage.toLowerCase().includes("verify") ||
@@ -64,10 +78,12 @@ export function useAuth() {
                 }
 
                 setError(errorMessage);
+
                 toast.error(errorMessage, {
                   duration: 5000,
                   position: "top-right",
                 });
+
                 reject(new Error(errorMessage));
               },
             },
@@ -192,10 +208,10 @@ export function useAuth() {
     try {
       await signOut({
         onSuccess: async () => {
-          // ✅ Force refetch session
+          // Force refetch session
           await refetchSession();
-          
-          // ✅ Dispatch event for any other listeners
+
+          // Dispatch event for any other listeners
           if (typeof window !== "undefined") {
             window.dispatchEvent(new Event("auth:state-change"));
           }
@@ -239,7 +255,7 @@ export function useAuth() {
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: `${window.location.origin}/dashboard`,
+        callbackURL: `${window.location.origin}/auth/callback`,
       });
     } catch (err) {
       const errorMessage =
