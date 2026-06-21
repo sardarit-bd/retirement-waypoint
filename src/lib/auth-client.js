@@ -6,7 +6,7 @@ export const authClient = createAuthClient({
   plugins: [adminClient()],
 });
 
-// Export specific methods for easier usage
+// Export everything from authClient
 export const {
   signUp,
   signIn,

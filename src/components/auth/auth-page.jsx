@@ -6,7 +6,7 @@ import { AuthForm } from "./auth-form";
 import { AuthIllustration } from "./auth-illustration";
 
 export function AuthPage() {
-  const [mode, setMode] = useState("signup");
+  const [mode, setMode] = useState("signin");
 
   const toggleMode = (newMode) => {
     setMode(newMode);

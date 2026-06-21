@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth-client';
 
 export async function middleware(request) {
+  // Always fetch fresh session
   const session = await getSession();
   const isAuthenticated = !!session?.data;
   const path = request.nextUrl.pathname;
@@ -20,12 +21,15 @@ export async function middleware(request) {
     return NextResponse.redirect(new URL('/auth', request.url));
   }
 
-  // Verification page - allow access even without session
-  if (path === '/verify-email') {
-    return NextResponse.next();
+  // Add cache control headers to prevent stale data
+  const response = NextResponse.next();
+  
+  if (isAuthenticated) {
+    response.headers.set('Cache-Control', 'no-store, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
