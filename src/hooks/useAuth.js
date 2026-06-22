@@ -201,52 +201,84 @@ export function useAuth() {
     [],
   );
 
+  // const logout = useCallback(async () => {
+  //   setIsLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     await signOut({
+  //       onSuccess: async () => {
+  //         // Force refetch session
+  //         await refetchSession();
+
+  //         // Dispatch event for any other listeners
+  //         if (typeof window !== "undefined") {
+  //           window.dispatchEvent(new Event("auth:state-change"));
+  //         }
+
+  //         // Use router.push with refresh
+  //         router.push("/auth");
+  //         router.refresh();
+
+  //         toast.success("👋 You have been signed out successfully.", {
+  //           duration: 3000,
+  //           position: "top-right",
+  //         });
+  //       },
+  //       onError: (ctx) => {
+  //         const errorMessage = ctx.error?.message || "Failed to sign out";
+  //         setError(errorMessage);
+  //         toast.error(errorMessage, {
+  //           duration: 5000,
+  //           position: "top-right",
+  //         });
+  //       },
+  //     });
+  //   } catch (err) {
+  //     const errorMessage =
+  //       err.message || "Something went wrong during sign out";
+  //     setError(errorMessage);
+  //     toast.error(errorMessage, {
+  //       duration: 5000,
+  //       position: "top-right",
+  //     });
+  //     throw err;
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [router, refetchSession]);
+
   const logout = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      await signOut({
-        onSuccess: async () => {
-          // Force refetch session
-          await refetchSession();
+      await signOut();
 
-          // Dispatch event for any other listeners
-          if (typeof window !== "undefined") {
-            window.dispatchEvent(new Event("auth:state-change"));
-          }
+      // Clear all React Query cache
+      queryClient.clear();
 
-          // Use router.push with refresh
-          router.push("/auth");
-          router.refresh();
-
-          toast.success("👋 You have been signed out successfully.", {
-            duration: 3000,
-            position: "top-right",
-          });
-        },
-        onError: (ctx) => {
-          const errorMessage = ctx.error?.message || "Failed to sign out";
-          setError(errorMessage);
-          toast.error(errorMessage, {
-            duration: 5000,
-            position: "top-right",
-          });
-        },
+      toast.success("👋 You have been signed out successfully.", {
+        duration: 3000,
+        position: "top-right",
       });
+
+      // Force full reload
+      window.location.replace("/auth");
     } catch (err) {
       const errorMessage =
         err.message || "Something went wrong during sign out";
+
       setError(errorMessage);
+
       toast.error(errorMessage, {
         duration: 5000,
         position: "top-right",
       });
-      throw err;
     } finally {
       setIsLoading(false);
     }
-  }, [router, refetchSession]);
+  }, []);
 
   const googleLogin = useCallback(async () => {
     setIsLoading(true);

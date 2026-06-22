@@ -17,9 +17,11 @@ export default async function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#F8F5EF]">
-      <DashboardHeader user={principal} />
+      {/* <DashboardHeader user={principal} /> */}
+      <DashboardHeader />
       <div className="flex pt-16">
-        <DashboardSidebar user={principal} />
+        {/* <DashboardSidebar user={principal} /> */}
+        <DashboardSidebar />
         <main className="ml-0 flex-1 p-6 lg:ml-64 lg:p-8">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>

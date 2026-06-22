@@ -19,12 +19,13 @@ import { signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
-export function DashboardHeader({ user: serverUser }) {
+export function DashboardHeader() {
   const { session } = useSession();
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const user = serverUser || session?.user;
+  // const user = serverUser || session?.user;
+  const user = session?.user;
 
   const getInitials = (name) => {
     if (!name) return 'U';
@@ -36,16 +37,21 @@ export function DashboardHeader({ user: serverUser }) {
   const handleSignOut = async () => {
     try {
       await signOut({
-        onSuccess: () => {
-          toast.success('Signed out successfully');
-          router.push('/');
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error?.message || 'Failed to sign out');
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Signed out successfully");
+
+            // force reload
+            window.location.href = "/";
+          },
+
+          onError: (ctx) => {
+            toast.error(ctx.error?.message || "Failed to sign out");
+          },
         },
       });
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error("Something went wrong");
     }
   };
 

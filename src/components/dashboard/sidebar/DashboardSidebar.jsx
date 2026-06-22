@@ -53,28 +53,32 @@ const adminMenuItems = [
   { icon: Users, label: 'Users', href: '/admin/users' },
 ];
 
-export function DashboardSidebar({ user: serverUser }) {
+export function DashboardSidebar() {
   const pathname = usePathname();
   const { session } = useSession();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const user = serverUser || session?.user;
+  // const user = serverUser || session?.user;
+  const user = session?.user;
   const isAdmin = user?.role === 'admin';
   const menuItems = isAdmin ? adminMenuItems : userMenuItems;
 
   const handleSignOut = async () => {
     try {
       await signOut({
-        onSuccess: () => {
-          toast.success('Signed out successfully');
-        },
-        onError: (ctx) => {
-          toast.error(ctx.error?.message || 'Failed to sign out');
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success("Signed out successfully");
+            window.location.href = "/";
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error?.message || "Failed to sign out");
+          },
         },
       });
-    } catch (error) {
-      toast.error('Something went wrong');
+    } catch {
+      toast.error("Something went wrong");
     }
   };
 
