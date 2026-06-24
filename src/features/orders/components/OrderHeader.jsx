@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export function OrderHeader({ order, hasInvoice }) {
     const router = useRouter();
-    
+
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -28,16 +28,18 @@ export function OrderHeader({ order, hasInvoice }) {
             {/* Back Button */}
             <div className="mb-4">
                 <Button
-                    onClick={() => router.back()}
+                    asChild
                     variant="ghost"
                     size="sm"
-                    className="group -ml-2 rounded-full px-3 py-2 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:text-[#1B2B4B]"
+                    className="group -ml-2 rounded-full px-3 py-2 text-[#1B2B4B] hover:bg-[#F8F5EF]"
                 >
-                    <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                    <span className="text-sm font-medium">Back to Orders</span>
+                    <Link href="/dashboard/orders">
+                        <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                        <span className="text-sm font-medium">Back to Orders</span>
+                    </Link>
                 </Button>
             </div>
-            
+
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 {/* Left Section */}
                 <div>

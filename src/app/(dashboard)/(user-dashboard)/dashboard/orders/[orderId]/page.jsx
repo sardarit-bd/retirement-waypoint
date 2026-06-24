@@ -84,8 +84,8 @@ export default function OrderDetailsPage() {
 
       case 'COMPLETED':
         return (
-          <CompletedOrderContent 
-            order={order} 
+          <CompletedOrderContent
+            order={order}
             hasInvoice={hasInvoice}
             hasCoupon={hasCoupon}
           />
@@ -114,8 +114,8 @@ export default function OrderDetailsPage() {
       className="space-y-6"
     >
       {/* Order Header */}
-      <OrderHeader 
-        order={order} 
+      <OrderHeader
+        order={order}
         hasInvoice={hasInvoice && isAccessible}
       />
 
@@ -123,9 +123,9 @@ export default function OrderDetailsPage() {
       {renderStateContent()}
 
       {/* Timeline - Always visible with appropriate state */}
-      <TimelineCard 
-        order={order} 
-        purchases={order.purchases} 
+      <TimelineCard
+        order={order}
+        purchases={order.purchases}
         invoice={order.invoice}
       />
     </motion.div>
