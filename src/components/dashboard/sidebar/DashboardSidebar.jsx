@@ -1,3 +1,4 @@
+// components/dashboard/sidebar/DashboardSidebar.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -37,17 +38,17 @@ const userMenuSections = [
       { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
       { icon: BookOpen, label: 'My Books', href: '/dashboard/my-books' },
       { icon: ShoppingBag, label: 'Orders', href: '/dashboard/orders' },
-      { icon: FileText, label: 'Invoices', href: '/dashboard/invoices' },
+      // { icon: FileText, label: 'Invoices', href: '/dashboard/invoices' },
     ],
   },
   {
     title: 'Account',
     items: [
-      { icon: Star, label: 'Reviews', href: '/dashboard/reviews' },
-      { icon: ClipboardCheck, label: 'Assessments', href: '/dashboard/assessments' },
-      { icon: RefreshCw, label: 'Refunds', href: '/dashboard/refunds' },
+      // { icon: Star, label: 'Reviews', href: '/dashboard/reviews' },
+      // { icon: ClipboardCheck, label: 'Assessments', href: '/dashboard/assessments' },
+      // { icon: RefreshCw, label: 'Refunds', href: '/dashboard/refunds' },
       { icon: User, label: 'Profile', href: '/dashboard/profile' },
-      { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
+      // { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
     ],
   },
 ];
@@ -138,7 +139,19 @@ export function DashboardSidebar() {
     }
   };
 
+  // ✅ FIXED: Active link logic with exact match for root paths
   const isActiveLink = (href) => {
+    // Dashboard should match only exactly
+    if (href === '/dashboard') {
+      return pathname === '/dashboard';
+    }
+
+    // Admin dashboard should match only exactly
+    if (href === '/admin') {
+      return pathname === '/admin';
+    }
+
+    // For all other nested routes, match exact or starts with href/
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 

@@ -27,7 +27,7 @@ export function WelcomeCard({ userName }) {
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-[#04103A]/70" />
+      <div className="absolute inset-0 bg-[#04103A]/10" />
 
       {/* Content */}
       <div className="relative z-10 p-6">
