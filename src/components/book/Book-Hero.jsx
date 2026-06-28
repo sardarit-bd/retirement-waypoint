@@ -69,7 +69,7 @@ export const BookHero = ({
                       >
                         <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
                           <Image
-                            src={item.image}
+                            src={item.image || item.coverImage}
                             alt={item.title}
                             fill
                             className="object-cover"
@@ -152,24 +152,6 @@ export const BookHero = ({
               retirement with confidence, clarity, and purpose.
             </p>
           </div>
-
-          {/* <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-2xl">
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
-                <Input
-                  type="text"
-                  placeholder="Search by title or author..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-11 border-white/20 bg-white/10 pl-9 text-white placeholder:text-white/40 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
-                />
-              </div>
-              <Button className="bg-[#C9A84C] cursor-pointer text-[#1B2B4B] hover:bg-[#D6B45A]">
-                Search
-              </Button>
-            </div>
-          </div> */}
         </div>
       </div>
     </section>

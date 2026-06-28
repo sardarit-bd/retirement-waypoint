@@ -41,12 +41,6 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
             />
           </div>
 
-          {book.discount > 0 && (
-            <Badge className="absolute -left-4 top-3 z-20 flex h-14 w-14 flex-col items-center justify-center rounded-full bg-[#C9A84C] p-0 text-[11px] font-black leading-3 text-[#1B2B4B] shadow-xl ring-4 ring-white hover:bg-[#C9A84C]">
-              {book.discount}%<span>OFF</span>
-            </Badge>
-          )}
-
           {book.stock && (
             <div className="absolute bottom-5 right-[-34px] rotate-[-38deg] bg-green-600 px-10 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg">
               In Stock
@@ -59,7 +53,7 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
             variant="secondary"
             className="mb-4 rounded-full bg-[#C9A84C]/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1B2B4B] hover:bg-[#C9A84C]/15"
           >
-            {book.category}
+            {book.category || "Book"}
           </Badge>
 
           <h3 className="mx-auto line-clamp-2 min-h-[58px] max-w-[240px] text-lg font-bold leading-7 text-[#1B2B4B] transition-colors duration-300 group-hover:text-[#C9A84C]">
@@ -75,7 +69,7 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
               <Star
                 key={index}
                 className={`h-4 w-4 ${
-                  index < Math.floor(book.rating)
+                  index < Math.floor(book.rating || 4.5)
                     ? "fill-[#F59E0B] text-[#F59E0B]"
                     : "fill-[#E5E7EB] text-[#E5E7EB]"
                 }`}
@@ -83,7 +77,7 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
             ))}
 
             <span className="ml-1 text-xs font-medium text-[#1B2B4B]/50">
-              ({book.reviews.toLocaleString()})
+              ({book.reviews?.toLocaleString() || 100})
             </span>
           </div>
 
@@ -96,7 +90,7 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
           </p>
 
           <div className="mt-3 flex items-center justify-center gap-3">
-            {book.oldPrice > book.price && (
+            {book.oldPrice && book.oldPrice > book.price && (
               <span className="text-sm text-[#1B2B4B]/35 line-through">
                 $ {book.oldPrice}
               </span>
@@ -113,7 +107,7 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
               variant="outline"
               className="h-11 cursor-pointer rounded-2xl border-[#1B2B4B]/15 text-sm font-bold text-[#1B2B4B] hover:bg-[#F8F5EF]"
             >
-              <Link href={`/book/${book.id}`}>
+              <Link href={`/book/${book.slug}`}>
                 <Eye className="mr-1.5 h-4 w-4" />
                 Details
               </Link>

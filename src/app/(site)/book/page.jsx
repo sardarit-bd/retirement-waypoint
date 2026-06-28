@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, useEffect, useMemo, useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import { BookHero } from "@/components/book/Book-Hero";
-import { BookFilters } from "@/components/book/Book-Filters";
 import { BookStore } from "@/components/book/Book-Store";
 import { BookReviews } from "@/components/book/Book-Reviews";
-import { books as allBooks } from "@/data/books";
-import { BookCTA } from "@/components/book/Book-Cta";
+import { useBooks } from "@/features/books/hooks/useBooks";
+import { useDebouncedSearch } from "@/features/books/hooks/useDebouncedSearch";
+import { BookSkeleton } from "@/components/book/Book-Skeleton";
+import { BookError } from "@/components/book/Book-Error";
+
+const emptySubscribe = () => () => {};
 
 function loadCartFromStorage() {
   try {
@@ -17,8 +21,6 @@ function loadCartFromStorage() {
     return [];
   }
 }
-
-const emptySubscribe = () => () => {};
 
 export default function BookPage() {
   const mounted = useSyncExternalStore(
@@ -35,43 +37,45 @@ export default function BookPage() {
 }
 
 function BookPageContent() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All Books");
+  const [searchInput, setSearchInput] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [cartItems, setCartItems] = useState(loadCartFromStorage);
+  const ITEMS_PER_PAGE = 12;
+
+  const [searchValue, setSearchValue, debouncedSearch] = useDebouncedSearch("", 500);
+  
+  useEffect(() => {
+    setSearchValue(searchInput);
+  }, [searchInput, setSearchValue]);
+
+  const { books, pagination, loading, error, refetch } = useBooks({
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
+    search: debouncedSearch || undefined,
+    sortBy: "publishedAt",
+    sortOrder: "desc",
+  });
+
+  useEffect(() => {
+    refetch({
+      page: currentPage,
+      limit: ITEMS_PER_PAGE,
+      search: debouncedSearch || undefined,
+    });
+  }, [debouncedSearch, currentPage, refetch]);
 
   useEffect(() => {
     localStorage.setItem("retirement_cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const filteredBooks = useMemo(() => {
-    let filtered = allBooks;
-
-    if (activeCategory !== "All Books") {
-      filtered = filtered.filter(
-        (book) => book.category === activeCategory
-      );
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (book) =>
-          book.title.toLowerCase().includes(query) ||
-          book.author.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
-  }, [searchQuery, activeCategory]);
-
   const addToCart = (book) => {
     if (!book.stock) return;
 
     setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === book.id);
+      const existing = prev.find((item) => item.id === book._id);
       if (existing) {
         return prev.map((item) =>
-          item.id === book.id
+          item.id === book._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -102,16 +106,76 @@ function BookPageContent() {
     0
   );
 
-  // Placeholder for checkout
   const handleCheckout = () => {
     alert("Checkout will be available after payment integration.");
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Map backend data to frontend expectations
+  const mappedBooks = books.map((book) => ({
+    _id: book._id,
+    id: book._id,
+    title: book.title,
+    author: book.authorName,
+    price: book.price,
+    oldPrice: book.oldPrice || null,
+    category: "Books", // Default category since backend doesn't have category
+    stock: book.status === "PUBLISHED",
+    rating: 4.5, // Default since backend doesn't have rating
+    reviews: 100, // Default since backend doesn't have reviews
+    image: book.coverImage,
+    slug: book.slug,
+    description: book.description,
+    pageCount: book.pageCount,
+    featured: book.featured,
+    status: book.status,
+  }));
+
+  if (loading && books.length === 0) {
+    return (
+      <main className="min-h-screen bg-[#F8F5EF]">
+        <BookHero
+          searchQuery={searchInput}
+          setSearchQuery={setSearchInput}
+          cartCount={cartCount}
+          cartSubtotal={cartSubtotal}
+          cartItems={cartItems}
+          onUpdateQuantity={updateQuantity}
+          onRemoveFromCart={removeFromCart}
+          onCheckout={handleCheckout}
+        />
+        <BookSkeleton count={ITEMS_PER_PAGE} />
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-[#F8F5EF]">
+        <BookHero
+          searchQuery={searchInput}
+          setSearchQuery={setSearchInput}
+          cartCount={cartCount}
+          cartSubtotal={cartSubtotal}
+          cartItems={cartItems}
+          onUpdateQuantity={updateQuantity}
+          onRemoveFromCart={removeFromCart}
+          onCheckout={handleCheckout}
+        />
+        <BookError error={error} onRetry={() => refetch()} />
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#F8F5EF]">
       <BookHero
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        searchQuery={searchInput}
+        setSearchQuery={setSearchInput}
         cartCount={cartCount}
         cartSubtotal={cartSubtotal}
         cartItems={cartItems}
@@ -119,17 +183,15 @@ function BookPageContent() {
         onRemoveFromCart={removeFromCart}
         onCheckout={handleCheckout}
       />
-      {/* <BookFilters
-        activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
-      /> */}
       <BookStore
-        books={filteredBooks}
+        books={mappedBooks}
         onAddToCart={addToCart}
         cartItems={cartItems}
+        loading={loading}
+        pagination={pagination}
+        onPageChange={handlePageChange}
       />
       <BookReviews />
-      {/* <BookCTA /> */}
     </main>
   );
 }
