@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { bookApi } from '../api/book.api';
-import axios from 'axios';
+import { useState, useEffect, useCallback } from "react";
+import { bookApi } from "../api/book.api";
+import axios from "axios";
 
 export function useBook(slug) {
   const [book, setBook] = useState(null);
@@ -9,29 +9,30 @@ export function useBook(slug) {
 
   const fetchBook = useCallback(async () => {
     if (!slug) {
-      setError('Book slug is required');
+      setBook(null);
       setLoading(false);
+      setError("Book slug is required");
       return;
     }
 
     setLoading(true);
     setError(null);
-    
+
     try {
-      const response = await bookApi.getPublicBookBySlug(slug);
-      setBook(response.data || response);
+      const data = await bookApi.getPublicBookBySlug(slug);
+      setBook(data.data);
+      setLoading(false);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 404) {
-          setError('Book not found');
+          setError("Book not found");
         } else {
-          setError(err.response?.data?.message || 'Failed to fetch book');
+          setError(err.response?.data?.message || "Failed to fetch book");
         }
       } else {
-        setError('An unexpected error occurred');
+        setError("An unexpected error occurred");
       }
       setBook(null);
-    } finally {
       setLoading(false);
     }
   }, [slug]);
@@ -44,6 +45,6 @@ export function useBook(slug) {
     book,
     loading,
     error,
-    refetch: fetchBook
+    refetch: fetchBook,
   };
 }

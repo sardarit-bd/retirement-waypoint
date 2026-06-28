@@ -69,7 +69,7 @@ function BookPageContent() {
   }, [cartItems]);
 
   const addToCart = (book) => {
-    if (!book.stock) return;
+    if (book.status !== "PUBLISHED") return;
 
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === book._id);
@@ -114,26 +114,6 @@ function BookPageContent() {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  // Map backend data to frontend expectations
-  const mappedBooks = books.map((book) => ({
-    _id: book._id,
-    id: book._id,
-    title: book.title,
-    author: book.authorName,
-    price: book.price,
-    oldPrice: book.oldPrice || null,
-    category: "Books", // Default category since backend doesn't have category
-    stock: book.status === "PUBLISHED",
-    rating: 4.5, // Default since backend doesn't have rating
-    reviews: 100, // Default since backend doesn't have reviews
-    image: book.coverImage,
-    slug: book.slug,
-    description: book.description,
-    pageCount: book.pageCount,
-    featured: book.featured,
-    status: book.status,
-  }));
 
   if (loading && books.length === 0) {
     return (
@@ -184,7 +164,7 @@ function BookPageContent() {
         onCheckout={handleCheckout}
       />
       <BookStore
-        books={mappedBooks}
+        books={books}
         onAddToCart={addToCart}
         cartItems={cartItems}
         loading={loading}

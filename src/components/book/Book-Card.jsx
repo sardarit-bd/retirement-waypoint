@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, ShoppingCart, Star } from "lucide-react";
+import { Eye, ShoppingCart } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,10 +14,12 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
 
   const bookImage = imageError
     ? "https://placehold.co/400x600/1B2B4B/FFFFFF?text=Book+Cover"
-    : book.image;
+    : book.coverImage;
+
+  const isPublished = book.status === "PUBLISHED";
 
   const handleAddToCart = () => {
-    if (book.stock && !isInCart) {
+    if (isPublished && !isInCart) {
       onAddToCart(book);
     }
   };
@@ -41,7 +43,14 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
             />
           </div>
 
-          {book.stock && (
+          {/* {book.featured && (
+            <Badge className="absolute -left-4 top-3 z-20 flex h-14 w-14 flex-col items-center justify-center rounded-full bg-[#C9A84C] p-0 text-[11px] font-black leading-3 text-[#1B2B4B] shadow-xl ring-4 ring-white hover:bg-[#C9A84C]">
+              ★
+              <span>FEATURED</span>
+            </Badge>
+          )} */}
+
+          {isPublished && (
             <div className="absolute bottom-5 right-[-34px] rotate-[-38deg] bg-green-600 px-10 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg">
               In Stock
             </div>
@@ -49,53 +58,15 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
         </div>
 
         <CardContent className="mt-6 p-0 text-center">
-          <Badge
-            variant="secondary"
-            className="mb-4 rounded-full bg-[#C9A84C]/15 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1B2B4B] hover:bg-[#C9A84C]/15"
-          >
-            {book.category || "Book"}
-          </Badge>
-
           <h3 className="mx-auto line-clamp-2 min-h-[58px] max-w-[240px] text-lg font-bold leading-7 text-[#1B2B4B] transition-colors duration-300 group-hover:text-[#C9A84C]">
             {book.title}
           </h3>
 
           <p className="mt-2 line-clamp-1 text-sm text-[#1B2B4B]/60">
-            by {book.author}
-          </p>
-
-          <div className="mt-3 flex items-center justify-center gap-1">
-            {[...Array(5)].map((_, index) => (
-              <Star
-                key={index}
-                className={`h-4 w-4 ${
-                  index < Math.floor(book.rating || 4.5)
-                    ? "fill-[#F59E0B] text-[#F59E0B]"
-                    : "fill-[#E5E7EB] text-[#E5E7EB]"
-                }`}
-              />
-            ))}
-
-            <span className="ml-1 text-xs font-medium text-[#1B2B4B]/50">
-              ({book.reviews?.toLocaleString() || 100})
-            </span>
-          </div>
-
-          <p
-            className={`mt-2 text-sm font-semibold ${
-              book.stock ? "text-green-600" : "text-red-500"
-            }`}
-          >
-            {book.stock ? "Product In Stock" : "Out of Stock"}
+            by {book.authorName}
           </p>
 
           <div className="mt-3 flex items-center justify-center gap-3">
-            {book.oldPrice && book.oldPrice > book.price && (
-              <span className="text-sm text-[#1B2B4B]/35 line-through">
-                $ {book.oldPrice}
-              </span>
-            )}
-
             <span className="text-2xl font-black text-[#1B2B4B]">
               $ {book.price}
             </span>
@@ -115,7 +86,7 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
 
             <Button
               onClick={handleAddToCart}
-              disabled={!book.stock || isInCart}
+              disabled={!isPublished || isInCart}
               className="h-11 cursor-pointer rounded-2xl bg-[#1B2B4B] text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#1B2B4B] disabled:cursor-default disabled:opacity-60"
             >
               <ShoppingCart className="mr-1.5 h-4 w-4" />
