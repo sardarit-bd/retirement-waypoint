@@ -41,16 +41,10 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
 
 export const BookStore = ({ 
   books, 
-  onAddToCart, 
-  cartItems, 
   loading,
   pagination,
   onPageChange,
 }) => {
-  const isInCart = (bookId) => {
-    return cartItems.some((item) => item.id === bookId);
-  };
-
   if (loading && books.length === 0) {
     return (
       <section id="book-store" className="px-4 pb-20 pt-10 sm:px-6 lg:px-8">
@@ -101,12 +95,7 @@ export const BookStore = ({
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {books.map((book) => (
-            <BookCard
-              key={book._id}
-              book={book}
-              onAddToCart={onAddToCart}
-              isInCart={isInCart(book._id)}
-            />
+            <BookCard key={book._id} book={book} />
           ))}
         </div>
 

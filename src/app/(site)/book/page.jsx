@@ -12,16 +12,6 @@ import { BookError } from "@/components/book/Book-Error";
 
 const emptySubscribe = () => () => {};
 
-function loadCartFromStorage() {
-  try {
-    const savedCart = localStorage.getItem("retirement_cart");
-    return savedCart ? JSON.parse(savedCart) : [];
-  } catch {
-    console.error("Failed to parse cart");
-    return [];
-  }
-}
-
 export default function BookPage() {
   const mounted = useSyncExternalStore(
     emptySubscribe,
@@ -39,7 +29,6 @@ export default function BookPage() {
 function BookPageContent() {
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [cartItems, setCartItems] = useState(loadCartFromStorage);
   const ITEMS_PER_PAGE = 12;
 
   const [searchValue, setSearchValue, debouncedSearch] = useDebouncedSearch("", 500);
@@ -64,52 +53,6 @@ function BookPageContent() {
     });
   }, [debouncedSearch, currentPage, refetch]);
 
-  useEffect(() => {
-    localStorage.setItem("retirement_cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const addToCart = (book) => {
-    if (book.status !== "PUBLISHED") return;
-
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.id === book._id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === book._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...book, quantity: 1 }];
-    });
-  };
-
-  const removeFromCart = (bookId) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== bookId));
-  };
-
-  const updateQuantity = (bookId, newQuantity) => {
-    if (newQuantity < 1) {
-      removeFromCart(bookId);
-      return;
-    }
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === bookId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const cartSubtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  const handleCheckout = () => {
-    alert("Checkout will be available after payment integration.");
-  };
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -121,12 +64,6 @@ function BookPageContent() {
         <BookHero
           searchQuery={searchInput}
           setSearchQuery={setSearchInput}
-          cartCount={cartCount}
-          cartSubtotal={cartSubtotal}
-          cartItems={cartItems}
-          onUpdateQuantity={updateQuantity}
-          onRemoveFromCart={removeFromCart}
-          onCheckout={handleCheckout}
         />
         <BookSkeleton count={ITEMS_PER_PAGE} />
       </main>
@@ -139,12 +76,6 @@ function BookPageContent() {
         <BookHero
           searchQuery={searchInput}
           setSearchQuery={setSearchInput}
-          cartCount={cartCount}
-          cartSubtotal={cartSubtotal}
-          cartItems={cartItems}
-          onUpdateQuantity={updateQuantity}
-          onRemoveFromCart={removeFromCart}
-          onCheckout={handleCheckout}
         />
         <BookError error={error} onRetry={() => refetch()} />
       </main>
@@ -156,17 +87,9 @@ function BookPageContent() {
       <BookHero
         searchQuery={searchInput}
         setSearchQuery={setSearchInput}
-        cartCount={cartCount}
-        cartSubtotal={cartSubtotal}
-        cartItems={cartItems}
-        onUpdateQuantity={updateQuantity}
-        onRemoveFromCart={removeFromCart}
-        onCheckout={handleCheckout}
       />
       <BookStore
         books={books}
-        onAddToCart={addToCart}
-        cartItems={cartItems}
         loading={loading}
         pagination={pagination}
         onPageChange={handlePageChange}

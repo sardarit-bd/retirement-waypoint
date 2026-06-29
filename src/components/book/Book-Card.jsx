@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, ShoppingCart } from "lucide-react";
+import { Eye } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-export const BookCard = ({ book, onAddToCart, isInCart }) => {
+export const BookCard = ({ book }) => {
   const [imageError, setImageError] = useState(false);
 
   const bookImage = imageError
@@ -17,12 +17,6 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
     : book.coverImage;
 
   const isPublished = book.status === "PUBLISHED";
-
-  const handleAddToCart = () => {
-    if (isPublished && !isInCart) {
-      onAddToCart(book);
-    }
-  };
 
   return (
     <Card className="group relative overflow-hidden rounded-[28px] border border-[#1B2B4B]/10 bg-white p-4 shadow-[0_10px_40px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(27,43,75,0.18)]">
@@ -43,16 +37,16 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
             />
           </div>
 
-          {/* {book.featured && (
+          {book.featured && (
             <Badge className="absolute -left-4 top-3 z-20 flex h-14 w-14 flex-col items-center justify-center rounded-full bg-[#C9A84C] p-0 text-[11px] font-black leading-3 text-[#1B2B4B] shadow-xl ring-4 ring-white hover:bg-[#C9A84C]">
               ★
               <span>FEATURED</span>
             </Badge>
-          )} */}
+          )}
 
           {isPublished && (
             <div className="absolute bottom-5 right-[-34px] rotate-[-38deg] bg-green-600 px-10 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg">
-              In Stock
+              Available
             </div>
           )}
         </div>
@@ -72,25 +66,15 @@ export const BookCard = ({ book, onAddToCart, isInCart }) => {
             </span>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-2">
+          <div className="mt-6">
             <Button
               asChild
-              variant="outline"
-              className="h-11 cursor-pointer rounded-2xl border-[#1B2B4B]/15 text-sm font-bold text-[#1B2B4B] hover:bg-[#F8F5EF]"
+              className="w-full h-11 cursor-pointer rounded-2xl bg-[#1B2B4B] text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#1B2B4B]"
             >
               <Link href={`/book/${book.slug}`}>
                 <Eye className="mr-1.5 h-4 w-4" />
-                Details
+                View Details
               </Link>
-            </Button>
-
-            <Button
-              onClick={handleAddToCart}
-              disabled={!isPublished || isInCart}
-              className="h-11 cursor-pointer rounded-2xl bg-[#1B2B4B] text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#1B2B4B] disabled:cursor-default disabled:opacity-60"
-            >
-              <ShoppingCart className="mr-1.5 h-4 w-4" />
-              {isInCart ? "Added" : "Add"}
             </Button>
           </div>
         </CardContent>

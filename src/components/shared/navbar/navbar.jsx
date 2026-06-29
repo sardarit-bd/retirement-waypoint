@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -63,7 +64,15 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isBookDetailsPage =
+    pathname.startsWith("/book/") && pathname !== "/book";
+
   useEffect(() => {
+    if (isBookDetailsPage) {
+      setDarkNavbar(true);
+      return;
+    }
+
     const handleNavbarColor = () => {
       const navbarPosition = window.scrollY + 90;
 
@@ -72,10 +81,10 @@ const Navbar = () => {
 
         if (!section) return false;
 
-        const top = section.offsetTop;
-        const bottom = top + section.offsetHeight;
-
-        return navbarPosition >= top && navbarPosition <= bottom;
+        return (
+          navbarPosition >= section.offsetTop &&
+          navbarPosition <= section.offsetTop + section.offsetHeight
+        );
       });
 
       setDarkNavbar(activeSection);
@@ -90,7 +99,7 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleNavbarColor);
       window.removeEventListener("resize", handleNavbarColor);
     };
-  }, []);
+  }, [pathname, isBookDetailsPage]);
 
   const handleLinkClick = () => {
     setIsDrawerOpen(false);
@@ -175,12 +184,13 @@ const Navbar = () => {
     <>
       <header className="fixed left-0 right-0 top-5 z-50 px-4">
         <div
-          className={`mx-auto max-w-7xl rounded-full transition-all duration-300 ${darkNavbar
+          className={`mx-auto max-w-7xl rounded-full transition-all duration-300 ${
+            darkNavbar
               ? "border border-[#1B2B4B]/10 bg-white/85 shadow-[0_8px_32px_rgba(27,43,75,0.14)] backdrop-blur-2xl"
               : scrolled
                 ? "border border-white/20 bg-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.18)] backdrop-blur-2xl"
                 : "border border-white/20 bg-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-2xl"
-            }`}
+          }`}
         >
           <div className="flex h-18 items-center justify-between px-5 sm:px-6 lg:px-8">
             {/* Logo */}
@@ -201,12 +211,13 @@ const Navbar = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 lg:text-base ${isActiveLink(href)
+                  className={`cursor-pointer rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 lg:text-base ${
+                    isActiveLink(href)
                       ? darkNavbar
                         ? "bg-[#1B2B4B]/10 text-[#1B2B4B]"
                         : "bg-white/15 text-white"
                       : desktopNavTextClass
-                    }`}
+                  }`}
                 >
                   {name}
                 </Link>
@@ -221,10 +232,11 @@ const Navbar = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
-                        className={`flex items-center gap-2 rounded-full border px-2 py-1.5 transition-all duration-300 hover:bg-white/10 ${darkNavbar
+                        className={`flex items-center gap-2 rounded-full border px-2 py-1.5 transition-all duration-300 hover:bg-white/10 ${
+                          darkNavbar
                             ? "border-[#1B2B4B]/20 bg-white/70 text-[#1B2B4B] hover:bg-[#1B2B4B]/10"
                             : "border-white/20 bg-white/10 text-white hover:bg-white/20"
-                          }`}
+                        }`}
                       >
                         <Avatar className="h-8 w-8 border-2 border-white/20">
                           <AvatarImage src={user?.profileImage || undefined} />
@@ -312,10 +324,11 @@ const Navbar = () => {
                 ) : (
                   <Link
                     href="/auth"
-                    className={`cursor-pointer rounded-full px-5 py-2 text-sm font-medium transition-all duration-300 ${darkNavbar
+                    className={`cursor-pointer rounded-full px-5 py-2 text-sm font-medium transition-all duration-300 ${
+                      darkNavbar
                         ? "bg-[#1B2B4B] text-white hover:bg-[#1B2B4B]/90"
                         : "bg-white text-slate-950 hover:bg-white/90"
-                      }`}
+                    }`}
                   >
                     Sign In
                   </Link>
@@ -330,10 +343,11 @@ const Navbar = () => {
                   variant="ghost"
                   size="icon"
                   aria-label="Open menu"
-                  className={`cursor-pointer rounded-full border backdrop-blur-xl transition-all duration-300 md:hidden ${darkNavbar
+                  className={`cursor-pointer rounded-full border backdrop-blur-xl transition-all duration-300 md:hidden ${
+                    darkNavbar
                       ? "border-[#1B2B4B]/20 bg-white/70 text-[#1B2B4B] hover:bg-white hover:text-[#1B2B4B]"
                       : "border-white/20 bg-white/10 text-white hover:bg-white/20 hover:text-white"
-                    }`}
+                  }`}
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
@@ -392,10 +406,11 @@ const Navbar = () => {
                           key={name}
                           href={href}
                           onClick={handleLinkClick}
-                          className={`cursor-pointer rounded-xl px-4 py-3 text-base font-medium transition-all duration-300 ${isActiveLink(href)
+                          className={`cursor-pointer rounded-xl px-4 py-3 text-base font-medium transition-all duration-300 ${
+                            isActiveLink(href)
                               ? "bg-white text-[#04103A] shadow-md"
                               : "text-white/85 hover:bg-white/10 hover:text-white"
-                            }`}
+                          }`}
                         >
                           {name}
                         </Link>

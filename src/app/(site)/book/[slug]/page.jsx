@@ -4,7 +4,8 @@ import { useSyncExternalStore } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useBook } from "@/features/books/hooks/useBook";
 import { BookDetailsSkeleton } from "@/components/book/details/BookDetailsSkeleton";
-import { BookDetailsContent } from "@/components/book/BookDetailsContent";
+import { BookDetailsContent } from "@/features/reviews/components/BookDetailsContent";
+
 
 const emptySubscribe = () => () => {};
 
