@@ -10,7 +10,7 @@ import {
   useDeleteReview,
 } from "../hooks/useReviews";
 import { ReviewSummary } from "./ReviewSummary";
-import { ReviewCard } from "./ReviewCard";
+import { ReviewList } from "./ReviewList";
 import { MyReviewSection } from "./MyReviewSection";
 
 export const ReviewSection = ({ bookId }) => {
@@ -18,7 +18,10 @@ export const ReviewSection = ({ bookId }) => {
   const isLoggedIn = !!session?.user;
 
   // Queries
-  const { data: reviewsData, isLoading: reviewsLoading } = useBookReviews(bookId);
+  const { data: reviewsData, isLoading: reviewsLoading } = useBookReviews(bookId, { 
+    page: 1, 
+    limit: 5 
+  });
   const { data: summaryData, isLoading: summaryLoading } = useReviewSummary(bookId);
   const { data: myReviewData, isLoading: myReviewLoading } = useMyReview(bookId);
 
@@ -27,18 +30,19 @@ export const ReviewSection = ({ bookId }) => {
   const updateReview = useUpdateReview(bookId);
   const deleteReview = useDeleteReview(bookId);
 
-  const reviews = reviewsData?.data || reviewsData || [];
+  const reviews = reviewsData?.data || reviewsData?.reviews || [];
   const summary = summaryData?.data || summaryData;
   const myReview = myReviewData?.data || myReviewData;
+  const totalReviews = reviewsData?.pagination?.total || summary?.totalReviews || 0;
 
-  const hasReviews = reviews.length > 0 || summary?.totalReviews > 0;
+  const hasReviews = reviews.length > 0 || totalReviews > 0;
 
-  // If no reviews, show empty state
+  // If no reviews and user not logged in
   if (!hasReviews && !isLoggedIn) {
     return (
-      <section id="reviews" className="space-y-8">
+      <section id="reviews" className="space-y-6">
         <h2 className="text-2xl font-bold text-[#1B2B4B]">Customer Reviews</h2>
-        <div className="bg-white rounded-2xl p-12 shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center">
+        <div className="bg-white rounded-2xl p-12 shadow-[0_4px_20px_rgba(0,0,0,0.06)] text-center">
           <div className="text-6xl mb-4">📚</div>
           <h3 className="text-xl font-semibold text-[#1B2B4B]">No reviews yet</h3>
           <p className="text-[#1B2B4B]/60 mt-2">
@@ -52,19 +56,24 @@ export const ReviewSection = ({ bookId }) => {
   const isLoading = reviewsLoading || summaryLoading || myReviewLoading;
 
   return (
-    <section id="reviews" className="space-y-8">
+    <section id="reviews" className="space-y-6">
       <h2 className="text-2xl font-bold text-[#1B2B4B]">Customer Reviews</h2>
 
-      {/* Review Summary - Show if there are reviews */}
+      {/* Review Summary */}
       {hasReviews && (
         <ReviewSummary summary={summary} loading={summaryLoading} />
+      )}
+
+      {/* Divider */}
+      {hasReviews && (
+        <div className="border-t border-[#1B2B4B]/10" />
       )}
 
       {/* My Review Section - Only show for logged in users */}
       {isLoggedIn && (
         <MyReviewSection
           myReview={myReview}
-          isPurchased={!!myReview} // Temporary: if user has review, they purchased
+          isPurchased={!!myReview}
           isLoggedIn={isLoggedIn}
           onCreateReview={createReview.mutate}
           onUpdateReview={updateReview.mutate}
@@ -74,46 +83,12 @@ export const ReviewSection = ({ bookId }) => {
       )}
 
       {/* Review List */}
-      {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <ReviewCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : reviews.length > 0 ? (
-        <div className="space-y-4">
-          {reviews.map((review) => (
-            <ReviewCard key={review._id} review={review} />
-          ))}
-        </div>
-      ) : (
-        <div className="bg-white rounded-2xl p-12 shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center">
-          <div className="text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-[#1B2B4B]">No reviews yet</h3>
-          <p className="text-[#1B2B4B]/60 mt-2">
-            Be the first verified reader to review this book.
-          </p>
-        </div>
+      {hasReviews && (
+        <ReviewList
+          bookId={bookId}
+          totalReviews={totalReviews}
+        />
       )}
     </section>
   );
 };
-
-const ReviewCardSkeleton = () => (
-  <div className="bg-white rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)] animate-pulse">
-    <div className="flex items-start justify-between">
-      <div>
-        <div className="h-5 w-32 bg-gray-200 rounded mb-2" />
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-4 w-4 bg-gray-200 rounded" />
-          ))}
-        </div>
-      </div>
-      <div className="h-4 w-24 bg-gray-200 rounded" />
-    </div>
-    <div className="h-4 w-3/4 bg-gray-200 rounded mt-3" />
-    <div className="h-4 w-full bg-gray-200 rounded mt-2" />
-    <div className="h-4 w-2/3 bg-gray-200 rounded mt-2" />
-  </div>
-);

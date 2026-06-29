@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Clock, Edit2, Trash2, AlertTriangle, ShoppingBag } from "lucide-react";
+import { Star, Clock, Edit2, Trash2, AlertTriangle, ShoppingBag, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -32,7 +32,7 @@ export const MyReviewSection = ({
   // Not logged in
   if (!isLoggedIn) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)] text-center">
+      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)] text-center">
         <p className="text-[#1B2B4B]/60">Login to purchase this book and write a review.</p>
         <Button className="mt-4 bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]">
           Sign In
@@ -44,7 +44,7 @@ export const MyReviewSection = ({
   // Logged in but not purchased and no review
   if (!isPurchased && !myReview) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
         <div className="text-center">
           <ShoppingBag className="h-12 w-12 text-[#C9A84C] mx-auto mb-3" />
           <h3 className="text-lg font-semibold text-[#1B2B4B]">Purchase this book to write a review</h3>
@@ -64,7 +64,7 @@ export const MyReviewSection = ({
   // No review yet - show form (only for purchased users)
   if (!myReview) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
         <h3 className="text-lg font-semibold text-[#1B2B4B] mb-4">Write Your Review</h3>
         <ReviewForm onSubmit={onCreateReview} isSubmitting={isSubmitting} />
       </div>
@@ -76,7 +76,7 @@ export const MyReviewSection = ({
   const isApproved = myReview.status === "APPROVED";
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+    <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -108,10 +108,16 @@ export const MyReviewSection = ({
               <span>Your review is pending approval. It will become visible after admin review.</span>
             </div>
           )}
+          {isApproved && (
+            <div className="mt-3 flex items-center gap-2 text-sm text-green-600 bg-green-50 p-3 rounded-lg">
+              <CheckCircle className="h-4 w-4" />
+              <span>Your review is published and visible to everyone.</span>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="flex gap-3 mt-4 pt-4 border-t">
+      <div className="flex gap-3 mt-4 pt-4 border-t border-[#1B2B4B]/10">
         <Button
           variant="outline"
           size="sm"
@@ -133,7 +139,7 @@ export const MyReviewSection = ({
 
       {/* Edit Form */}
       {isEditing && (
-        <div className="mt-4 pt-4 border-t">
+        <div className="mt-4 pt-4 border-t border-[#1B2B4B]/10">
           <div className="mb-3 p-3 bg-yellow-50 rounded-lg flex items-start gap-2 text-sm text-yellow-700">
             <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
             <span>Editing your review will require administrator approval again.</span>
