@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useBookReviews,
   useReviewSummary,
@@ -25,6 +25,7 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
     data: summaryData,
     isLoading: summaryLoading,
     error: summaryError,
+    refetch: refetchSummary,
   } = useReviewSummary(bookId);
 
   // Fetch reviews with pagination
@@ -35,9 +36,12 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
     refetch: refetchReviews,
   } = useBookReviews(bookId, currentPage, limit);
 
-  // Fetch user's review (if authenticated)
-  const { data: myReviewData, isLoading: myReviewLoading } =
-    useMyReview(bookId);
+  // Fetch user's review ONLY when authenticated
+  const { 
+    data: myReviewData, 
+    isLoading: myReviewLoading,
+    refetch: refetchMyReview,
+  } = useMyReview(bookId, isAuthenticated); // Pass isAuthenticated as enabled flag
 
   // Get current page data
   const reviews = reviewsData?.data || [];
@@ -53,6 +57,15 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
     const reviewElement = document.getElementById("reviews-section");
     if (reviewElement) {
       reviewElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  // Handle review update from MyReviewSection
+  const handleReviewUpdate = () => {
+    refetchReviews();
+    refetchSummary();
+    if (isAuthenticated) {
+      refetchMyReview();
     }
   };
 
@@ -95,15 +108,13 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
       {/* Thin Divider */}
       <div className="border-t border-[#1B2B4B]/10 my-6" />
 
-      {/* My Review Section (if user has permission and has a review) */}
+      {/* My Review Section (if user has permission to review) */}
       {isAuthenticated && showReviewForm && (
         <MyReviewSection
           bookId={bookId}
           myReview={myReviewData?.data || null}
           isLoading={myReviewLoading}
-          onReviewUpdate={() => {
-            refetchReviews();
-          }}
+          onReviewUpdate={handleReviewUpdate}
         />
       )}
 

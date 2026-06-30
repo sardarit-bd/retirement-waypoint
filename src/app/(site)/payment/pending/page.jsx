@@ -52,7 +52,7 @@ export default function PaymentPendingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F5EF] flex items-center justify-center px-4 py-32">
+    <div id="PaymentPendingPage" className="min-h-screen bg-[#F8F5EF] flex items-center justify-center px-4 py-32">
       <div className="mx-auto max-w-md w-full text-center">
         <div className="mb-6 flex justify-center">
           <div className="rounded-full bg-yellow-100 p-3">

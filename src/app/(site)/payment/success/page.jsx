@@ -22,7 +22,7 @@ export default function PaymentSuccessPage() {
   }, [searchParams, router]);
 
   return (
-    <div className="min-h-screen bg-[#F8F5EF] flex items-center justify-center px-4 py-32">
+    <div id="PaymentSuccessPage" className="min-h-screen bg-[#F8F5EF] flex items-center justify-center px-4 py-32">
       <div className="mx-auto max-w-md w-full text-center">
         <div className="mb-6 flex justify-center">
           <div className="rounded-full bg-green-100 p-3">
@@ -43,14 +43,14 @@ export default function PaymentSuccessPage() {
         )}
 
         <div className="mt-8 space-y-3">
-          <Link href="/dashboard/books">
-            <Button className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12">
+          <Link href="/dashboard/my-books">
+            <Button className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12 mb-6 cursor-pointer">
               <BookOpen className="mr-2 h-5 w-5" />
               Go to My Books
             </Button>
           </Link>
           <Link href="/book">
-            <Button variant="outline" className="w-full h-12">
+            <Button variant="outline" className="w-full h-12 cursor-pointer">
               <ShoppingBag className="mr-2 h-5 w-5" />
               Continue Shopping
             </Button>

@@ -5,24 +5,24 @@ import { Star, Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { 
-  useCreateReview, 
-  useUpdateReview, 
-  useDeleteReview 
+import {
+  useCreateReview,
+  useUpdateReview,
+  useDeleteReview,
 } from "../hooks/useReviews";
 import toast from "react-hot-toast";
 
-export const MyReviewSection = ({ 
-  bookId, 
-  myReview, 
-  isLoading, 
-  onReviewUpdate 
+export const MyReviewSection = ({
+  bookId,
+  myReview,
+  isLoading,
+  onReviewUpdate,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [rating, setRating] = useState(myReview?.rating || 0);
   const [title, setTitle] = useState(myReview?.title || "");
-  const [description, setDescription] = useState(myReview?.description || "");
+  const [description, setDescription] = useState(myReview?.comment || "");
   const [hoveredRating, setHoveredRating] = useState(0);
 
   const createReview = useCreateReview(bookId);
@@ -46,7 +46,7 @@ export const MyReviewSection = ({
       bookId,
       rating,
       title: title.trim(),
-      description: description.trim(),
+      comment: description.trim(),
     };
 
     try {
@@ -86,7 +86,7 @@ export const MyReviewSection = ({
     if (hasReview) {
       setRating(myReview.rating);
       setTitle(myReview.title || "");
-      setDescription(myReview.description || "");
+      setDescription(myReview.comment || "");
     } else {
       setRating(0);
       setTitle("");
@@ -112,7 +112,9 @@ export const MyReviewSection = ({
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-[#1B2B4B]">Your Review</span>
+              <span className="text-sm font-semibold text-[#1B2B4B]">
+                Your Review
+              </span>
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
@@ -131,16 +133,14 @@ export const MyReviewSection = ({
                 {myReview.title}
               </h4>
             )}
-            <p className="text-[#1B2B4B]/70 text-sm mt-1">
-              {myReview.description}
-            </p>
+            <p className="text-[#1B2B4B]/70 text-sm mt-1">{myReview.comment}</p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsEditing(true)}
-              className="h-8 px-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+              className="h-8 px-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer"
             >
               <Pencil className="h-4 w-4" />
             </Button>
@@ -148,7 +148,7 @@ export const MyReviewSection = ({
               variant="ghost"
               size="sm"
               onClick={handleDelete}
-              className="h-8 px-2 text-red-500/60 hover:text-red-500"
+              className="h-8 px-2 text-red-500/60 hover:text-red-500 cursor-pointer"
               disabled={deleteReview.isPending}
             >
               {deleteReview.isPending ? (
@@ -175,7 +175,7 @@ export const MyReviewSection = ({
               </span>
               <button
                 onClick={() => handleCancel()}
-                className="text-sm text-[#1B2B4B]/40 hover:text-[#1B2B4B]"
+                className="text-sm text-[#1B2B4B]/40 hover:text-[#1B2B4B] cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -192,7 +192,7 @@ export const MyReviewSection = ({
                   className="focus:outline-none"
                 >
                   <Star
-                    className={`h-6 w-6 transition-colors ${
+                    className={`h-6 w-6 transition-colors cursor-pointer ${
                       star <= (hoveredRating || rating)
                         ? "fill-[#C9A84C] text-[#C9A84C]"
                         : "fill-gray-200 text-gray-200 hover:fill-[#C9A84C] hover:text-[#C9A84C]/50"
@@ -223,23 +223,26 @@ export const MyReviewSection = ({
               <Button
                 onClick={handleSubmit}
                 disabled={createReview.isPending || updateReview.isPending}
-                className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]"
+                className="cursor-pointer bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] disabled:cursor-not-allowed"
                 size="sm"
               >
-                {(createReview.isPending || updateReview.isPending) ? (
+                {createReview.isPending || updateReview.isPending ? (
                   <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#1B2B4B] border-t-transparent mr-2" />
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-[#1B2B4B] border-t-transparent" />
                     Submitting...
                   </>
+                ) : hasReview ? (
+                  "Update Review"
                 ) : (
-                  hasReview ? "Update Review" : "Submit Review"
+                  "Submit Review"
                 )}
               </Button>
+
               <Button
                 variant="ghost"
                 onClick={handleCancel}
                 size="sm"
-                className="text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+                className="cursor-pointer text-[#1B2B4B]/60 hover:text-[#1B2B4B] disabled:cursor-not-allowed"
               >
                 Cancel
               </Button>

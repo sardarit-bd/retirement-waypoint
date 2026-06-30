@@ -31,7 +31,10 @@ class ReviewApi {
   // Get current user's review
   async getMyReview(bookId) {
     const response = await axios.get(
-      `${this.baseUrl}/my-review/${bookId}`
+      `${this.baseUrl}/my-review/${bookId}`,
+      {
+        withCredentials: true,
+      }
     );
 
     return response.data;
@@ -39,7 +42,14 @@ class ReviewApi {
 
   // Create review
   async createReview(data) {
-    const response = await axios.post(this.baseUrl, data);
+    const response = await axios.post(
+      this.baseUrl,
+      data,
+      {
+        withCredentials: true,
+      }
+    );
+
     return response.data;
   }
 
@@ -47,7 +57,10 @@ class ReviewApi {
   async updateReview(reviewId, data) {
     const response = await axios.patch(
       `${this.baseUrl}/${reviewId}`,
-      data
+      data,
+      {
+        withCredentials: true,
+      }
     );
 
     return response.data;
@@ -56,7 +69,10 @@ class ReviewApi {
   // Delete review
   async deleteReview(reviewId) {
     const response = await axios.delete(
-      `${this.baseUrl}/${reviewId}`
+      `${this.baseUrl}/${reviewId}`,
+      {
+        withCredentials: true,
+      }
     );
 
     return response.data;

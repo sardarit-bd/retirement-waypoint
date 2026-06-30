@@ -15,6 +15,9 @@ export const themeChangeSections = [
     "coaching-introduction",
     "related-books",
     "services",
-    "book-details"
+    "book-details",
+    "PaymentSuccessPage",
+    "PaymentPendingPage",
+    "PaymentCancelPage",
   ];
 
