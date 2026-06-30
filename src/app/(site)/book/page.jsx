@@ -94,7 +94,7 @@ function BookPageContent() {
         pagination={pagination}
         onPageChange={handlePageChange}
       />
-      <BookReviews />
+      {/* <BookReviews /> */}
     </main>
   );
 }

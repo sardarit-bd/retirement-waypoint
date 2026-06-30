@@ -37,12 +37,12 @@ export const BookCard = ({ book }) => {
             />
           </div>
 
-          {book.featured && (
+          {/* {book.featured && (
             <Badge className="absolute -left-4 top-3 z-20 flex h-14 w-14 flex-col items-center justify-center rounded-full bg-[#C9A84C] p-0 text-[11px] font-black leading-3 text-[#1B2B4B] shadow-xl ring-4 ring-white hover:bg-[#C9A84C]">
               ★
               <span>FEATURED</span>
             </Badge>
-          )}
+          )} */}
 
           {isPublished && (
             <div className="absolute bottom-5 right-[-34px] rotate-[-38deg] bg-green-600 px-10 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-lg">

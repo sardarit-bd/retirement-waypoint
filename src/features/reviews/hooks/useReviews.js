@@ -1,39 +1,44 @@
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import { reviewApi } from '../api/review.api';
-import toast from 'react-hot-toast';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { reviewApi } from "../api/review.api";
+import toast from "react-hot-toast";
 
 export const reviewKeys = {
-  all: ['reviews'],
-  book: (bookId) => ['reviews', 'book', bookId],
-  bookInfinite: (bookId) => ['reviews', 'book', bookId, 'infinite'],
-  summary: (bookId) => ['reviews', 'summary', bookId],
-  myReview: (bookId) => ['reviews', 'my', bookId],
+  all: ["reviews"],
+  book: (bookId) => ["reviews", "book", bookId],
+  bookInfinite: (bookId) => ["reviews", "book", bookId, "infinite"],
+  summary: (bookId) => ["reviews", "summary", bookId],
+  myReview: (bookId) => ["reviews", "my", bookId],
 };
 
-export function useBookReviewsInfinite(bookId, limit = 5) {
-  return useInfiniteQuery({
-    queryKey: reviewKeys.bookInfinite(bookId),
-    queryFn: ({ pageParam = 1 }) => 
-      reviewApi.getBookReviews(bookId, { page: pageParam, limit }),
-    getNextPageParam: (lastPage, allPages) => {
-      const { pagination } = lastPage;
-      if (pagination?.hasNextPage) {
-        return pagination.page + 1;
-      }
-      return undefined;
-    },
-    enabled: !!bookId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    initialPageParam: 1,
-  });
-}
+// export function useBookReviewsInfinite(bookId, limit = 5) {
+//   return useInfiniteQuery({
+//     queryKey: reviewKeys.bookInfinite(bookId),
+//     queryFn: ({ pageParam = 1 }) =>
+//       reviewApi.getBookReviews(bookId, { page: pageParam, limit }),
+//     getNextPageParam: (lastPage, allPages) => {
+//       const { pagination } = lastPage;
+//       if (pagination?.hasNextPage) {
+//         return pagination.page + 1;
+//       }
+//       return undefined;
+//     },
+//     enabled: !!bookId,
+//     staleTime: 5 * 60 * 1000,
+//     initialPageParam: 1,
+//   });
+// }
 
-export function useBookReviews(bookId, options = {}) {
+export function useBookReviews(bookId, page = 1, limit = 5) {
   return useQuery({
-    queryKey: reviewKeys.book(bookId),
-    queryFn: () => reviewApi.getBookReviews(bookId, options),
+    queryKey: [...reviewKeys.book(bookId), page, limit],
+    queryFn: () =>
+      reviewApi.getBookReviews(bookId, {
+        page,
+        limit,
+      }),
     enabled: !!bookId,
     staleTime: 5 * 60 * 1000,
+    keepPreviousData: true,
   });
 }
 
@@ -61,15 +66,27 @@ export function useCreateReview(bookId) {
 
   return useMutation({
     mutationFn: (data) => reviewApi.createReview(data),
+
     onSuccess: () => {
-      toast.success('Review submitted successfully! It will be visible after approval.');
-      queryClient.invalidateQueries({ queryKey: reviewKeys.myReview(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.summary(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.book(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.bookInfinite(bookId) });
+      toast.success(
+        "Review submitted successfully! It will be visible after approval.",
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.myReview(bookId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.summary(bookId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.book(bookId),
+      });
     },
+
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to submit review');
+      toast.error(error.response?.data?.message || "Failed to submit review");
     },
   });
 }
@@ -79,15 +96,25 @@ export function useUpdateReview(bookId) {
 
   return useMutation({
     mutationFn: ({ reviewId, data }) => reviewApi.updateReview(reviewId, data),
+
     onSuccess: () => {
-      toast.success('Review updated successfully! It will be reviewed again.');
-      queryClient.invalidateQueries({ queryKey: reviewKeys.myReview(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.summary(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.book(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.bookInfinite(bookId) });
+      toast.success("Review updated successfully! It will be reviewed again.");
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.myReview(bookId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.summary(bookId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.book(bookId),
+      });
     },
+
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to update review');
+      toast.error(error.response?.data?.message || "Failed to update review");
     },
   });
 }
@@ -97,15 +124,25 @@ export function useDeleteReview(bookId) {
 
   return useMutation({
     mutationFn: (reviewId) => reviewApi.deleteReview(reviewId),
+
     onSuccess: () => {
-      toast.success('Review deleted successfully');
-      queryClient.invalidateQueries({ queryKey: reviewKeys.myReview(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.summary(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.book(bookId) });
-      queryClient.invalidateQueries({ queryKey: reviewKeys.bookInfinite(bookId) });
+      toast.success("Review deleted successfully");
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.myReview(bookId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.summary(bookId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: reviewKeys.book(bookId),
+      });
     },
+
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Failed to delete review');
+      toast.error(error.response?.data?.message || "Failed to delete review");
     },
   });
 }

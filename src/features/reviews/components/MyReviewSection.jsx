@@ -1,179 +1,254 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Clock, Edit2, Trash2, AlertTriangle, ShoppingBag, CheckCircle } from "lucide-react";
+import { Star, Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { ReviewForm } from "./ReviewForm";
-import Link from "next/link";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { 
+  useCreateReview, 
+  useUpdateReview, 
+  useDeleteReview 
+} from "../hooks/useReviews";
+import toast from "react-hot-toast";
 
-export const MyReviewSection = ({
-  myReview,
-  isPurchased,
-  isLoggedIn,
-  onCreateReview,
-  onUpdateReview,
-  onDeleteReview,
-  isSubmitting,
+export const MyReviewSection = ({ 
+  bookId, 
+  myReview, 
+  isLoading, 
+  onReviewUpdate 
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [rating, setRating] = useState(myReview?.rating || 0);
+  const [title, setTitle] = useState(myReview?.title || "");
+  const [description, setDescription] = useState(myReview?.description || "");
+  const [hoveredRating, setHoveredRating] = useState(0);
 
-  // Not logged in
-  if (!isLoggedIn) {
+  const createReview = useCreateReview(bookId);
+  const updateReview = useUpdateReview(bookId);
+  const deleteReview = useDeleteReview(bookId);
+
+  const hasReview = !!myReview;
+
+  const handleSubmit = async () => {
+    if (rating === 0) {
+      toast.error("Please select a rating");
+      return;
+    }
+
+    if (!description.trim()) {
+      toast.error("Please write a review");
+      return;
+    }
+
+    const data = {
+      bookId,
+      rating,
+      title: title.trim(),
+      description: description.trim(),
+    };
+
+    try {
+      if (hasReview) {
+        await updateReview.mutateAsync({
+          reviewId: myReview._id,
+          data,
+        });
+        setIsEditing(false);
+      } else {
+        await createReview.mutateAsync(data);
+        // Reset form after creation
+        setRating(0);
+        setTitle("");
+        setDescription("");
+        setIsEditing(false);
+      }
+      onReviewUpdate?.();
+    } catch (error) {
+      // Error is handled by the mutation
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete your review?")) return;
+
+    try {
+      await deleteReview.mutateAsync(myReview._id);
+      setIsDeleting(false);
+      onReviewUpdate?.();
+    } catch (error) {
+      // Error is handled by the mutation
+    }
+  };
+
+  const handleCancel = () => {
+    if (hasReview) {
+      setRating(myReview.rating);
+      setTitle(myReview.title || "");
+      setDescription(myReview.description || "");
+    } else {
+      setRating(0);
+      setTitle("");
+      setDescription("");
+    }
+    setIsEditing(false);
+    setHoveredRating(0);
+  };
+
+  if (isLoading) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)] text-center">
-        <p className="text-[#1B2B4B]/60">Login to purchase this book and write a review.</p>
-        <Button className="mt-4 bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]">
-          Sign In
-        </Button>
+      <div className="py-4 border-t border-[#1B2B4B]/10 animate-pulse">
+        <div className="h-6 w-48 bg-gray-200 rounded" />
+        <div className="mt-3 h-20 bg-gray-200 rounded" />
       </div>
     );
   }
 
-  // Logged in but not purchased and no review
-  if (!isPurchased && !myReview) {
+  // If user has a review and is not editing, show their review
+  if (hasReview && !isEditing && !isDeleting) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
-        <div className="text-center">
-          <ShoppingBag className="h-12 w-12 text-[#C9A84C] mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-[#1B2B4B]">Purchase this book to write a review</h3>
-          <p className="text-sm text-[#1B2B4B]/60 mt-1">
-            Only verified purchasers can share their experience.
-          </p>
-          <Link href="#buy-now">
-            <Button className="mt-4 bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]">
-              Buy Now
+      <div className="py-4 border-t border-[#1B2B4B]/10">
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-[#1B2B4B]">Your Review</span>
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-4 w-4 ${
+                      star <= myReview.rating
+                        ? "fill-[#C9A84C] text-[#C9A84C]"
+                        : "fill-gray-200 text-gray-200"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+            {myReview.title && (
+              <h4 className="font-semibold text-[#1B2B4B] text-sm mt-1">
+                {myReview.title}
+              </h4>
+            )}
+            <p className="text-[#1B2B4B]/70 text-sm mt-1">
+              {myReview.description}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+              className="h-8 px-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+            >
+              <Pencil className="h-4 w-4" />
             </Button>
-          </Link>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              className="h-8 px-2 text-red-500/60 hover:text-red-500"
+              disabled={deleteReview.isPending}
+            >
+              {deleteReview.isPending ? (
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
-  // No review yet - show form (only for purchased users)
-  if (!myReview) {
+  // Show create/edit form
+  if (isEditing || !hasReview) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
-        <h3 className="text-lg font-semibold text-[#1B2B4B] mb-4">Write Your Review</h3>
-        <ReviewForm onSubmit={onCreateReview} isSubmitting={isSubmitting} />
-      </div>
-    );
-  }
+      <div className="py-4 border-t border-[#1B2B4B]/10">
+        <div className="flex items-start gap-3">
+          <div className="flex-1 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-[#1B2B4B]">
+                {hasReview ? "Edit Your Review" : "Write a Review"}
+              </span>
+              <button
+                onClick={() => handleCancel()}
+                className="text-sm text-[#1B2B4B]/40 hover:text-[#1B2B4B]"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
-  // Has review - show status
-  const isPending = myReview.status === "PENDING";
-  const isApproved = myReview.status === "APPROVED";
-
-  return (
-    <div className="bg-white rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-5 w-5 ${
-                    i < myReview.rating
-                      ? "fill-[#F59E0B] text-[#F59E0B]"
-                      : "fill-gray-200 text-gray-200"
-                  }`}
-                />
+            {/* Star Rating */}
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHoveredRating(star)}
+                  onMouseLeave={() => setHoveredRating(0)}
+                  className="focus:outline-none"
+                >
+                  <Star
+                    className={`h-6 w-6 transition-colors ${
+                      star <= (hoveredRating || rating)
+                        ? "fill-[#C9A84C] text-[#C9A84C]"
+                        : "fill-gray-200 text-gray-200 hover:fill-[#C9A84C] hover:text-[#C9A84C]/50"
+                    }`}
+                  />
+                </button>
               ))}
             </div>
-            <Badge
-              className={isPending ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}
-            >
-              {isPending ? "Pending Approval" : "Approved"}
-            </Badge>
+
+            {/* Title Input */}
+            <Input
+              placeholder="Review title (optional)"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+            />
+
+            {/* Description Textarea */}
+            <Textarea
+              placeholder="Write your review..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="min-h-[100px] border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+            />
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={handleSubmit}
+                disabled={createReview.isPending || updateReview.isPending}
+                className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]"
+                size="sm"
+              >
+                {(createReview.isPending || updateReview.isPending) ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#1B2B4B] border-t-transparent mr-2" />
+                    Submitting...
+                  </>
+                ) : (
+                  hasReview ? "Update Review" : "Submit Review"
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={handleCancel}
+                size="sm"
+                className="text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
-          {myReview.title && (
-            <h4 className="font-semibold text-[#1B2B4B] mt-2">{myReview.title}</h4>
-          )}
-          <p className="text-[#1B2B4B]/70 text-sm mt-1">{myReview.comment}</p>
-          {isPending && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-yellow-600 bg-yellow-50 p-3 rounded-lg">
-              <Clock className="h-4 w-4" />
-              <span>Your review is pending approval. It will become visible after admin review.</span>
-            </div>
-          )}
-          {isApproved && (
-            <div className="mt-3 flex items-center gap-2 text-sm text-green-600 bg-green-50 p-3 rounded-lg">
-              <CheckCircle className="h-4 w-4" />
-              <span>Your review is published and visible to everyone.</span>
-            </div>
-          )}
         </div>
       </div>
+    );
+  }
 
-      <div className="flex gap-3 mt-4 pt-4 border-t border-[#1B2B4B]/10">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsEditing(true)}
-          className="text-[#1B2B4B]"
-        >
-          <Edit2 className="h-4 w-4 mr-1.5" />
-          Edit
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => setShowDeleteDialog(true)}
-        >
-          <Trash2 className="h-4 w-4 mr-1.5" />
-          Delete
-        </Button>
-      </div>
-
-      {/* Edit Form */}
-      {isEditing && (
-        <div className="mt-4 pt-4 border-t border-[#1B2B4B]/10">
-          <div className="mb-3 p-3 bg-yellow-50 rounded-lg flex items-start gap-2 text-sm text-yellow-700">
-            <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-            <span>Editing your review will require administrator approval again.</span>
-          </div>
-          <ReviewForm
-            initialData={myReview}
-            onSubmit={(data) => onUpdateReview({ reviewId: myReview._id, data })}
-            onCancel={() => setIsEditing(false)}
-            isSubmitting={isSubmitting}
-            isEditing
-          />
-        </div>
-      )}
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Review</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete your review? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => onDeleteReview(myReview._id)}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
-  );
+  return null;
 };

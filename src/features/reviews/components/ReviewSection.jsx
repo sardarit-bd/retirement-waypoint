@@ -1,94 +1,131 @@
 "use client";
 
-import { useSession } from "@/hooks/useSession";
+import { useState } from "react";
 import {
   useBookReviews,
   useReviewSummary,
   useMyReview,
-  useCreateReview,
-  useUpdateReview,
-  useDeleteReview,
 } from "../hooks/useReviews";
 import { ReviewSummary } from "./ReviewSummary";
 import { ReviewList } from "./ReviewList";
+import { ReviewPagination } from "./ReviewPagination";
+import { ReviewSkeleton } from "./ReviewSkeleton";
 import { MyReviewSection } from "./MyReviewSection";
+import { useSession } from "@/hooks/useSession";
 
-export const ReviewSection = ({ bookId }) => {
+export const ReviewSection = ({ bookId, showReviewForm = false }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 5;
+
   const { session } = useSession();
-  const isLoggedIn = !!session?.user;
+  const isAuthenticated = !!session?.user;
 
-  // Queries
-  const { data: reviewsData, isLoading: reviewsLoading } = useBookReviews(bookId, { 
-    page: 1, 
-    limit: 5 
-  });
-  const { data: summaryData, isLoading: summaryLoading } = useReviewSummary(bookId);
-  const { data: myReviewData, isLoading: myReviewLoading } = useMyReview(bookId);
+  // Fetch review summary
+  const {
+    data: summaryData,
+    isLoading: summaryLoading,
+    error: summaryError,
+  } = useReviewSummary(bookId);
 
-  // Mutations
-  const createReview = useCreateReview(bookId);
-  const updateReview = useUpdateReview(bookId);
-  const deleteReview = useDeleteReview(bookId);
+  // Fetch reviews with pagination
+  const {
+    data: reviewsData,
+    isLoading: reviewsLoading,
+    error: reviewsError,
+    refetch: refetchReviews,
+  } = useBookReviews(bookId, currentPage, limit);
 
-  const reviews = reviewsData?.data || reviewsData?.reviews || [];
-  const summary = summaryData?.data || summaryData;
-  const myReview = myReviewData?.data || myReviewData;
-  const totalReviews = reviewsData?.pagination?.total || summary?.totalReviews || 0;
+  // Fetch user's review (if authenticated)
+  const { data: myReviewData, isLoading: myReviewLoading } =
+    useMyReview(bookId);
 
-  const hasReviews = reviews.length > 0 || totalReviews > 0;
+  // Get current page data
+  const reviews = reviewsData?.data || [];
+  const pagination = reviewsData?.meta || {
+    page: 1,
+    totalPages: 1,
+    totalItems: 0,
+  };
 
-  // If no reviews and user not logged in
-  if (!hasReviews && !isLoggedIn) {
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of review section on page change
+    const reviewElement = document.getElementById("reviews-section");
+    if (reviewElement) {
+      reviewElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  if (summaryLoading || reviewsLoading) {
     return (
-      <section id="reviews" className="space-y-6">
-        <h2 className="text-2xl font-bold text-[#1B2B4B]">Customer Reviews</h2>
-        <div className="bg-white rounded-2xl p-12 shadow-[0_4px_20px_rgba(0,0,0,0.06)] text-center">
-          <div className="text-6xl mb-4">📚</div>
-          <h3 className="text-xl font-semibold text-[#1B2B4B]">No reviews yet</h3>
-          <p className="text-[#1B2B4B]/60 mt-2">
-            Be the first verified reader to review this book.
-          </p>
-        </div>
-      </section>
+      <div id="reviews-section" className="py-8">
+        <ReviewSkeleton />
+      </div>
     );
   }
 
-  const isLoading = reviewsLoading || summaryLoading || myReviewLoading;
+  if (summaryError || reviewsError) {
+    return (
+      <div id="reviews-section" className="py-8">
+        <div className="text-center text-gray-500">
+          <p>Unable to load reviews. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const summary = summaryData?.data || summaryData;
+  const totalReviews = summary?.totalReviews || 0;
+
+  // Don't show review section if there are no reviews and no summary
+  if (totalReviews === 0 && !summaryData) {
+    return null;
+  }
 
   return (
-    <section id="reviews" className="space-y-6">
-      <h2 className="text-2xl font-bold text-[#1B2B4B]">Customer Reviews</h2>
+    <div id="reviews-section" className="py-8">
+      {/* Customer Reviews Header */}
+      <h2 className="text-2xl font-bold text-[#1B2B4B] mb-6">
+        Customer Reviews
+      </h2>
 
       {/* Review Summary */}
-      {hasReviews && (
-        <ReviewSummary summary={summary} loading={summaryLoading} />
-      )}
+      <ReviewSummary summary={summary} totalReviews={totalReviews} />
 
-      {/* Divider */}
-      {hasReviews && (
-        <div className="border-t border-[#1B2B4B]/10" />
-      )}
+      {/* Thin Divider */}
+      <div className="border-t border-[#1B2B4B]/10 my-6" />
 
-      {/* My Review Section - Only show for logged in users */}
-      {isLoggedIn && (
+      {/* My Review Section (if user has permission and has a review) */}
+      {isAuthenticated && showReviewForm && (
         <MyReviewSection
-          myReview={myReview}
-          isPurchased={!!myReview}
-          isLoggedIn={isLoggedIn}
-          onCreateReview={createReview.mutate}
-          onUpdateReview={updateReview.mutate}
-          onDeleteReview={deleteReview.mutate}
-          isSubmitting={createReview.isPending || updateReview.isPending}
+          bookId={bookId}
+          myReview={myReviewData?.data || null}
+          isLoading={myReviewLoading}
+          onReviewUpdate={() => {
+            refetchReviews();
+          }}
         />
       )}
 
       {/* Review List */}
-      {hasReviews && (
-        <ReviewList
-          bookId={bookId}
-          totalReviews={totalReviews}
-        />
+      {reviews.length > 0 ? (
+        <>
+          <ReviewList reviews={reviews} />
+
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <ReviewPagination
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
+      ) : (
+        <div className="text-center py-8 text-gray-500">
+          <p>No reviews yet.</p>
+        </div>
       )}
-    </section>
+    </div>
   );
 };
