@@ -109,3 +109,73 @@ export function useDeleteReview(bookId) {
     },
   });
 }
+
+// Admin: Get all reviews
+export function useAdminReviews(params = {}) {
+  return useQuery({
+    queryKey: ['admin-reviews', params],
+    queryFn: () => reviewApi.adminGetAllReviews(params),
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+// Admin: Get single review
+export function useAdminReview(reviewId) {
+  return useQuery({
+    queryKey: ['admin-review', reviewId],
+    queryFn: () => reviewApi.getReview(reviewId),
+    enabled: !!reviewId,
+    staleTime: 2 * 60 * 1000,
+  });
+}
+
+// Admin: Approve review
+export function useAdminApproveReview() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (reviewId) => reviewApi.adminApproveReview(reviewId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-review'] });
+      toast.success('Review approved successfully');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Failed to approve review');
+    },
+  });
+}
+
+// Admin: Reject review
+export function useAdminRejectReview() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (reviewId) => reviewApi.adminRejectReview(reviewId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-review'] });
+      toast.success('Review rejected successfully');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Failed to reject review');
+    },
+  });
+}
+
+// Admin: Delete review
+export function useAdminDeleteReview() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (reviewId) => reviewApi.adminDeleteReview(reviewId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-review'] });
+      toast.success('Review deleted successfully');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Failed to delete review');
+    },
+  });
+}

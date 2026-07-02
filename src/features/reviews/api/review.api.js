@@ -77,6 +77,66 @@ class ReviewApi {
 
     return response.data;
   }
+
+  // Get all reviews (admin)
+  async adminGetAllReviews(params = {}) {
+    const queryParams = new URLSearchParams();
+    if (params.page) queryParams.append('page', params.page);
+    if (params.limit) queryParams.append('limit', params.limit);
+    if (params.search) queryParams.append('search', params.search);
+    if (params.rating) queryParams.append('rating', params.rating);
+    if (params.approved !== undefined) queryParams.append('approved', params.approved);
+    if (params.bookId) queryParams.append('bookId', params.bookId);
+    if (params.userId) queryParams.append('userId', params.userId);
+    if (params.sortBy) queryParams.append('sortBy', params.sortBy);
+    if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
+
+    const url = queryParams.toString()
+      ? `${this.baseUrl}/admin/reviews?${queryParams.toString()}`
+      : `${this.baseUrl}/admin/reviews`;
+
+    const response = await axios.get(url, { withCredentials: true });
+    return response.data;
+  }
+
+  // Admin approve review
+  async adminApproveReview(reviewId) {
+    const response = await axios.patch(
+      `${this.baseUrl}/admin/reviews/${reviewId}/approve`,
+      {},
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+
+  // Admin reject review
+  async adminRejectReview(reviewId) {
+    const response = await axios.patch(
+      `${this.baseUrl}/admin/reviews/${reviewId}/reject`,
+      {},
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+
+  // Admin delete review
+  async adminDeleteReview(reviewId) {
+    const response = await axios.delete(
+      `${this.baseUrl}/admin/reviews/${reviewId}`,
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+
+  // Get single review with details
+  async getReview(reviewId) {
+    const response = await axios.get(
+      `${this.baseUrl}/${reviewId}`,
+      { withCredentials: true }
+    );
+    return response.data;
+  }
+
 }
 
 export const reviewApi = new ReviewApi();
