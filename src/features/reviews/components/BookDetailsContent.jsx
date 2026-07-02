@@ -182,11 +182,6 @@ export const BookDetailsContent = ({ book }) => {
                     priority
                   />
                 </div>
-                {book.featured && (
-                  <Badge className="absolute left-0 top-4 z-20 flex h-14 w-14 flex-col items-center justify-center rounded-full bg-[#C9A84C] p-0 text-[11px] font-black leading-3 text-[#1B2B4B] shadow-xl ring-4 ring-white">
-                    ★<span>FEATURED</span>
-                  </Badge>
-                )}
               </div>
             </div>
 

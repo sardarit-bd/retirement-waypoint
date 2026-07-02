@@ -4,6 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/lib/query-client';
 import { dashboardApi } from '../services/dashboard.api';
 
+export function useAdminDashboard() {
+  return useQuery({
+    queryKey: [QUERY_KEYS.DASHBOARD.ADMIN],
+    queryFn: () => dashboardApi.getAdminDashboardData(),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useDashboard() {
   return useQuery({
     queryKey: [QUERY_KEYS.DASHBOARD.STATS],

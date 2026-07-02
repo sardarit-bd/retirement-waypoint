@@ -2,6 +2,41 @@ import api from '@/lib/api/axios';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 
 export const dashboardApi = {
+  // Get admin dashboard data
+  getAdminDashboardData: async () => {
+    const [
+      overview,
+      revenue,
+      orders,
+      books,
+      reviews,
+      recentOrders,
+    ] = await Promise.all([
+      api.get(API_ENDPOINTS.ANALYTICS.OVERVIEW),
+      api.get(API_ENDPOINTS.ANALYTICS.REVENUE, { params: { period: 'daily' } }),
+      api.get(API_ENDPOINTS.ANALYTICS.ORDERS),
+      api.get(API_ENDPOINTS.ANALYTICS.BOOKS, { params: { limit: 5 } }),
+      api.get(API_ENDPOINTS.ANALYTICS.REVIEWS),
+      api.get(API_ENDPOINTS.ORDERS.ALL, {
+        params: {
+          page: 1,
+          limit: 5,
+          sortBy: 'createdAt',
+          sortOrder: 'desc',
+        },
+      }),
+    ]);
+
+    return {
+      overview: overview.data.data,
+      revenue: revenue.data.data,
+      orders: orders.data.data,
+      books: books.data.data,
+      reviews: reviews.data.data,
+      recentOrders: recentOrders.data.data,
+    };
+  },
+
   // Get dashboard data
   getDashboardData: async () => {
     const response = await api.get('/api/dashboard');

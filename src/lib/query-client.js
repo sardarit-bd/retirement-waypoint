@@ -106,6 +106,7 @@ export const QUERY_KEYS = {
 
   // Dashboard
   DASHBOARD: {
+    ADMIN: 'admin-dashboard',
     STATS: 'dashboard-stats',
     RECENT_BOOKS: 'recent-books',
     RECENT_ORDERS: 'recent-orders',

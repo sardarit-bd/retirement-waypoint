@@ -86,12 +86,16 @@ export const API_ENDPOINTS = {
   },
   // Analytics
   ANALYTICS: {
+    OVERVIEW: '/api/admin/analytics/overview',
     DASHBOARD: '/api/admin/analytics/dashboard',
     ORDERS: '/api/admin/analytics/orders',
     REVENUE: '/api/admin/analytics/revenue',
     BOOKS: '/api/admin/analytics/books',
+    PURCHASES: '/api/admin/analytics/purchases',
     USERS: '/api/admin/analytics/users',
     DOWNLOADS: '/api/admin/analytics/downloads',
+    REVIEWS: '/api/admin/analytics/reviews',
+    COUPONS: '/api/admin/analytics/coupons',
   },
   // Users
   USERS: {
