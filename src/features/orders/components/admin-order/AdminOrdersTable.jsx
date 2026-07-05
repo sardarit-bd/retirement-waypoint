@@ -29,12 +29,12 @@ import { OrderStatusBadge } from '../OrderStatusBadge';
 export function AdminOrdersTable({ orders, isLoading }) {
   const [expandedRows, setExpandedRows] = useState({});
 
-  const toggleRow = (orderId) => {
-    setExpandedRows((prev) => ({
-      ...prev,
-      [orderId]: !prev[orderId],
-    }));
-  };
+  // const toggleRow = (orderId) => {
+  //   setExpandedRows((prev) => ({
+  //     ...prev,
+  //     [orderId]: !prev[orderId],
+  //   }));
+  // };
 
   const formatDate = (date) => {
     if (!date) return 'N/A';
@@ -69,11 +69,10 @@ export function AdminOrdersTable({ orders, isLoading }) {
 
   return (
     <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto px-3">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#1B2B4B]/5 hover:bg-transparent">
-              <TableHead className="text-[#1B2B4B]/60 font-semibold w-[50px]"></TableHead>
               <TableHead className="text-[#1B2B4B]/60 font-semibold">Order</TableHead>
               <TableHead className="text-[#1B2B4B]/60 font-semibold">Customer</TableHead>
               <TableHead className="text-[#1B2B4B]/60 font-semibold">Books</TableHead>
@@ -95,22 +94,6 @@ export function AdminOrdersTable({ orders, isLoading }) {
                   key={order._id}
                   className="border-b border-[#1B2B4B]/5 hover:bg-[#F8F5EF]/50 transition-colors"
                 >
-                  {/* Expand */}
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleRow(order._id)}
-                      className="h-8 w-8 rounded-full p-0 hover:bg-[#F8F5EF]"
-                    >
-                      <ChevronDown
-                        className={cn(
-                          'h-4 w-4 text-[#1B2B4B]/40 transition-transform',
-                          isExpanded && 'rotate-180'
-                        )}
-                      />
-                    </Button>
-                  </TableCell>
 
                   {/* Order Number */}
                   <TableCell>
@@ -201,82 +184,6 @@ export function AdminOrdersTable({ orders, isLoading }) {
                       </Link>
                     </Button>
                   </TableCell>
-
-                  {/* Expanded Row - separate TableRow */}
-                  {isExpanded && (
-                    <TableRow className="bg-[#F8F5EF]/30 border-b border-[#1B2B4B]/5">
-                      <TableCell colSpan={9} className="p-4">
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                          {/* Customer Info */}
-                          <div className="rounded-xl bg-white/80 p-4">
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#1B2B4B]/50">
-                              Customer
-                            </h4>
-                            <div className="mt-2 space-y-1">
-                              <p className="flex items-center gap-2 text-sm text-[#1B2B4B]">
-                                <User className="h-3.5 w-3.5 text-[#1B2B4B]/40" />
-                                {userName}
-                              </p>
-                              <p className="flex items-center gap-2 text-sm text-[#1B2B4B]/60">
-                                <Mail className="h-3.5 w-3.5 text-[#1B2B4B]/40" />
-                                {order.user?.email || 'No email'}
-                              </p>
-                              <p className="flex items-center gap-2 text-sm text-[#1B2B4B]/60">
-                                <Package className="h-3.5 w-3.5 text-[#1B2B4B]/40" />
-                                ID: {order.userId?.slice(0, 12)}...
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Payment Info */}
-                          <div className="rounded-xl bg-white/80 p-4">
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#1B2B4B]/50">
-                              Payment
-                            </h4>
-                            <div className="mt-2 space-y-1">
-                              <p className="flex items-center gap-2 text-sm text-[#1B2B4B]">
-                                <CreditCard className="h-3.5 w-3.5 text-[#1B2B4B]/40" />
-                                {order.paymentMethod || 'Stripe'}
-                              </p>
-                              <p className="flex items-center gap-2 text-sm text-[#1B2B4B]/60">
-                                <DollarSign className="h-3.5 w-3.5 text-[#1B2B4B]/40" />
-                                Subtotal: {formatCurrency(order.subtotal)}
-                              </p>
-                              {order.discountAmount > 0 && (
-                                <p className="flex items-center gap-2 text-sm text-emerald-600">
-                                  Discount: -{formatCurrency(order.discountAmount)}
-                                </p>
-                              )}
-                              {order.couponCode && (
-                                <p className="flex items-center gap-2 text-sm text-[#C9A84C]">
-                                  Coupon: {order.couponCode}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Items Summary */}
-                          <div className="rounded-xl bg-white/80 p-4">
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#1B2B4B]/50">
-                              Items
-                            </h4>
-                            <div className="mt-2 space-y-1">
-                              {order.items?.map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between text-sm">
-                                  <span className="text-[#1B2B4B] truncate max-w-[150px]">
-                                    {item.bookTitle}
-                                  </span>
-                                  <span className="text-[#1B2B4B]/60">
-                                    {formatCurrency(item.bookPrice)}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )}
                 </TableRow>
               );
             })}

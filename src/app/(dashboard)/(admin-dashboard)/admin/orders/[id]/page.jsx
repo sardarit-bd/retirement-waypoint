@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { AdminOrderDetailsContent } from '@/features/orders/components/admin-order/AdminOrderDetailsContent';
-import { useOrder } from '@/features/orders/hooks/useOrders';
-import { useParams } from 'next/navigation';
+import { AdminOrderDetailsContent } from "@/features/orders/components/admin-order/AdminOrderDetailsContent";
+import { useOrder } from "@/features/orders/hooks/useOrders";
+import { useParams } from "next/navigation";
 
 export default function AdminOrderDetailsPage() {
   const params = useParams();
@@ -22,7 +22,7 @@ export default function AdminOrderDetailsPage() {
 
   return (
     <div className="py-6">
-      <AdminOrderDetailsContent order={data?.data} isLoading={isLoading} />
+      <AdminOrderDetailsContent order={data} isLoading={isLoading} />
     </div>
   );
 }

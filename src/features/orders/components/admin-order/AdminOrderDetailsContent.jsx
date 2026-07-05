@@ -31,10 +31,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-// import {
-//   useUpdateOrderStatus,
-//   useUpdatePaymentStatus,
-// } from '../hooks/useOrders';
 import toast from 'react-hot-toast';
 import { useUpdateOrderStatus, useUpdatePaymentStatus } from '../../hooks/useOrders';
 import { OrderStatusBadge } from '../OrderStatusBadge';
@@ -556,7 +552,7 @@ function AdminOrderDetailsError() {
       </div>
       <h2 className="text-xl font-semibold text-red-500">Order Not Found</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-[#1B2B4B]/60">
-        The order you're looking for doesn't exist or has been removed.
+        The order you&apos;re looking for doesn&apos;t exist or has been removed.
       </p>
     </div>
   );

@@ -1,8 +1,7 @@
 import axios from "axios";
 import api from '@/lib/api/axios';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 class BookApi {
   constructor() {
@@ -10,10 +9,9 @@ class BookApi {
     this.adminBaseUrl = `${API_BASE_URL}/api/books`;
   }
 
-
   // Create Book (admin)
   async createBook(formData) {
-    const { data } = await api.post(API_ENDPOINTS.BOOKS.ALL, formData, {
+    const { data } = await api.post(`${this.adminBaseUrl}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return data;
@@ -22,7 +20,7 @@ class BookApi {
   // Update Book (admin)
   async updateBook(bookId, formData) {
     const { data } = await api.patch(
-      `${API_ENDPOINTS.BOOKS.ALL}/${bookId}`,
+      `${this.adminBaseUrl}/${bookId}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -31,14 +29,25 @@ class BookApi {
 
   // Delete Book (soft delete)
   async deleteBook(bookId) {
-    const { data } = await api.delete(`${API_ENDPOINTS.BOOKS.ALL}/${bookId}`);
+    const { data } = await api.delete(`${this.adminBaseUrl}/${bookId}`);
     return data;
   }
 
   // Get Admin Book by ID
   async getAdminBook(bookId) {
-    const { data } = await api.get(`${API_ENDPOINTS.BOOKS.ALL}/${bookId}`);
-    return data;
+    try {
+      const { data } = await api.get(`${this.adminBaseUrl}/${bookId}`);
+      return data;
+    } catch (error) {
+      // Better error handling for admin book fetch
+      if (error.response?.status === 404) {
+        throw new Error(`Book with ID "${bookId}" not found. Please check if the book exists or has been deleted.`);
+      }
+      if (error.response?.status === 400) {
+        throw new Error(`Invalid book ID format: "${bookId}". Please ensure it's a valid MongoDB ID.`);
+      }
+      throw error;
+    }
   }
 
   /**

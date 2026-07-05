@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, FileText, DollarSign, BookOpen, CheckCircle, Archive } from 'lucide-react';
+import { ArrowLeft, Calendar, FileText, DollarSign, BookOpen, CheckCircle, Archive, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,7 +14,7 @@ const STATUS_COLORS = {
   ARCHIVED: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
 };
 
-export function AdminBookDetails({ book, isLoading }) {
+export function AdminBookDetails({ book, isLoading, error }) {
   const formatDate = (date) => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', {
@@ -32,11 +32,83 @@ export function AdminBookDetails({ book, isLoading }) {
     );
   }
 
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="space-y-6"
+      >
+        <Button
+          asChild
+          variant="ghost"
+          className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+        >
+          <Link href="/admin/books">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Books
+          </Link>
+        </Button>
+        
+        <div className="rounded-3xl border-red-500/20 bg-red-500/5 p-12 text-center">
+          <div className="mx-auto mb-4 w-fit rounded-full bg-red-500/10 p-4">
+            <AlertCircle className="h-10 w-10 text-red-500" />
+          </div>
+          <h2 className="text-xl font-semibold text-red-500">Unable to Load Book</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-[#1B2B4B]/60">
+            {error?.message || 'Book not found. It may have been deleted or the ID is invalid.'}
+          </p>
+          <Button
+            asChild
+            className="mt-6 rounded-full bg-[#C9A84C] px-6 font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]"
+          >
+            <Link href="/admin/books">
+              Back to Books
+            </Link>
+          </Button>
+        </div>
+      </motion.div>
+    );
+  }
+
   if (!book) {
     return (
-      <div className="rounded-3xl border-red-500/20 bg-red-500/5 p-12 text-center">
-        <p className="text-red-500">Book not found</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="space-y-6"
+      >
+        <Button
+          asChild
+          variant="ghost"
+          className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+        >
+          <Link href="/admin/books">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Books
+          </Link>
+        </Button>
+        
+        <div className="rounded-3xl border-red-500/20 bg-red-500/5 p-12 text-center">
+          <div className="mx-auto mb-4 w-fit rounded-full bg-red-500/10 p-4">
+            <AlertCircle className="h-10 w-10 text-red-500" />
+          </div>
+          <h2 className="text-xl font-semibold text-red-500">Book Not Found</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-[#1B2B4B]/60">
+            This book doesn&apos;t exist or may have been deleted.
+          </p>
+          <Button
+            asChild
+            className="mt-6 rounded-full bg-[#C9A84C] px-6 font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]"
+          >
+            <Link href="/admin/books">
+              Back to Books
+            </Link>
+          </Button>
+        </div>
+      </motion.div>
     );
   }
 
