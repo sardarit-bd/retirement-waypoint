@@ -53,7 +53,7 @@ export function OrderPagination({ meta, onPageChange }) {
         size="sm"
         onClick={() => onPageChange(page - 1)}
         disabled={!hasPrevPage}
-        className="rounded-full border-[#1B2B4B]/15 hover:border-[#C9A84C]/30 hover:bg-[#F8F5EF]"
+        className="rounded-full border-[#1B2B4B]/15 hover:border-[#C9A84C]/30 hover:bg-[#F8F5EF] cursor-pointer"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -88,7 +88,7 @@ export function OrderPagination({ meta, onPageChange }) {
         size="sm"
         onClick={() => onPageChange(page + 1)}
         disabled={!hasNextPage}
-        className="rounded-full border-[#1B2B4B]/15 hover:border-[#C9A84C]/30 hover:bg-[#F8F5EF]"
+        className="rounded-full border-[#1B2B4B]/15 hover:border-[#C9A84C]/30 hover:bg-[#F8F5EF] cursor-pointer"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>

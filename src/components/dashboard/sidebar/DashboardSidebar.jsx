@@ -62,7 +62,6 @@ const adminMenuSections = [
       { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
       { icon: BookMarked, label: 'Books', href: '/admin/books' },
       { icon: ShoppingCart, label: 'Orders', href: '/admin/orders' },
-      { icon: FileText, label: 'Invoices', href: '/admin/invoices' },
       { icon: Star, label: 'Reviews', href: '/admin/reviews' },
     ],
   },
@@ -70,8 +69,7 @@ const adminMenuSections = [
     title: 'Management',
     items: [
       { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
-      { icon: RefreshCw, label: 'Refunds', href: '/admin/refunds' },
-      { icon: Users, label: 'Users', href: '/admin/users' },
+      { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
     ],
   },
 ];
@@ -139,7 +137,7 @@ export function DashboardSidebar() {
     }
   };
 
-  // ✅ FIXED: Active link logic with exact match for root paths
+  // FIXED: Active link logic with exact match for root paths
   const isActiveLink = (href) => {
     // Dashboard should match only exactly
     if (href === '/dashboard') {
