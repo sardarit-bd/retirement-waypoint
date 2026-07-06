@@ -343,7 +343,7 @@ function AssessmentCard({ assessment, onEdit, onNext, onDuplicate, onDelete }) {
 
       {/* Next Button - Only navigation */}
       <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
-        <span className="text-sm text-white/40">{assessment.slug}</span>7
+        <span className="text-sm text-white/40">{assessment.slug}</span>
         <Button
           onClick={() => onNext(assessment.href)}
           className="rounded-full bg-[#C9A84C] px-5 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 transition-all duration-300 hover:-translate-y-0.5"
@@ -355,6 +355,7 @@ function AssessmentCard({ assessment, onEdit, onNext, onDuplicate, onDelete }) {
     </motion.div>
   );
 }
+
 
 export function AdminAssessmentLanding() {
   const router = useRouter();
