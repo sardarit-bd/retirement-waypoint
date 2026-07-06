@@ -1,20 +1,18 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "@/lib/auth-server";
 
-export async function middleware(request) {
+export async function proxy(request) {
   const session = await getServerSession(request.headers);
 
   const isAuthenticated = !!session?.data;
   const role = session?.data?.user?.role || "user";
   const path = request.nextUrl.pathname;
 
-  // Prevent authenticated users from visiting auth page
   if (path === "/auth" && isAuthenticated) {
     const destination = role === "admin" ? "/admin" : "/dashboard";
     return NextResponse.redirect(new URL(destination, request.url));
   }
 
-  // Protected routes
   const protectedRoutes = [
     "/dashboard",
     "/admin",
