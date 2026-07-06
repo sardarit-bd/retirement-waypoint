@@ -1,7 +1,7 @@
 'use client';
 
-import { AdminAssessmentAnalytics } from '@/features/assessment/admin/components/AdminAssessmentAnalytics';
+// import { AdminAssessmentAnalytics } from '@/features/assessment/admin/components/AdminAssessmentAnalytics';
 
 export default function AssessmentAnalyticsPage() {
-  return <AdminAssessmentAnalytics />;
+  // return <AdminAssessmentAnalytics />;
 }
