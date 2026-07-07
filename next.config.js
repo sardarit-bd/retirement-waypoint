@@ -1,6 +1,5 @@
 const backendUrl =
     process.env.BACKEND_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
     "http://localhost:5000";
 
 /** @type {import('next').NextConfig} */

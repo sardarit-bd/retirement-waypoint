@@ -1,7 +1,7 @@
 import axios from "axios";
 import api from '@/lib/api/axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = "";
 
 class BookApi {
   constructor() {

@@ -12,11 +12,12 @@ export function useAdminDashboard() {
   });
 }
 
-export function useDashboard() {
+export function useDashboard(options = {}) {
   return useQuery({
     queryKey: [QUERY_KEYS.DASHBOARD.STATS],
     queryFn: () => dashboardApi.getDashboardData(),
     staleTime: 5 * 60 * 1000,
+    ...options,
   });
 }
 

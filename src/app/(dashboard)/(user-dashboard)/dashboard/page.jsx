@@ -16,7 +16,9 @@ import { motion } from 'framer-motion';
 
 export default function DashboardPage() {
   const { session, isLoading: isSessionLoading } = useSession();
-  const { data, isLoading, error, refetch } = useDashboard();
+  const { data, isLoading, error, refetch } = useDashboard({
+    enabled: !!session,
+  });
 
   if (isSessionLoading || isLoading) {
     return <DashboardSkeleton />;

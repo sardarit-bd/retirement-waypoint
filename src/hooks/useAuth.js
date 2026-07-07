@@ -119,7 +119,7 @@ export function useAuth() {
 
         // First check if email already exists via our API
         const checkResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/check-email?email=${encodeURIComponent(email)}`,
+          `/api/auth/check-email?email=${encodeURIComponent(email)}`,
         );
         const checkData = await checkResponse.json();
 
@@ -309,7 +309,7 @@ export function useAuth() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/resend-verification`,
+        "/api/auth/resend-verification",
         {
           method: "POST",
           headers: {
