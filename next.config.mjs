@@ -1,9 +1,14 @@
-const backendUrl = (
-  process.env.BACKEND_URL ||
-  (process.env.NODE_ENV === "production"
-    ? "https://retirement-waypoint-backend-mocha.vercel.app"
-    : "http://localhost:5000")
-).replace(/\/$/, "");
+if (!process.env.BACKEND_URL) {
+  throw new Error("BACKEND_URL must be configured");
+}
+
+const backendUrl = new URL(process.env.BACKEND_URL);
+
+if (!['http:', 'https:'].includes(backendUrl.protocol)) {
+  throw new Error("BACKEND_URL must use http or https");
+}
+
+const backendOrigin = backendUrl.origin;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -27,11 +32,11 @@ const nextConfig = {
     return [
       {
         source: "/api/auth/:path*",
-        destination: `${backendUrl}/api/auth/:path*`,
+        destination: `${backendOrigin}/api/auth/:path*`,
       },
       {
         source: "/api/:path*",
-        destination: `${backendUrl}/api/:path*`,
+        destination: `${backendOrigin}/api/:path*`,
       },
     ];
   },

@@ -8,9 +8,7 @@ function getRequestOrigin(requestHeaders) {
 export async function getServerSession(requestHeaders) {
   const cookie = requestHeaders.get("cookie");
   const requestOrigin = getRequestOrigin(requestHeaders);
-  const authBaseURL =
-    process.env.NEXT_PUBLIC_AUTH_URL ||
-    (requestOrigin ? `${requestOrigin}/api/auth` : null);
+  const authBaseURL = requestOrigin ? `${requestOrigin}/api/auth` : null;
 
   if (!authBaseURL) {
     return { data: null, error: new Error("Unable to resolve auth origin") };

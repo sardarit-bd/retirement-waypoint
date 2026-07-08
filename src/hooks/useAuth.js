@@ -287,7 +287,7 @@ export function useAuth() {
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: `${window.location.origin}/auth/callback`,
+        callbackURL: "/auth/callback",
       });
     } catch (err) {
       const errorMessage =

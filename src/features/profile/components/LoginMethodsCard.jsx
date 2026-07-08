@@ -19,7 +19,7 @@ export function LoginMethodsCard({ profile }) {
     try {
       await signIn.social({
         provider: 'google',
-        callbackURL: window.location.href,
+        callbackURL: `${window.location.pathname}${window.location.search}`,
       });
     } catch (error) {
       toast.error('Failed to connect Google account');
