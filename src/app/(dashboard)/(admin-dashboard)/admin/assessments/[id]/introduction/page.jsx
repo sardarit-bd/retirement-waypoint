@@ -1,16 +1,16 @@
 'use client';
 
-import { AdminAssessmentIntroduction } from '@/features/assessment/components/AdminAssessmentIntroduction';
 import { useParams, useRouter } from 'next/navigation';
+import { AdminAssessmentIntroduction } from '@/features/assessment/admin/components/AdminAssessmentIntroduction';
 
 export default function AssessmentIntroductionPage() {
   const params = useParams();
   const router = useRouter();
   const assessmentId = params.id;
 
-  const handleBeginAssessment = () => {
+  const handleBegin = () => {
     router.push(`/admin/assessments/${assessmentId}/builder`);
   };
 
-  return <AdminAssessmentIntroduction onBegin={handleBeginAssessment} />;
+  return <AdminAssessmentIntroduction assessmentId={assessmentId} onBegin={handleBegin} />;
 }
