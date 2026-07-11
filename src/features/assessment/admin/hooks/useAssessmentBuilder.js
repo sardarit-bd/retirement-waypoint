@@ -1,37 +1,69 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { mockAssessment } from '../data/mockData';
+import { useState, useCallback, useEffect } from 'react';
+import { useAdminAssessmentBySlug } from './useAssessmentQueries';
+import { useUpdateAssessment } from './useAssessmentMutations';
 
-export function useAssessmentBuilder() {
-  const [assessment, setAssessment] = useState(mockAssessment);
+export function useAssessmentBuilder(assessmentSlug) {
   const [currentDomainIndex, setCurrentDomainIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [tempAssessment, setTempAssessment] = useState(null);
+  
+  // Load assessment from backend
+  const {
+    data: response,
+    isLoading,
+    error,
+    refetch,
+  } = useAdminAssessmentBySlug(assessmentSlug);
 
-  const currentDomain = assessment.domains[currentDomainIndex];
+  // Update mutation
+  const updateMutation = useUpdateAssessment();
+
+  // Extract assessment from response
+  const assessment = response?.data || null;
+
+  // Reset domain index when assessment changes
+  useEffect(() => {
+    if (assessment) {
+      setCurrentDomainIndex(0);
+    }
+  }, [assessment]);
+
+  const currentDomain = assessment?.domains?.[currentDomainIndex] || null;
 
   // Start editing - clone entire assessment
   const startEditing = useCallback(() => {
-    setTempAssessment(JSON.parse(JSON.stringify(assessment)));
-    setIsEditing(true);
+    if (assessment) {
+      setTempAssessment(JSON.parse(JSON.stringify(assessment)));
+      setIsEditing(true);
+    }
   }, [assessment]);
 
-  // Save - collect entire assessment data into single payload
+  // Save - send entire assessment via PATCH
   const saveEditing = useCallback(() => {
-    if (tempAssessment) {
-      // Prepare payload for future backend
-      const payload = {
-        ...tempAssessment,
-        // Add any additional fields needed
-        updatedAt: new Date().toISOString(),
-      };
-      setAssessment(tempAssessment);
-      console.log('📦 Save payload:', payload);
-    }
-    setIsEditing(false);
-    setTempAssessment(null);
-  }, [tempAssessment]);
+    if (!tempAssessment || !assessment) return;
+
+    // Remove internal fields that shouldn't be sent to backend
+    const payload = { ...tempAssessment };
+    delete payload._id;
+    delete payload.__v;
+    delete payload.createdAt;
+    delete payload.updatedAt;
+
+    // Call update mutation
+    updateMutation.mutate({
+      id: assessment._id,
+      slug: assessment.slug,
+      data: payload,
+    }, {
+      onSuccess: () => {
+        setIsEditing(false);
+        setTempAssessment(null);
+        refetch();
+      },
+    });
+  }, [tempAssessment, assessment, updateMutation, refetch]);
 
   const cancelEditing = useCallback(() => {
     setIsEditing(false);
@@ -57,8 +89,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -82,8 +112,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -100,8 +128,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -116,11 +142,11 @@ export function useAssessmentBuilder() {
       type: 'single_choice',
       required: true,
       options: [
-        { id: `opt${Date.now()}_1`, label: 'Strongly agree', value: 5 },
-        { id: `opt${Date.now()}_2`, label: 'Agree', value: 4 },
-        { id: `opt${Date.now()}_3`, label: 'Neutral', value: 3 },
-        { id: `opt${Date.now()}_4`, label: 'Disagree', value: 2 },
-        { id: `opt${Date.now()}_5`, label: 'Strongly disagree', value: 1 },
+        { id: `opt${Date.now()}_1`, label: 'Strongly agree', value: 5, score: 5 },
+        { id: `opt${Date.now()}_2`, label: 'Agree', value: 4, score: 4 },
+        { id: `opt${Date.now()}_3`, label: 'Neutral', value: 3, score: 3 },
+        { id: `opt${Date.now()}_4`, label: 'Disagree', value: 2, score: 2 },
+        { id: `opt${Date.now()}_5`, label: 'Strongly disagree', value: 1, score: 1 },
       ],
     };
     
@@ -135,8 +161,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -155,8 +179,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -187,8 +209,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -216,8 +236,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -232,8 +250,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
     
     if (currentDomainIndex >= updated.domains.length - 1) {
@@ -267,8 +283,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
   }, [isEditing, assessment, tempAssessment]);
 
@@ -292,8 +306,6 @@ export function useAssessmentBuilder() {
     
     if (isEditing) {
       setTempAssessment(updated);
-    } else {
-      setAssessment(updated);
     }
     setCurrentDomainIndex(newIndex);
   }, [isEditing, assessment, tempAssessment]);
@@ -301,14 +313,14 @@ export function useAssessmentBuilder() {
   // Navigation
   const goToDomain = useCallback((index) => {
     const data = getData();
-    if (index >= 0 && index < data.domains.length) {
+    if (index >= 0 && index < data?.domains?.length) {
       setCurrentDomainIndex(index);
     }
   }, [getData]);
 
   const nextDomain = useCallback(() => {
     const data = getData();
-    if (currentDomainIndex < data.domains.length - 1) {
+    if (currentDomainIndex < (data?.domains?.length || 0) - 1) {
       setCurrentDomainIndex(currentDomainIndex + 1);
     }
   }, [currentDomainIndex, getData]);
@@ -320,13 +332,15 @@ export function useAssessmentBuilder() {
   }, [currentDomainIndex]);
 
   const currentData = getData();
-  const currentDomainData = currentData?.domains?.[currentDomainIndex] || null;
 
   return {
     assessment: currentData,
-    currentDomain: currentDomainData,
+    currentDomain: currentData?.domains?.[currentDomainIndex] || null,
     currentDomainIndex,
     isEditing,
+    isLoading: isLoading || updateMutation.isPending,
+    error,
+    refetch,
     startEditing,
     saveEditing,
     cancelEditing,
@@ -344,5 +358,6 @@ export function useAssessmentBuilder() {
     moveQuestion,
     updateReflection,
     totalDomains: currentData?.domains?.length || 0,
+    isSaving: updateMutation.isPending,
   };
 }

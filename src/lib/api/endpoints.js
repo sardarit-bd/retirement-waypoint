@@ -56,12 +56,35 @@ export const API_ENDPOINTS = {
     ADMIN_APPROVE: (id) => `/api/reviews/admin/reviews/${id}/approve`,
     ADMIN_REJECT: (id) => `/api/reviews/admin/reviews/${id}/reject`,
   },
-  // Assessments
+  // Assessments - Public (User taking assessment)
   ASSESSMENTS: {
     SUBMIT: '/api/assessments',
     MY_ASSESSMENTS: '/api/assessments/my-assessments',
     SINGLE: (id) => `/api/assessments/${id}`,
     RESULTS: (id) => `/api/assessments/${id}/results`,
+  },
+  // Assessment Admin - Management (Admin)
+  ASSESSMENT_ADMIN: {
+    // Public routes (no auth required)
+    PUBLIC: '/api/assessments/public',
+    PUBLIC_SLUG: (slug) => `/api/assessments/public/${slug}`,
+
+    // Admin routes (auth + admin role required)
+    ADMIN: '/api/assessments',
+    ADMIN_BY_ID: (id) => `/api/assessments/${id}`,
+    ADMIN_BY_SLUG: (slug) => `/api/assessments/slug/${slug}`,
+    ADMIN_STATS: '/api/assessments/stats',
+    ADMIN_DELETED: '/api/assessments/deleted',
+    ADMIN_DUPLICATE: (id) => `/api/assessments/${id}/duplicate`,
+    ADMIN_PUBLISH: (id) => `/api/assessments/${id}/publish`,
+    ADMIN_ARCHIVE: (id) => `/api/assessments/${id}/archive`,
+    ADMIN_RESTORE: (id) => `/api/assessments/${id}/restore`,
+  },
+  // Assessment Landing
+  ASSESSMENT_LANDING: {
+    PUBLIC: '/api/assessment-landing',
+    ADMIN: '/api/assessment-landing/admin',
+    UPDATE: (id) => `/api/assessment-landing/admin/${id}`,
   },
   // Refunds
   REFUNDS: {

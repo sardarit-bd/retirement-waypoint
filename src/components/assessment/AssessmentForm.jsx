@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import {
   Chart as ChartJS,
@@ -19,7 +20,9 @@ import {
   Lock,
   MessageSquareText,
   ShieldCheck,
+  Loader2,
 } from "lucide-react";
+import { useAssessmentSubmission } from "@/features/assessment/public/assessment/hooks/useAssessmentSubmission";
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip);
 
@@ -51,15 +54,26 @@ export default function AssessmentForm({ assessment }) {
   const [current, setCurrent] = useState(0);
   const [user, setUser] = useState({ name: "", email: "" });
   const [answers, setAnswers] = useState({});
+  const [submissionResult, setSubmissionResult] = useState(null);
 
-  const domain = assessment.domains[current];
+  const submissionMutation = useAssessmentSubmission();
+
+  // Handle both old and new data structure
+  const domains = assessment.domains || [];
+  const introduction = assessment.introduction || {};
+  const hero = assessment.hero || {};
+  const assessmentSlug = assessment.slug;
+
+  const domain = domains[current] || {};
 
   const getDomainScore = (item) => {
     let total = 0;
     let count = 0;
 
-    item.items.forEach((_, index) => {
-      const value = answers[`${item.key}_${index}`];
+    (item.questions || item.items || []).forEach((question, index) => {
+      // Use the actual question ID as the key
+      const questionId = question.id || `${item.key}_${index}`;
+      const value = answers[questionId];
 
       if (value) {
         total += value;
@@ -71,24 +85,25 @@ export default function AssessmentForm({ assessment }) {
   };
 
   const overallScore = Math.round(
-    assessment.domains.reduce((sum, item) => sum + getDomainScore(item), 0) /
-      assessment.domains.length,
+    domains.reduce((sum, item) => sum + getDomainScore(item), 0) /
+      (domains.length || 1),
   );
 
-  const totalItems = assessment.domains.reduce(
-    (sum, item) => sum + item.items.length,
+  const totalItems = domains.reduce(
+    (sum, item) => sum + (item.questions || item.items || []).length,
     0,
   );
 
-  const answeredTotal = assessment.domains.reduce((sum, item) => {
-    const count = item.items.filter(
-      (_, index) => answers[`${item.key}_${index}`],
-    ).length;
-
+  const answeredTotal = domains.reduce((sum, item) => {
+    const items = item.questions || item.items || [];
+    const count = items.filter((question, index) => {
+      const questionId = question.id || `${item.key}_${index}`;
+      return answers[questionId];
+    }).length;
     return sum + count;
   }, 0);
 
-  const progressPercent = Math.round((answeredTotal / totalItems) * 100);
+  const progressPercent = Math.round((answeredTotal / (totalItems || 1)) * 100);
 
   const handleStart = () => {
     if (!user.name || !user.email) {
@@ -100,22 +115,104 @@ export default function AssessmentForm({ assessment }) {
     toast.success("Assessment started");
   };
 
-  const handleAnswer = (key, value) => {
+  const handleAnswer = (questionId, value) => {
     setAnswers((prev) => ({
       ...prev,
-      [key]: value,
+      [questionId]: value,
     }));
   };
 
+  const handleSubmit = async () => {
+    // Check if all questions are answered
+    let allAnswered = true;
+    const missingQuestions = [];
+
+    domains.forEach((domain) => {
+      const items = domain.questions || domain.items || [];
+      items.forEach((question, index) => {
+        const questionId = question.id || `${domain.key}_${index}`;
+        if (!answers[questionId]) {
+          allAnswered = false;
+          missingQuestions.push(questionId);
+        }
+      });
+    });
+
+    if (!allAnswered) {
+      toast.error(`Please answer all questions before submitting.`);
+      return;
+    }
+
+    // ============================================================
+    // FIX: Build payload matching backend contract exactly
+    // ============================================================
+
+    // 1. Build flat answers array with actual question IDs
+    const flatAnswers = domains.flatMap((domain) => {
+      const items = domain.questions || domain.items || [];
+      return items.map((question, index) => {
+        const questionId = question.id || `${domain.key}_${index}`;
+        const value = answers[questionId] || 0;
+        // Find the option to get the score
+        const option = scale.find(o => o.value === value);
+        return {
+          questionId: questionId,  // Use actual question.id from backend
+          domainId: domain.id,     // Use actual domain.id from backend
+          value: value,
+          score: option?.value || 0,
+        };
+      });
+    });
+
+    // 2. Build reflections array
+    const reflections = domains.map((domain) => ({
+      domainId: domain.id,
+      domainKey: domain.key,
+      question: domain.reflection?.question || domain.open || '',
+      answer: answers[`${domain.key}_open`] || '',
+    }));
+
+    // 3. Build participant object
+    const participant = {
+      name: user.name.trim(),
+      email: user.email.trim().toLowerCase(),
+    };
+
+    // 4. Final payload - matches backend schema exactly
+    const submissionData = {
+      participant,
+      answers: flatAnswers,
+      reflections,
+    };
+
+    // Log payload for debugging
+    console.log('📦 Submission Payload:', JSON.stringify(submissionData, null, 2));
+
+    // Submit to backend
+    submissionMutation.mutate(
+      {
+        slug: assessmentSlug,
+        data: submissionData,
+      },
+      {
+        onSuccess: (response) => {
+          setSubmissionResult(response.data);
+          setScreen("results");
+        },
+      }
+    );
+  };
+
+  // Chart data for results
   const chartData = {
-    labels: assessment.domains.map((item) => item.label),
+    labels: domains.map((item) => item.label),
     datasets: [
       {
-        data: assessment.domains.map((item) => getDomainScore(item)),
-        backgroundColor: `${assessment.accent}22`,
-        borderColor: assessment.accent,
+        data: domains.map((item) => getDomainScore(item)),
+        backgroundColor: `${assessment.accent || '#C9A84C'}22`,
+        borderColor: assessment.accent || '#C9A84C',
         borderWidth: 2,
-        pointBackgroundColor: assessment.domains.map((item) => item.color),
+        pointBackgroundColor: domains.map((item) => item.color || '#C9A84C'),
         pointBorderColor: "#ffffff",
         pointBorderWidth: 2,
         pointRadius: 5,
@@ -150,6 +247,9 @@ export default function AssessmentForm({ assessment }) {
     },
   };
 
+  const isSubmitting = submissionMutation.isPending;
+
+  // Cover Page
   if (screen === "cover") {
     return (
       <AssessmentShell>
@@ -166,23 +266,23 @@ export default function AssessmentForm({ assessment }) {
             <span
               className="mb-6 inline-block rounded-full px-4 py-1.5 text-sm font-semibold"
               style={{
-                backgroundColor: `${assessment.accent}22`,
+                backgroundColor: `${assessment.accent || '#C9A84C'}22`,
                 color: "#ffffff",
               }}
             >
-              {assessment.segment}
+              {introduction.subtitle || hero.subtitle || assessment.segment || "Retirement Assessment"}
             </span>
 
             <h1 className="mx-auto mb-5 max-w-2xl font-serif text-3xl leading-tight text-white sm:text-4xl">
-              {assessment.title}
+              {introduction.title || hero.title || assessment.title || "Assessment"}
             </h1>
 
             <p className="mb-7 text-sm font-semibold text-[#C9A84C]">
-              {assessment.byline}
+              {assessment.introduction?.author || "David Allen, Ph.D."}
             </p>
 
             <p className="mx-auto max-w-xl text-base leading-8 text-white/70">
-              {assessment.intro ||
+              {introduction.description || hero.description || assessment.intro || 
                 "This assessment measures your retirement readiness across five key behavioral domains."}
             </p>
 
@@ -190,9 +290,9 @@ export default function AssessmentForm({ assessment }) {
 
             <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { icon: Clock, label: "10–12 min" },
-                { icon: BarChart3, label: "15 scaled items" },
-                { icon: MessageSquareText, label: "5 reflections" },
+                { icon: Clock, label: introduction.duration || "10–12 min" },
+                { icon: BarChart3, label: `${totalItems} scaled items` },
+                { icon: MessageSquareText, label: `${domains.length} reflections` },
                 { icon: Lock, label: "Confidential" },
               ].map(({ icon: Icon, label }) => (
                 <div
@@ -214,7 +314,7 @@ export default function AssessmentForm({ assessment }) {
               onClick={() => setScreen("register")}
               className="cursor-pointer rounded-xl bg-[#C9A84C] px-8 py-3.5 text-sm font-semibold text-[#1B2B4B] shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D6B45A] hover:shadow-xl"
             >
-              Begin assessment
+              {introduction.ctaButton || "Begin assessment"}
             </button>
           </div>
         </div>
@@ -222,6 +322,7 @@ export default function AssessmentForm({ assessment }) {
     );
   }
 
+  // Registration Page
   if (screen === "register") {
     return (
       <AssessmentShell>
@@ -300,7 +401,26 @@ export default function AssessmentForm({ assessment }) {
     );
   }
 
+  // Results Page
   if (screen === "results") {
+    const resultData = submissionResult || {
+      overallScore,
+      domainScores: domains.map((item) => ({
+        domainId: item.id,
+        domainKey: item.key,
+        domainLabel: item.label,
+        percentage: getDomainScore(item),
+      })),
+    };
+
+    const displayScore = resultData.overallScore || overallScore;
+    const displayDomainScores = resultData.domainScores || domains.map((item) => ({
+      domainId: item.id,
+      domainKey: item.key,
+      domainLabel: item.label,
+      percentage: getDomainScore(item),
+    }));
+
     return (
       <AssessmentShell>
         <div className="mx-auto max-w-7xl space-y-5">
@@ -310,12 +430,18 @@ export default function AssessmentForm({ assessment }) {
             </div>
 
             <h2 className="text-2xl font-semibold text-white">
-              {user.name} — your {assessment.type} profile
+              {user.name} — your {assessment.type || "Retirement"} profile
             </h2>
 
             <p className="mt-4 text-6xl font-bold text-[#C9A84C]">
-              {overallScore}%
+              {displayScore}%
             </p>
+
+            {resultData?.resultRange && (
+              <p className="mt-4 text-lg text-white/70">
+                {resultData.resultRange.title}
+              </p>
+            )}
           </div>
 
           <div className="grid gap-5 lg:grid-cols-[1fr_1.1fr]">
@@ -327,15 +453,18 @@ export default function AssessmentForm({ assessment }) {
             </div>
 
             <div className="space-y-4">
-              {assessment.domains.map((item) => {
-                const score = getDomainScore(item);
+              {displayDomainScores.map((item, index) => {
+                const domainItem = domains[index] || {};
+                const score = item.percentage || 0;
 
                 return (
-                  <div key={item.key} className={`${glassCard} p-5`}>
+                  <div key={item.domainKey || item.domainId} className={`${glassCard} p-5`}>
                     <div className="mb-2 flex items-center justify-between gap-4">
-                      <h3 className="font-semibold text-white">{item.label}</h3>
+                      <h3 className="font-semibold text-white">
+                        {item.domainLabel || domainItem.label || "Domain"}
+                      </h3>
 
-                      <span className="font-bold" style={{ color: item.color }}>
+                      <span className="font-bold" style={{ color: domainItem.color || '#C9A84C' }}>
                         {score}%
                       </span>
                     </div>
@@ -345,7 +474,7 @@ export default function AssessmentForm({ assessment }) {
                         className="h-2 rounded-full transition-all duration-700"
                         style={{
                           width: `${score}%`,
-                          backgroundColor: item.color,
+                          backgroundColor: domainItem.color || '#C9A84C',
                         }}
                       />
                     </div>
@@ -357,13 +486,24 @@ export default function AssessmentForm({ assessment }) {
 
           <div className={`${glassCard} p-6`}>
             <h3 className="mb-2 text-lg font-semibold text-white">
-              {assessment.nextStepsTitle || "What this means for your planning"}
+              {resultData?.resultRange?.title || assessment.nextStepsTitle || "What this means for your planning"}
             </h3>
 
             <p className="leading-7 text-white/65">
-              {assessment.nextSteps ||
+              {resultData?.resultRange?.description || assessment.nextSteps ||
                 "Domains scoring below 60% are meaningful areas to explore and strengthen as you prepare for your next chapter."}
             </p>
+
+            {resultData?.recommendations && resultData.recommendations.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {resultData.recommendations.map((rec, index) => (
+                  <li key={index} className="text-sm text-white/60 flex items-start gap-2">
+                    <span className="text-[#C9A84C]">•</span>
+                    <span>{rec.text}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="text-center">
@@ -373,6 +513,7 @@ export default function AssessmentForm({ assessment }) {
                 setCurrent(0);
                 setAnswers({});
                 setUser({ name: "", email: "" });
+                setSubmissionResult(null);
                 toast.success("Assessment reset");
               }}
               className="cursor-pointer rounded-xl border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-xl transition hover:bg-white/15"
@@ -385,6 +526,7 @@ export default function AssessmentForm({ assessment }) {
     );
   }
 
+  // Survey Page
   return (
     <AssessmentShell>
       <div className="mx-auto max-w-4xl">
@@ -401,7 +543,7 @@ export default function AssessmentForm({ assessment }) {
           <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-white/50">
             <span>{domain.label}</span>
             <span>
-              Domain {current + 1} of {assessment.domains.length}
+              Domain {current + 1} of {domains.length}
             </span>
           </div>
         </div>
@@ -412,7 +554,7 @@ export default function AssessmentForm({ assessment }) {
               <span
                 className="mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-bold text-white"
                 style={{
-                  backgroundColor: `${domain.color}55`,
+                  backgroundColor: `${domain.color || '#C9A84C'}55`,
                 }}
               >
                 {domain.label}
@@ -428,24 +570,26 @@ export default function AssessmentForm({ assessment }) {
             </div>
 
             <div className="rounded-2xl border border-[#C9A84C]/20 bg-[#C9A84C]/10 px-4 py-3 text-sm font-semibold text-[#C9A84C]">
-              {current * 3 + 1}–{current * 3 + domain.items.length} of{" "}
+              {current * 3 + 1}–{current * 3 + (domain.questions || domain.items || []).length} of{" "}
               {totalItems} items
             </div>
           </div>
 
           <div className="space-y-7">
-            {domain.items.map((item, index) => {
-              const key = `${domain.key}_${index}`;
-              const selected = answers[key];
+            {(domain.questions || domain.items || []).map((question, index) => {
+              // Use the actual question ID for state key
+              const questionId = question.id || `${domain.key}_${index}`;
+              const selected = answers[questionId];
+              const itemText = typeof question === 'string' ? question : question.text || '';
 
               return (
-                <div key={key} className="border-b border-white/10 pb-7">
+                <div key={questionId} className="border-b border-white/10 pb-7">
                   <p className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-white/40">
                     Item {current * 3 + index + 1}
                   </p>
 
                   <p className="mb-4 text-base leading-7 text-white/85">
-                    {item}
+                    {itemText}
                   </p>
 
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-5">
@@ -455,7 +599,7 @@ export default function AssessmentForm({ assessment }) {
                       return (
                         <button
                           key={option.value}
-                          onClick={() => handleAnswer(key, option.value)}
+                          onClick={() => handleAnswer(questionId, option.value)}
                           className="cursor-pointer rounded-xl border px-3 py-3 text-xs font-semibold leading-snug transition-all duration-200 hover:-translate-y-0.5"
                           style={{
                             backgroundColor: isSelected
@@ -491,7 +635,7 @@ export default function AssessmentForm({ assessment }) {
             </label>
 
             <p className="mb-3 text-sm italic leading-7 text-white/70">
-              {domain.open}
+              {domain.reflection?.question || domain.open || ''}
             </p>
 
             <textarea
@@ -508,46 +652,6 @@ export default function AssessmentForm({ assessment }) {
           </div>
         </div>
 
-        {/* <div className={`${glassCard} mb-5 p-5`}>
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-white/45">
-            Live Scoring
-          </p>
-
-          <div className="space-y-3">
-            {assessment.domains.map((item) => {
-              const score = getDomainScore(item);
-
-              return (
-                <div
-                  key={item.key}
-                  className="grid grid-cols-[130px_1fr_42px] items-center gap-3"
-                >
-                  <span className="text-xs text-white/60">{item.label}</span>
-
-                  <div className="h-2 overflow-hidden rounded-full bg-white/15">
-                    <div
-                      className="h-2 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${score}%`,
-                        backgroundColor: item.color,
-                      }}
-                    />
-                  </div>
-
-                  <span
-                    className="text-right text-xs font-bold"
-                    style={{
-                      color: score ? item.color : "rgba(255,255,255,.35)",
-                    }}
-                  >
-                    {score ? `${score}%` : "—"}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div> */}
-
         <div className="flex items-center justify-between gap-3">
           <button
             disabled={current === 0}
@@ -559,18 +663,23 @@ export default function AssessmentForm({ assessment }) {
 
           <button
             onClick={() => {
-              if (current === assessment.domains.length - 1) {
-                setScreen("results");
-                toast.success("Results generated successfully");
+              if (current === domains.length - 1) {
+                handleSubmit();
               } else {
                 setCurrent(current + 1);
               }
             }}
-            className="cursor-pointer rounded-xl bg-[#C9A84C] px-5 py-3 text-sm font-semibold text-[#1B2B4B] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#D6B45A]"
+            disabled={isSubmitting}
+            className="cursor-pointer rounded-xl bg-[#C9A84C] px-5 py-3 text-sm font-semibold text-[#1B2B4B] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#D6B45A] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {current === assessment.domains.length - 1
-              ? "See results"
-              : "Next domain"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="inline h-4 w-4 mr-2 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              current === domains.length - 1 ? "Submit Assessment" : "Next domain"
+            )}
           </button>
         </div>
       </div>

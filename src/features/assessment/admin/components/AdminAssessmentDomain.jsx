@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Edit, Save, X, ChevronLeft, ChevronRight, Plus, Trash2, Copy, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Edit, Save, X, Plus, Trash2, Copy, ChevronUp, ChevronDown, ArrowLeft, Loader2, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,7 +19,6 @@ function QuestionItem({ question, index, domainId, isEditing, onUpdate, onDelete
         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-white/40">
           Item {index + 1}
         </p>
-        {/* Question controls - Only visible in Edit Mode */}
         {isEditing && (
           <div className="flex items-center gap-1">
             <button
@@ -60,7 +58,6 @@ function QuestionItem({ question, index, domainId, isEditing, onUpdate, onDelete
         )}
       </div>
 
-      {/* Question Text - Editable directly in Edit Mode */}
       {isEditing ? (
         <div className="mb-4">
           <Textarea
@@ -74,7 +71,6 @@ function QuestionItem({ question, index, domainId, isEditing, onUpdate, onDelete
         <p className="mb-4 text-base leading-7 text-white/85">{question.text}</p>
       )}
 
-      {/* Options - Always visible, not editable in this phase */}
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-5">
         {scaleOptions.map((option) => (
           <button
@@ -110,7 +106,6 @@ function ReflectionBlock({ domain, domainId, isEditing, onUpdate }) {
         )}
       </div>
 
-      {/* Reflection - Editable directly in Edit Mode */}
       {isEditing ? (
         <div>
           <Textarea
@@ -142,6 +137,7 @@ export function AdminAssessmentDomain({
   domainIndex,
   totalDomains,
   isEditing,
+  isSaving = false,
   onUpdateDomain,
   onDeleteDomain,
   onDuplicateDomain,
@@ -159,11 +155,10 @@ export function AdminAssessmentDomain({
   onCancelEditing,
 }) {
   const router = useRouter();
-  const totalItems = domain.questions.length;
+  const totalItems = domain?.questions?.length || 0;
   const startItem = domainIndex * 3 + 1;
   const endItem = domainIndex * 3 + totalItems;
 
-  // Handle field changes directly - no extra clicks
   const handleDomainFieldChange = (field, value) => {
     onUpdateDomain(domain.id, { [field]: value });
   };
@@ -171,6 +166,16 @@ export function AdminAssessmentDomain({
   const handleBackToIntroduction = () => {
     router.push(`/admin/assessments/${assessmentId}/introduction`);
   };
+
+  if (!domain) {
+    return (
+      <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-5xl text-center">
+          <p className="text-white/70 text-lg">Loading domain...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8">
@@ -181,7 +186,6 @@ export function AdminAssessmentDomain({
       </div>
 
       <div className="relative z-10 mx-auto max-w-5xl">
-        {/* Top Navigation - Back to Introduction */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={handleBackToIntroduction}
@@ -192,26 +196,35 @@ export function AdminAssessmentDomain({
           </button>
         </div>
 
-        {/* Main Content */}
         <div className={`mx-auto max-w-4xl ${glassCard}`}>
           <div className="p-6 sm:p-8">
-            {/* Edit Controls */}
             <div className="flex justify-end mb-6">
               {isEditing ? (
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={onCancelEditing}
-                    className="rounded-full border border-white/15 bg-transparent px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
+                    disabled={isSaving}
+                    className="rounded-full border border-white/15 bg-transparent px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50"
                   >
                     <X className="mr-1 h-3.5 w-3.5" />
                     Cancel
                   </Button>
                   <Button
                     onClick={onSaveEditing}
-                    className="rounded-full bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20"
+                    disabled={isSaving}
+                    className="rounded-full bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 disabled:opacity-50"
                   >
-                    <Save className="mr-1 h-3.5 w-3.5" />
-                    Save Changes
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-1 h-3.5 w-3.5" />
+                        Save Changes
+                      </>
+                    )}
                   </Button>
                 </div>
               ) : (
@@ -225,10 +238,8 @@ export function AdminAssessmentDomain({
               )}
             </div>
 
-            {/* Domain Header */}
             <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
               <div className="flex-1">
-                {/* Domain Label Badge - Editable in Edit Mode */}
                 <span
                   className="mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-bold text-white"
                   style={{ backgroundColor: `${domain.color}55` }}
@@ -244,7 +255,6 @@ export function AdminAssessmentDomain({
                   )}
                 </span>
 
-                {/* Domain Title - Editable in Edit Mode */}
                 <h2 className="mb-2 text-2xl font-semibold text-white">
                   {isEditing ? (
                     <Input
@@ -257,7 +267,6 @@ export function AdminAssessmentDomain({
                   )}
                 </h2>
 
-                {/* Domain Description - Editable in Edit Mode */}
                 <p className="max-w-2xl text-sm leading-7 text-white/65">
                   {isEditing ? (
                     <Textarea
@@ -271,7 +280,6 @@ export function AdminAssessmentDomain({
                   )}
                 </p>
 
-                {/* Domain Actions - Only in Edit Mode */}
                 {isEditing && (
                   <div className="flex items-center gap-2 mt-3">
                     <button
@@ -308,7 +316,6 @@ export function AdminAssessmentDomain({
               </div>
             </div>
 
-            {/* Questions */}
             <div className="space-y-7">
               <AnimatePresence>
                 {domain.questions.map((question, index) => (
@@ -328,7 +335,6 @@ export function AdminAssessmentDomain({
               </AnimatePresence>
             </div>
 
-            {/* Add Question Button - Only in Edit Mode */}
             {isEditing && (
               <div className="pt-2">
                 <Button
@@ -341,7 +347,6 @@ export function AdminAssessmentDomain({
               </div>
             )}
 
-            {/* Reflection Block */}
             <ReflectionBlock
               domain={domain}
               domainId={domain.id}
@@ -349,7 +354,6 @@ export function AdminAssessmentDomain({
               onUpdate={onUpdateReflection}
             />
 
-            {/* Bottom Navigation */}
             <div className="flex items-center justify-between gap-3 mt-7">
               <button
                 disabled={domainIndex === 0}
