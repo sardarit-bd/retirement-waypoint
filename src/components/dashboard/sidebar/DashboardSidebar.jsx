@@ -38,17 +38,12 @@ const userMenuSections = [
       { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
       { icon: BookOpen, label: 'My Books', href: '/dashboard/my-books' },
       { icon: ShoppingBag, label: 'Orders', href: '/dashboard/orders' },
-      // { icon: FileText, label: 'Invoices', href: '/dashboard/invoices' },
     ],
   },
   {
     title: 'Account',
     items: [
-      // { icon: Star, label: 'Reviews', href: '/dashboard/reviews' },
-      // { icon: ClipboardCheck, label: 'Assessments', href: '/dashboard/assessments' },
-      // { icon: RefreshCw, label: 'Refunds', href: '/dashboard/refunds' },
       { icon: User, label: 'Profile', href: '/dashboard/profile' },
-      // { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
     ],
   },
 ];
@@ -59,7 +54,7 @@ const adminMenuSections = [
     title: 'Main',
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
-      { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
+      // { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
       { icon: BookMarked, label: 'Books', href: '/admin/books' },
       { icon: ShoppingCart, label: 'Orders', href: '/admin/orders' },
       { icon: Star, label: 'Reviews', href: '/admin/reviews' },

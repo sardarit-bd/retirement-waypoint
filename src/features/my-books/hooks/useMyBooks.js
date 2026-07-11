@@ -36,3 +36,16 @@ export function useDownloadBook() {
     },
   });
 }
+
+/**
+ * Get read URL for a purchased book
+ */
+export const useGetReadUrl = (bookId) => {
+  return useQuery({
+    queryKey: ['my-book-read', bookId],
+    queryFn: () => getReadUrl(bookId),
+    enabled: !!bookId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+  });
+};

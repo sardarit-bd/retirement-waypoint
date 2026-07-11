@@ -47,11 +47,40 @@ const Navbar = () => {
   const { session, isLoading } = useSession();
   const user = session?.user || null;
   const isAuthenticated = !!user;
+  const isAdmin = user?.role === "admin";
 
   const [scrolled, setScrolled] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [darkNavbar, setDarkNavbar] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  // ============================================================
+  // ROLE-BASED MENU ITEMS - Single Source of Truth
+  // ============================================================
+
+  // Regular user menu items
+  const userMenuItems = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+    { icon: BookOpen, label: "My Books", href: "/my-books" },
+    { icon: ShoppingBag, label: "Orders", href: "/orders" },
+    { icon: FileText, label: "Invoices", href: "/invoices" },
+    { icon: Star, label: "Reviews", href: "/reviews" },
+    { icon: Settings, label: "Profile Settings", href: "/profile" },
+  ];
+
+  // Admin menu items
+  const adminMenuItems = [
+    { icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" },
+  ];
+
+  // ============================================================
+  // Single menu based on role
+  // ============================================================
+  const menuItems = isAdmin ? adminMenuItems : userMenuItems;
+
+  // ============================================================
+  // EFFECTS
+  // ============================================================
 
   useEffect(() => {
     const handleScroll = () => {
@@ -101,6 +130,10 @@ const Navbar = () => {
     };
   }, [pathname, isBookDetailsPage]);
 
+  // ============================================================
+  // HANDLERS
+  // ============================================================
+
   const handleLinkClick = () => {
     setIsDrawerOpen(false);
   };
@@ -112,12 +145,9 @@ const Navbar = () => {
         fetchOptions: {
           onSuccess: () => {
             toast.success("👋 You have been signed out successfully.");
-
             setIsDrawerOpen(false);
-
             window.location.href = "/";
           },
-
           onError: (ctx) => {
             toast.error(ctx.error?.message || "Failed to sign out.");
           },
@@ -133,11 +163,14 @@ const Navbar = () => {
     }
   };
 
+  // ============================================================
+  // HELPERS
+  // ============================================================
+
   const isActiveLink = (href) => {
     if (href === "/") {
       return pathname === "/";
     }
-
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
@@ -150,6 +183,10 @@ const Navbar = () => {
     ).toUpperCase();
   };
 
+  // ============================================================
+  // STYLES
+  // ============================================================
+
   const desktopNavTextClass = darkNavbar
     ? "text-[#1B2B4B]/85 hover:bg-[#1B2B4B]/10 hover:text-[#1B2B4B]"
     : "text-white/85 hover:bg-white/10 hover:text-white";
@@ -158,27 +195,9 @@ const Navbar = () => {
     ? "border-[#1B2B4B]/20 bg-white/70 text-[#1B2B4B] hover:bg-white hover:text-[#1B2B4B]"
     : "border-white/20 bg-white/10 text-white hover:bg-white/20 hover:text-white";
 
-  // Profile dropdown items
-  const profileItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: BookOpen, label: "My Books", href: "/my-books" },
-    { icon: ShoppingBag, label: "Orders", href: "/orders" },
-    { icon: FileText, label: "Invoices", href: "/invoices" },
-    { icon: Star, label: "Reviews", href: "/reviews" },
-    { icon: Settings, label: "Profile Settings", href: "/profile" },
-  ];
-
-  const adminItems = [
-    { icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" },
-    { icon: BarChart3, label: "Analytics", href: "/admin/analytics" },
-    { icon: BookMarked, label: "Books Management", href: "/admin/books" },
-    { icon: ShoppingCart, label: "Orders", href: "/admin/orders" },
-    { icon: Ticket, label: "Coupons", href: "/admin/coupons" },
-    { icon: RefreshCw, label: "Refunds", href: "/admin/refunds" },
-    { icon: Users, label: "Users", href: "/admin/users" },
-  ];
-
-  const isAdmin = user?.role === "admin";
+  // ============================================================
+  // RENDER
+  // ============================================================
 
   return (
     <>
@@ -226,7 +245,6 @@ const Navbar = () => {
               {/* Profile Section - Desktop */}
               <div className="ml-2">
                 {isLoading ? (
-                  // Loading skeleton
                   <div className="h-10 w-10 rounded-full bg-white/10 animate-pulse" />
                 ) : isAuthenticated ? (
                   <DropdownMenu>
@@ -252,7 +270,7 @@ const Navbar = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      className="w-56 border-white/10 bg-slate-900/20 backdrop-blur-3xl text-white shadow-2xl"
+                      className="w-56 border-white/10 bg-slate-900/60 backdrop-blur-3xl text-white shadow-2xl"
                     >
                       <DropdownMenuLabel className="flex items-center gap-2 p-3">
                         <Avatar className="h-8 w-8 border-2 border-white/20">
@@ -265,7 +283,6 @@ const Navbar = () => {
                           <span className="truncate text-sm font-medium text-white">
                             {user?.name}
                           </span>
-
                           <span
                             className="truncate text-xs text-slate-400"
                             title={user?.email}
@@ -276,8 +293,10 @@ const Navbar = () => {
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator className="bg-white/10" />
 
-                      {/* Regular User Items */}
-                      {profileItems.map((item) => (
+                      {/* ============================================================
+                          SINGLE ROLE-BASED MENU - Desktop
+                          ============================================================ */}
+                      {menuItems.map((item) => (
                         <DropdownMenuItem key={item.label} asChild>
                           <Link
                             href={item.href}
@@ -288,27 +307,6 @@ const Navbar = () => {
                           </Link>
                         </DropdownMenuItem>
                       ))}
-
-                      {/* Admin Items */}
-                      {isAdmin && (
-                        <>
-                          <DropdownMenuSeparator className="bg-white/10" />
-                          <DropdownMenuLabel className="px-3 py-1.5 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                            Admin
-                          </DropdownMenuLabel>
-                          {adminItems.map((item) => (
-                            <DropdownMenuItem key={item.label} asChild>
-                              <Link
-                                href={item.href}
-                                className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
-                              >
-                                <item.icon className="h-4 w-4" />
-                                {item.label}
-                              </Link>
-                            </DropdownMenuItem>
-                          ))}
-                        </>
-                      )}
 
                       <DropdownMenuSeparator className="bg-white/10" />
                       <DropdownMenuItem
@@ -422,8 +420,10 @@ const Navbar = () => {
                           <div className="mt-2 border-t border-white/10 pt-2">
                             {isAuthenticated ? (
                               <>
-                                {/* Mobile Profile Menu Items */}
-                                {profileItems.map((item) => (
+                                {/* ============================================================
+                                    SINGLE ROLE-BASED MENU - Mobile
+                                    ============================================================ */}
+                                {menuItems.map((item) => (
                                   <Link
                                     key={item.label}
                                     href={item.href}
@@ -434,25 +434,6 @@ const Navbar = () => {
                                     {item.label}
                                   </Link>
                                 ))}
-
-                                {isAdmin && (
-                                  <>
-                                    <div className="mt-1 px-4 py-1 text-xs font-medium text-slate-500 uppercase tracking-wider">
-                                      Admin
-                                    </div>
-                                    {adminItems.map((item) => (
-                                      <Link
-                                        key={item.label}
-                                        href={item.href}
-                                        onClick={handleLinkClick}
-                                        className="flex cursor-pointer items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-white/85 transition-all duration-300 hover:bg-white/10 hover:text-white"
-                                      >
-                                        <item.icon className="h-5 w-5" />
-                                        {item.label}
-                                      </Link>
-                                    ))}
-                                  </>
-                                )}
 
                                 <button
                                   onClick={handleSignOut}
