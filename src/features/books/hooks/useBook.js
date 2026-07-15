@@ -48,3 +48,43 @@ export function useBook(slug) {
     refetch: fetchBook,
   };
 }
+
+export function useLatestBooks(limit = 4) {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchLatestBooks = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await bookApi.getPublicBooks({
+        limit,
+        sortBy: 'publishedAt',
+        sortOrder: 'desc',
+      });
+      setBooks(response.data ?? []);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Failed to fetch latest books");
+      } else {
+        setError("An unexpected error occurred");
+      }
+      setBooks([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [limit]);
+
+  useEffect(() => {
+    fetchLatestBooks();
+  }, [fetchLatestBooks]);
+
+  return {
+    data: { data: books },
+    isLoading: loading,
+    error,
+    refetch: fetchLatestBooks,
+  };
+}

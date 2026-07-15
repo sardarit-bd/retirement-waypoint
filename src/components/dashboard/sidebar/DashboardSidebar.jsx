@@ -172,7 +172,7 @@ export function DashboardSidebar() {
         className={cn(
           'fixed z-50 transition-all duration-300 ease-in-out',
           'lg:top-[88px] lg:left-5 lg:bottom-5 lg:rounded-[32px]',
-          'top-[72px] left-0 bottom-0 rounded-none lg:rounded-[32px]',
+          'top-0 left-0 bottom-0 rounded-none lg:rounded-[32px]',
           isCollapsed ? 'lg:w-[88px]' : 'lg:w-[280px]',
           isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -185,7 +185,7 @@ export function DashboardSidebar() {
         }}
       >
         {/* Sidebar Content */}
-        <div className="flex h-full flex-col overflow-hidden">
+        <div className="flex h-full top-0 flex-col overflow-hidden">
           {/* Brand Area */}
           {!isCollapsed && (
             <motion.div
@@ -321,7 +321,7 @@ export function DashboardSidebar() {
               whileTap={{ scale: 0.98 }}
               onClick={handleSignOut}
               className={cn(
-                'flex w-full items-center rounded-xl px-3 py-3.5 text-sm font-medium transition-all duration-300',
+                'flex w-full items-center rounded-xl px-3 py-3.5 text-sm font-medium transition-all duration-300 cursor-pointer',
                 isCollapsed ? 'justify-center' : 'gap-3',
                 'bg-red-500/8 text-red-400/90 hover:bg-red-500/16 hover:text-red-300',
                 'border border-red-500/20 hover:border-red-500/30'

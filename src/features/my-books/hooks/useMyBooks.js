@@ -2,8 +2,7 @@
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/lib/query-client';
-import { myBooksApi } from '../services/myBooks.api';
-import toast from 'react-hot-toast';
+import { myBooksApi, getReadUrl } from '../services/myBooks.api'; 
 
 export function useMyBooks(params = {}) {
   return useQuery({
@@ -45,7 +44,7 @@ export const useGetReadUrl = (bookId) => {
     queryKey: ['my-book-read', bookId],
     queryFn: () => getReadUrl(bookId),
     enabled: !!bookId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     retry: 1,
   });
 };

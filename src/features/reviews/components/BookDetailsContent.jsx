@@ -72,7 +72,7 @@ export const BookDetailsContent = ({ book }) => {
 
     if (!isAuthenticated) {
       toast.error("Please login to purchase this book");
-      router.push("/auth/login");
+      router.push("/auth");
       return;
     }
 

@@ -69,7 +69,7 @@ export const BookCard = ({ book }) => {
           <div className="mt-6">
             <Button
               asChild
-              className="w-full h-11 cursor-pointer rounded-2xl bg-[#1B2B4B] text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#1B2B4B]"
+              className="w-full h-11 cursor-pointer rounded-2xl bg-[#1B2B4B] text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#C9A84C]"
             >
               <Link href={`/book/${book.slug}`}>
                 <Eye className="mr-1.5 h-4 w-4" />
