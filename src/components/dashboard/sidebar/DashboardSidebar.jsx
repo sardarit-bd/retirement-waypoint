@@ -12,19 +12,15 @@ import {
   ShoppingBag,
   FileText,
   Star,
-  ClipboardCheck,
-  RefreshCw,
   User,
-  Settings,
   ChevronLeft,
   ChevronRight,
   LogOut,
-  Users,
-  BarChart3,
   BookMarked,
   ShoppingCart,
   Ticket,
   Sparkles,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from '@/lib/auth-client';
@@ -54,7 +50,6 @@ const adminMenuSections = [
     title: 'Main',
     items: [
       { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
-      // { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
       { icon: BookMarked, label: 'Books', href: '/admin/books' },
       { icon: ShoppingCart, label: 'Orders', href: '/admin/orders' },
       { icon: Star, label: 'Reviews', href: '/admin/reviews' },
@@ -65,6 +60,7 @@ const adminMenuSections = [
     items: [
       { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
       { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
+      { icon: Users, label: 'Assessment Participants', href: '/admin/assessment-participants' },
     ],
   },
 ];

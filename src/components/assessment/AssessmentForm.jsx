@@ -49,10 +49,36 @@ const AssessmentShell = ({ children }) => {
   );
 };
 
+// Letters, with single spaces/apostrophes/hyphens allowed *between* letter
+// groups (blocks leading/trailing/duplicated separators and digits/symbols).
+const NAME_REGEX = /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const validateName = (value) => {
+  const trimmed = value.trim();
+  if (!trimmed) return "Name is required.";
+  if (trimmed.length < 2) return "Name must be at least 2 characters.";
+  if (trimmed.length > 100) return "Name must be at most 100 characters.";
+  if (!NAME_REGEX.test(trimmed)) {
+    return "Please enter a valid name (letters, spaces, apostrophes, and hyphens only).";
+  }
+  return "";
+};
+
+const validateEmail = (value) => {
+  const trimmed = value.trim();
+  if (!trimmed) return "Email address is required.";
+  if (!EMAIL_REGEX.test(trimmed)) {
+    return "Please enter a valid email address.";
+  }
+  return "";
+};
+
 export default function AssessmentForm({ assessment }) {
   const [screen, setScreen] = useState("cover");
   const [current, setCurrent] = useState(0);
   const [user, setUser] = useState({ name: "", email: "" });
+  const [errors, setErrors] = useState({ name: "", email: "" });
   const [answers, setAnswers] = useState({});
   const [submissionResult, setSubmissionResult] = useState(null);
 
@@ -106,11 +132,21 @@ export default function AssessmentForm({ assessment }) {
   const progressPercent = Math.round((answeredTotal / (totalItems || 1)) * 100);
 
   const handleStart = () => {
-    if (!user.name || !user.email) {
-      toast.error("Please enter your name and email");
+    const nameError = validateName(user.name);
+    const emailError = validateEmail(user.email);
+
+    if (nameError || emailError) {
+      setErrors({ name: nameError, email: emailError });
+      toast.error(nameError || emailError);
       return;
     }
 
+    setErrors({ name: "", email: "" });
+    setUser((prev) => ({
+      ...prev,
+      name: prev.name.trim(),
+      email: prev.email.trim().toLowerCase(),
+    }));
     setScreen("survey");
     toast.success("Assessment started");
   };
@@ -355,22 +391,58 @@ export default function AssessmentForm({ assessment }) {
               Your name
             </label>
             <input
-              className="mb-5 w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#C9A84C] focus:ring-2 focus:ring-[#C9A84C]/20"
+              className={`mb-1 w-full rounded-xl border bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:ring-2 ${
+                errors.name
+                  ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
+                  : "border-white/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
+              }`}
               placeholder="Your name"
               value={user.name}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setUser({ ...user, name: value });
+                if (errors.name) {
+                  setErrors((prev) => ({ ...prev, name: "" }));
+                }
+              }}
+              onBlur={() =>
+                setErrors((prev) => ({ ...prev, name: validateName(user.name) }))
+              }
             />
+            {errors.name ? (
+              <p className="mb-5 text-xs font-medium text-red-300">{errors.name}</p>
+            ) : (
+              <div className="mb-5" />
+            )}
 
             <label className="mb-2 block text-sm font-semibold text-white/70">
               Email address
             </label>
             <input
-              className="mb-5 w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-[#C9A84C] focus:ring-2 focus:ring-[#C9A84C]/20"
+              className={`mb-1 w-full rounded-xl border bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:ring-2 ${
+                errors.email
+                  ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
+                  : "border-white/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
+              }`}
               placeholder="you@example.com"
               type="email"
               value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setUser({ ...user, email: value });
+                if (errors.email) {
+                  setErrors((prev) => ({ ...prev, email: "" }));
+                }
+              }}
+              onBlur={() =>
+                setErrors((prev) => ({ ...prev, email: validateEmail(user.email) }))
+              }
             />
+            {errors.email ? (
+              <p className="mb-5 text-xs font-medium text-red-300">{errors.email}</p>
+            ) : (
+              <div className="mb-5" />
+            )}
 
             <div className="mb-7 flex gap-2 rounded-2xl border border-[#C9A84C]/20 bg-[#C9A84C]/10 p-4 text-sm leading-6 text-white/65">
               <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A84C]" />

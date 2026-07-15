@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import AssessmentForm from '@/components/assessment/AssessmentForm';
 import { usePublicAssessment } from '@/features/assessment/admin/hooks/useAssessmentQueries';
+import Link from 'next/link';
 
 const AssessmentDetailPage = () => {
   const params = useParams();
