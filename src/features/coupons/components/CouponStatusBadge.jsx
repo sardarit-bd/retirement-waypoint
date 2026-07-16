@@ -33,9 +33,9 @@ export function CouponStatusBadge({ coupon, size = 'default' }) {
   }
 
   const sizeClasses = {
-    sm: 'px-2 py-0.5 text-[10px]',
-    default: 'px-3 py-1 text-xs',
-    lg: 'px-4 py-1.5 text-sm',
+    sm: 'px-1.5 py-0.5 text-[8px] sm:text-[10px]',
+    default: 'px-2 sm:px-3 py-0.5 sm:py-1 text-[9px] sm:text-[10px] md:text-xs',
+    lg: 'px-2.5 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm',
   };
 
   const Icon = icon;
@@ -43,12 +43,15 @@ export function CouponStatusBadge({ coupon, size = 'default' }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border font-medium',
+        'inline-flex items-center gap-1 rounded-full border font-medium',
         color,
         sizeClasses[size] || sizeClasses.default
       )}
     >
-      <Icon className={cn('h-3 w-3', size === 'sm' && 'h-2.5 w-2.5')} />
+      <Icon className={cn(
+        'h-2 w-2 sm:h-2.5 sm:w-2.5 md:h-3 md:w-3',
+        size === 'sm' && 'h-1.5 w-1.5 sm:h-2 sm:w-2 md:h-2.5 md:w-2.5'
+      )} />
       {label}
     </span>
   );

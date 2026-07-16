@@ -30,12 +30,12 @@ export default function CouponDetailsPage() {
   };
 
   return (
-    <div className="py-6">
+    <div className="py-4 sm:py-6 px-3 sm:px-0">
       <CouponDetailsCard coupon={coupon} isLoading={isLoading} />
 
       {/* Usage History */}
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold text-[#1B2B4B] mb-4">Usage History</h2>
+      <div className="mt-4 sm:mt-6">
+        <h2 className="text-base sm:text-lg font-semibold text-[#1B2B4B] mb-3 sm:mb-4">Usage History</h2>
         <CouponUsageTable
           usages={usages}
           meta={meta}
