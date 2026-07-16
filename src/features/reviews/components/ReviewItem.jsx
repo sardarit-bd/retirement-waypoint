@@ -19,15 +19,14 @@ export const ReviewItem = ({ review }) => {
     year: "numeric",
   });
 
-  console.log("Review Item: ", review)
   const userName = user?.name || "Anonymous User";
   const userInitial = userName.charAt(0).toUpperCase();
 
   return (
-    <div className="py-2">
+    <div className="py-2 sm:py-3">
       {/* Header Row */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Avatar */}
           <ReviewAvatar
             name={userName}
@@ -36,11 +35,13 @@ export const ReviewItem = ({ review }) => {
           />
 
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-[#1B2B4B]">{userName}</span>
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+              <span className="font-semibold text-[#1B2B4B] text-sm sm:text-base">
+                {userName}
+              </span>
               {isVerifiedPurchase && (
-                <div className="flex items-center gap-1 text-xs text-green-600">
-                  <ShieldCheck className="h-3 w-3" />
+                <div className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs text-green-600">
+                  <ShieldCheck className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   <span>Verified Purchase</span>
                 </div>
               )}
@@ -51,7 +52,7 @@ export const ReviewItem = ({ review }) => {
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
-                  className={`h-4 w-4 ${
+                  className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${
                     star <= rating
                       ? "fill-[#C9A84C] text-[#C9A84C]"
                       : "fill-gray-200 text-gray-200"
@@ -63,17 +64,19 @@ export const ReviewItem = ({ review }) => {
         </div>
 
         {/* Date - Right aligned */}
-        <span className="text-sm text-[#1B2B4B]/50 whitespace-nowrap">
+        <span className="text-xs sm:text-sm text-[#1B2B4B]/50 whitespace-nowrap">
           {formattedDate}
         </span>
       </div>
 
       {/* Content */}
-      <div className="mt-2 ml-12">
+      <div className="mt-2 ml-0 sm:ml-12">
         {title && (
-          <h4 className="font-semibold text-[#1B2B4B] text-base">{title}</h4>
+          <h4 className="font-semibold text-[#1B2B4B] text-sm sm:text-base">
+            {title}
+          </h4>
         )}
-        <p className="text-[#1B2B4B]/80 text-sm leading-relaxed mt-1">
+        <p className="text-[#1B2B4B]/80 text-xs sm:text-sm leading-relaxed mt-1">
           {comment}
         </p>
       </div>

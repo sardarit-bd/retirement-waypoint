@@ -38,23 +38,23 @@ export const RatingDistribution = ({ distribution = {}, totalReviews = 0 }) => {
   ];
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5 sm:space-y-2">
       {starLabels.map(({ rating, stars }) => {
         const count = getCount(rating);
         const percentage = getPercentage(rating);
         const animatedPercentage = isAnimated ? animatedValues[rating] || 0 : 0;
 
         return (
-          <div key={rating} className="flex items-center gap-3">
+          <div key={rating} className="flex items-center gap-2 sm:gap-3">
             {/* Star Label */}
-            <div className="flex items-center gap-1 min-w-[80px]">
-              <span className="text-sm font-medium text-[#1B2B4B]">
+            <div className="flex items-center gap-1 min-w-[60px] sm:min-w-[70px] md:min-w-[80px]">
+              <span className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                 {rating} Star
               </span>
             </div>
 
             {/* Progress Bar Container */}
-            <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-[#C9A84C] rounded-full transition-all duration-1000 ease-out"
                 style={{
@@ -65,8 +65,8 @@ export const RatingDistribution = ({ distribution = {}, totalReviews = 0 }) => {
             </div>
 
             {/* Count */}
-            <div className="min-w-[40px] text-right">
-              <span className="text-sm text-[#1B2B4B]/70">
+            <div className="min-w-[30px] sm:min-w-[40px] text-right">
+              <span className="text-xs sm:text-sm text-[#1B2B4B]/70">
                 {count.toLocaleString()}
               </span>
             </div>

@@ -49,97 +49,99 @@ export function AdminReviewFilters({
   )?.label || 'All Ratings';
 
   return (
-    <div className={`rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-4 shadow-[0_15px_50px_rgba(4,16,58,0.08)]`}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Search */}
-          <motion.div
-            animate={{ scale: isSearchFocused ? 1.02 : 1 }}
-            className="relative flex-1 min-w-[200px]"
-          >
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1B2B4B]/40" />
-            <Input
-              type="text"
-              placeholder="Search reviews..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-              className="w-full rounded-full border-white/20 bg-[#F8F5EF] pl-9 pr-4 py-2 text-sm text-[#1B2B4B] placeholder:text-[#1B2B4B]/40 focus:border-[#C9A84C]/50 focus:ring-[#C9A84C]/20 sm:w-48 lg:w-64"
-            />
-          </motion.div>
-
-          {/* Status Filter */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="rounded-full border-white/20 bg-[#F8F5EF] px-4 py-2 text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30"
-              >
-                <Filter className="mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Status: {currentStatusLabel}</span>
-                <span className="sm:hidden">Status</span>
-                <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="rounded-2xl border-white/20 bg-white/90 backdrop-blur-xl p-1.5 shadow-xl"
+    <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-3 sm:p-4 shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            {/* Search */}
+            <motion.div
+              animate={{ scale: isSearchFocused ? 1.02 : 1 }}
+              className="relative flex-1 min-w-[140px] sm:min-w-[200px]"
             >
-              {STATUS_OPTIONS.map((option) => (
-                <DropdownMenuItem
-                  key={option.value}
-                  onClick={() => onStatusFilterChange(option.value)}
-                  className={cn(
-                    'rounded-xl px-4 py-2.5 text-sm cursor-pointer transition-colors',
-                    statusFilter === option.value
-                      ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
-                      : 'text-[#1B2B4B] hover:bg-[#F8F5EF]'
-                  )}
-                >
-                  {option.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <Search className="absolute left-2.5 sm:left-3 top-1/2 h-3.5 w-3.5 sm:h-4 sm:w-4 -translate-y-1/2 text-[#1B2B4B]/40" />
+              <Input
+                type="text"
+                placeholder="Search reviews..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+                className="w-full rounded-full border-white/20 bg-[#F8F5EF] pl-7 sm:pl-9 pr-3 sm:pr-4 py-1.5 sm:py-2 text-xs sm:text-sm text-[#1B2B4B] placeholder:text-[#1B2B4B]/40 focus:border-[#C9A84C]/50 focus:ring-[#C9A84C]/20 sm:w-40 lg:w-64"
+              />
+            </motion.div>
 
-          {/* Rating Filter */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="rounded-full border-white/20 bg-[#F8F5EF] px-4 py-2 text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30"
+            {/* Status Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="rounded-full border-white/20 bg-[#F8F5EF] px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30 cursor-pointer"
+                >
+                  <Filter className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span className="hidden xs:inline">Status: {currentStatusLabel}</span>
+                  <span className="xs:hidden">Status</span>
+                  <ChevronDown className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="rounded-2xl border-white/20 bg-white/90 backdrop-blur-xl p-1.5 shadow-xl min-w-[140px]"
               >
-                <Star className="mr-2 h-4 w-4 text-[#C9A84C]" />
-                <span className="hidden sm:inline">{currentRatingLabel}</span>
-                <span className="sm:hidden">Rating</span>
-                <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="rounded-2xl border-white/20 bg-white/90 backdrop-blur-xl p-1.5 shadow-xl"
-            >
-              {RATING_OPTIONS.map((option) => (
-                <DropdownMenuItem
-                  key={option.value}
-                  onClick={() => onRatingFilterChange(option.value)}
-                  className={cn(
-                    'rounded-xl px-4 py-2.5 text-sm cursor-pointer transition-colors',
-                    ratingFilter === option.value
-                      ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
-                      : 'text-[#1B2B4B] hover:bg-[#F8F5EF]'
-                  )}
-                >
-                  {option.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                {STATUS_OPTIONS.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => onStatusFilterChange(option.value)}
+                    className={cn(
+                      'rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm cursor-pointer transition-colors',
+                      statusFilter === option.value
+                        ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
+                        : 'text-[#1B2B4B] hover:bg-[#F8F5EF]'
+                    )}
+                  >
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-        <div className="text-sm text-[#1B2B4B]/50 whitespace-nowrap">
-          {isLoading ? 'Loading...' : `${totalReviews || 0} review${totalReviews !== 1 ? 's' : ''}`}
+            {/* Rating Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="rounded-full border-white/20 bg-[#F8F5EF] px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30 cursor-pointer"
+                >
+                  <Star className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#C9A84C]" />
+                  <span className="hidden xs:inline">{currentRatingLabel}</span>
+                  <span className="xs:hidden">Rating</span>
+                  <ChevronDown className="ml-1.5 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="rounded-2xl border-white/20 bg-white/90 backdrop-blur-xl p-1.5 shadow-xl min-w-[140px]"
+              >
+                {RATING_OPTIONS.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    onClick={() => onRatingFilterChange(option.value)}
+                    className={cn(
+                      'rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm cursor-pointer transition-colors',
+                      ratingFilter === option.value
+                        ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
+                        : 'text-[#1B2B4B] hover:bg-[#F8F5EF]'
+                    )}
+                  >
+                    {option.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <div className="text-xs sm:text-sm text-[#1B2B4B]/50 whitespace-nowrap">
+            {isLoading ? 'Loading...' : `${totalReviews || 0} review${totalReviews !== 1 ? 's' : ''}`}
+          </div>
         </div>
       </div>
     </div>

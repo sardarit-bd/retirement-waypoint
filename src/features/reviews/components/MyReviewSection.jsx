@@ -98,9 +98,9 @@ export const MyReviewSection = ({
 
   if (isLoading) {
     return (
-      <div className="py-4 border-t border-[#1B2B4B]/10 animate-pulse">
-        <div className="h-6 w-48 bg-gray-200 rounded" />
-        <div className="mt-3 h-20 bg-gray-200 rounded" />
+      <div className="py-3 sm:py-4 border-t border-[#1B2B4B]/10 animate-pulse">
+        <div className="h-5 sm:h-6 w-32 sm:w-48 bg-gray-200 rounded" />
+        <div className="mt-2 sm:mt-3 h-16 sm:h-20 bg-gray-200 rounded" />
       </div>
     );
   }
@@ -108,10 +108,10 @@ export const MyReviewSection = ({
   // If user has a review and is not editing, show their review
   if (hasReview && !isEditing && !isDeleting) {
     return (
-      <div className="py-4 border-t border-[#1B2B4B]/10">
-        <div className="flex items-start justify-between">
+      <div className="py-3 sm:py-4 border-t border-[#1B2B4B]/10">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm font-semibold text-[#1B2B4B]">
                 Your Review
               </span>
@@ -119,7 +119,7 @@ export const MyReviewSection = ({
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className={`h-4 w-4 ${
+                    className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${
                       star <= myReview.rating
                         ? "fill-[#C9A84C] text-[#C9A84C]"
                         : "fill-gray-200 text-gray-200"
@@ -135,26 +135,26 @@ export const MyReviewSection = ({
             )}
             <p className="text-[#1B2B4B]/70 text-sm mt-1">{myReview.comment}</p>
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsEditing(true)}
-              className="h-8 px-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer"
+              className="h-7 sm:h-8 px-1.5 sm:px-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer"
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleDelete}
-              className="h-8 px-2 text-red-500/60 hover:text-red-500 cursor-pointer"
+              className="h-7 sm:h-8 px-1.5 sm:px-2 text-red-500/60 hover:text-red-500 cursor-pointer"
               disabled={deleteReview.isPending}
             >
               {deleteReview.isPending ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
+                <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
               ) : (
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               )}
             </Button>
           </div>
@@ -166,9 +166,9 @@ export const MyReviewSection = ({
   // Show create/edit form
   if (isEditing || !hasReview) {
     return (
-      <div className="py-4 border-t border-[#1B2B4B]/10">
-        <div className="flex items-start gap-3">
-          <div className="flex-1 space-y-3">
+      <div className="py-3 sm:py-4 border-t border-[#1B2B4B]/10">
+        <div className="flex flex-col sm:flex-row items-start gap-3">
+          <div className="flex-1 w-full space-y-3">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-[#1B2B4B]">
                 {hasReview ? "Edit Your Review" : "Write a Review"}
@@ -182,7 +182,7 @@ export const MyReviewSection = ({
             </div>
 
             {/* Star Rating */}
-            <div className="flex gap-1">
+            <div className="flex gap-0.5 sm:gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
@@ -192,7 +192,7 @@ export const MyReviewSection = ({
                   className="focus:outline-none"
                 >
                   <Star
-                    className={`h-6 w-6 transition-colors cursor-pointer ${
+                    className={`h-5 w-5 sm:h-6 sm:w-6 transition-colors cursor-pointer ${
                       star <= (hoveredRating || rating)
                         ? "fill-[#C9A84C] text-[#C9A84C]"
                         : "fill-gray-200 text-gray-200 hover:fill-[#C9A84C] hover:text-[#C9A84C]/50"
@@ -207,7 +207,7 @@ export const MyReviewSection = ({
               placeholder="Review title (optional)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+              className="border-[#1B2B4B]/20 focus:border-[#C9A84C] text-sm sm:text-base"
             />
 
             {/* Description Textarea */}
@@ -215,20 +215,20 @@ export const MyReviewSection = ({
               placeholder="Write your review..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[100px] border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+              className="min-h-[80px] sm:min-h-[100px] border-[#1B2B4B]/20 focus:border-[#C9A84C] text-sm sm:text-base"
             />
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 onClick={handleSubmit}
                 disabled={createReview.isPending || updateReview.isPending}
-                className="cursor-pointer bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] disabled:cursor-not-allowed"
+                className="cursor-pointer bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] disabled:cursor-not-allowed text-xs sm:text-sm"
                 size="sm"
               >
                 {createReview.isPending || updateReview.isPending ? (
                   <>
-                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-[#1B2B4B] border-t-transparent" />
+                    <div className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin rounded-full border-2 border-[#1B2B4B] border-t-transparent" />
                     Submitting...
                   </>
                 ) : hasReview ? (
@@ -242,7 +242,7 @@ export const MyReviewSection = ({
                 variant="ghost"
                 onClick={handleCancel}
                 size="sm"
-                className="cursor-pointer text-[#1B2B4B]/60 hover:text-[#1B2B4B] disabled:cursor-not-allowed"
+                className="cursor-pointer text-[#1B2B4B]/60 hover:text-[#1B2B4B] disabled:cursor-not-allowed text-xs sm:text-sm"
               >
                 Cancel
               </Button>

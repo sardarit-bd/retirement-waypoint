@@ -41,7 +41,7 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
     data: myReviewData, 
     isLoading: myReviewLoading,
     refetch: refetchMyReview,
-  } = useMyReview(bookId, isAuthenticated); // Pass isAuthenticated as enabled flag
+  } = useMyReview(bookId, isAuthenticated);
 
   // Get current page data
   const reviews = reviewsData?.data || [];
@@ -71,7 +71,7 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
 
   if (summaryLoading || reviewsLoading) {
     return (
-      <div id="reviews-section" className="py-8">
+      <div id="reviews-section" className="py-6 sm:py-8">
         <ReviewSkeleton />
       </div>
     );
@@ -79,8 +79,8 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
 
   if (summaryError || reviewsError) {
     return (
-      <div id="reviews-section" className="py-8">
-        <div className="text-center text-gray-500">
+      <div id="reviews-section" className="py-6 sm:py-8">
+        <div className="text-center text-gray-500 text-sm sm:text-base">
           <p>Unable to load reviews. Please try again later.</p>
         </div>
       </div>
@@ -96,9 +96,9 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
   }
 
   return (
-    <div id="reviews-section" className="py-8">
+    <div id="reviews-section" className="py-6 sm:py-8">
       {/* Customer Reviews Header */}
-      <h2 className="text-2xl font-bold text-[#1B2B4B] mb-6">
+      <h2 className="text-xl sm:text-2xl font-bold text-[#1B2B4B] mb-4 sm:mb-6">
         Customer Reviews
       </h2>
 
@@ -106,7 +106,7 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
       <ReviewSummary summary={summary} totalReviews={totalReviews} />
 
       {/* Thin Divider */}
-      <div className="border-t border-[#1B2B4B]/10 my-6" />
+      <div className="border-t border-[#1B2B4B]/10 my-4 sm:my-6" />
 
       {/* My Review Section (if user has permission to review) */}
       {isAuthenticated && showReviewForm && (
@@ -133,7 +133,7 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
           )}
         </>
       ) : (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
           <p>No reviews yet.</p>
         </div>
       )}
