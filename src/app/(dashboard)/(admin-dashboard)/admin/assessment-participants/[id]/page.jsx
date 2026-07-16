@@ -45,7 +45,7 @@ const DetailSection = ({ title, children, className = '' }) => (
 const InfoRow = ({ label, value, icon: Icon }) => (
   <div className="flex items-start gap-3 py-2 border-b last:border-0">
     {Icon && (
-      <div className="p-1.5 rounded-md bg-primary/5 mt-0.5">
+      <div className="p-1.5 rounded-md bg-primary/5 mt-0.5 shrink-0">
         <Icon className="h-4 w-4 text-primary" />
       </div>
     )}
@@ -73,7 +73,7 @@ export default function AssessmentParticipantDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto">
         <DetailSkeleton />
       </div>
     );
@@ -81,7 +81,7 @@ export default function AssessmentParticipantDetailPage() {
 
   if (error || !submission) {
     return (
-      <div className="p-4 md:p-6 max-w-4xl mx-auto">
+      <div className="p-3 sm:p-4 md:p-6 max-w-4xl mx-auto">
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="p-4 rounded-full bg-red-50 mb-4">
             <Target className="h-8 w-8 text-red-500" />
@@ -104,7 +104,6 @@ export default function AssessmentParticipantDetailPage() {
   const reflections = submission.reflections || [];
   const recommendations = submission.recommendations || [];
 
-  // Build a questionId -> { text, options } lookup from the populated assessment's domains
   const questionInfoById = {};
   const assessmentDomains = submission.assessmentId?.domains || [];
   assessmentDomains.forEach((domain) => {
@@ -117,30 +116,30 @@ export default function AssessmentParticipantDetailPage() {
   });
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => router.back()}
-          className="h-9 px-3 border border-gray-200 cursor-pointer"
+          className="h-9 px-3 border border-gray-200 cursor-pointer shrink-0"
         >
           <ArrowLeft className="h-4 w-4 mr-1" />
           Back
         </Button>
-        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 ml-auto">
+        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 ml-auto shrink-0">
           Completed
         </Badge>
       </div>
-      <h1 className="text-2xl font-bold tracking-tight">Participant Details</h1>
+      <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Participant Details</h1>
 
       {/* Participant Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <User className="h-5 w-5 text-primary" />
+              <User className="h-5 w-5 text-primary shrink-0" />
               Participant
             </CardTitle>
           </CardHeader>
@@ -153,7 +152,7 @@ export default function AssessmentParticipantDetailPage() {
         <Card className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-primary" />
+              <BookOpen className="h-5 w-5 text-primary shrink-0" />
               Assessment
             </CardTitle>
           </CardHeader>
@@ -177,19 +176,19 @@ export default function AssessmentParticipantDetailPage() {
         <Card className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Award className="h-5 w-5 text-primary" />
+              <Award className="h-5 w-5 text-primary shrink-0" />
               Overall Score
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4">
-              <span className={`text-4xl font-bold ${getScoreColor(submission.overallScore || 0)}`}>
+            <div className="flex flex-wrap items-center gap-4">
+              <span className={`text-3xl sm:text-4xl font-bold ${getScoreColor(submission.overallScore || 0)}`}>
                 {submission.overallScore?.toFixed(0) || 0}%
               </span>
-              <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="flex-1 min-w-[60px] h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all ${submission.overallScore >= 60 ? 'bg-emerald-500' : 'bg-amber-500'}`}
-                  style={{ width: `${submission.overallScore || 0}%` }}
+                  style={{ width: `${Math.min(submission.overallScore || 0, 100)}%` }}
                 />
               </div>
             </div>
@@ -199,7 +198,7 @@ export default function AssessmentParticipantDetailPage() {
         <Card className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary text-red-500" />
+              <Target className="h-5 w-5 text-primary shrink-0" />
               Result
             </CardTitle>
           </CardHeader>
@@ -208,8 +207,8 @@ export default function AssessmentParticipantDetailPage() {
               className="p-4 rounded-lg text-white"
               style={{ backgroundColor: submission.resultRange?.color || '#534AB7' }}
             >
-              <p className="font-semibold text-lg">{submission.resultRange?.title || '—'}</p>
-              <p className="text-sm opacity-90 mt-1">{submission.resultRange?.description || '—'}</p>
+              <p className="font-semibold text-base sm:text-lg break-words">{submission.resultRange?.title || '—'}</p>
+              <p className="text-xs sm:text-sm opacity-90 mt-1 break-words">{submission.resultRange?.description || '—'}</p>
             </div>
           </CardContent>
         </Card>
@@ -221,15 +220,15 @@ export default function AssessmentParticipantDetailPage() {
           <div className="space-y-3">
             {domainScores.map((domain) => (
               <div key={domain.domainId} className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">{domain.domainLabel}</span>
-                  <span className="text-gray-500">{domain.score} / {domain.maxScore}</span>
+                <div className="flex flex-wrap justify-between text-sm gap-1">
+                  <span className="font-medium break-words">{domain.domainLabel}</span>
+                  <span className="text-gray-500 shrink-0">{domain.score} / {domain.maxScore}</span>
                 </div>
                 <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
-                      width: `${domain.percentage || 0}%`,
+                      width: `${Math.min(domain.percentage || 0, 100)}%`,
                       backgroundColor: submission.resultRange?.color || '#534AB7',
                     }}
                   />
@@ -247,7 +246,7 @@ export default function AssessmentParticipantDetailPage() {
             {recommendations.map((rec, index) => (
               <div key={index} className="flex items-start gap-2 p-2 rounded-lg bg-primary/5">
                 <Sparkles className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                <p className="text-sm">{rec.text}</p>
+                <p className="text-sm break-words">{rec.text}</p>
               </div>
             ))}
           </div>
@@ -265,15 +264,15 @@ export default function AssessmentParticipantDetailPage() {
               );
               return (
                 <div key={index} className="py-2 border-b last:border-0">
-                  <div className="flex justify-between items-start gap-4">
-                    <p className="text-[15px] font-bold text-gray-700">
+                  <div className="flex flex-wrap justify-between items-start gap-2">
+                    <p className="text-sm sm:text-[15px] font-bold text-gray-700 break-words flex-1 min-w-[120px]">
                       {index + 1}. {info?.text || 'Question text unavailable'}
                     </p>
-                    <span className="text-sm font-medium whitespace-nowrap text-gray-500">
+                    <span className="text-xs sm:text-sm font-medium whitespace-nowrap text-gray-500 shrink-0">
                       Score: {answer.score} / {answer.value}
                     </span>
                   </div>
-                  <p className="text-sm text-primary font-medium mt-1">
+                  <p className="text-sm text-primary font-medium mt-1 break-words">
                     Answer: <span className="text-[#10B981]">{selectedOption?.label || `Score ${answer.value}`}</span>
                   </p>
                 </div>
@@ -289,10 +288,10 @@ export default function AssessmentParticipantDetailPage() {
           <div className="space-y-4">
             {reflections.map((reflection, index) => (
               <div key={index} className="p-3 rounded-lg bg-gray-50">
-                <p className="text-sm font-medium text-gray-700">{reflection.question}</p>
-                <p className="text-sm text-primary font-medium mt-1">
-                    Answer: <span className="text-[#10B981]">{reflection.answer || 'No answer provided'}</span>
-                  </p>
+                <p className="text-sm font-medium text-gray-700 break-words">{reflection.question}</p>
+                <p className="text-sm text-primary font-medium mt-1 break-words">
+                  Answer: <span className="text-[#10B981]">{reflection.answer || 'No answer provided'}</span>
+                </p>
               </div>
             ))}
           </div>

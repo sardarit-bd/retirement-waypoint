@@ -61,7 +61,7 @@ export const AssessmentParticipantsFilters = ({
               placeholder="Search by name or email..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              className="pl-9 pr-8 bg-white/80 backdrop-blur-sm border-gray-200 focus:border-primary"
+              className="pl-9 pr-8 bg-white/80 backdrop-blur-sm border-gray-200 focus:border-primary w-full"
             />
             {localSearch && (
               <button
@@ -94,7 +94,7 @@ export const AssessmentParticipantsFilters = ({
           value={assessmentSlug || 'all'}
           onValueChange={(value) => onAssessmentChange(value === 'all' ? '' : value)}
         >
-          <SelectTrigger className="w-[180px] bg-white/80 backdrop-blur-sm border-gray-200">
+          <SelectTrigger className="w-full sm:w-[180px] bg-white/80 backdrop-blur-sm border-gray-200">
             <SelectValue placeholder="All Assessments" />
           </SelectTrigger>
           <SelectContent>
@@ -112,7 +112,7 @@ export const AssessmentParticipantsFilters = ({
           value={resultRange || 'all'}
           onValueChange={(value) => onResultRangeChange(value === 'all' ? '' : value)}
         >
-          <SelectTrigger className="w-[180px] bg-white/80 backdrop-blur-sm border-gray-200">
+          <SelectTrigger className="w-full sm:w-[180px] bg-white/80 backdrop-blur-sm border-gray-200">
             <SelectValue placeholder="All Results" />
           </SelectTrigger>
           <SelectContent>
@@ -130,7 +130,7 @@ export const AssessmentParticipantsFilters = ({
           value={sortBy || 'newest'}
           onValueChange={onSortChange}
         >
-          <SelectTrigger className="w-[160px] bg-white/80 backdrop-blur-sm border-gray-200">
+          <SelectTrigger className="w-full sm:w-[160px] bg-white/80 backdrop-blur-sm border-gray-200">
             <SelectValue placeholder="Sort By" />
           </SelectTrigger>
           <SelectContent>

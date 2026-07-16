@@ -15,7 +15,6 @@ export default function AssessmentParticipantsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Get initial values from URL
   const initialPage = parseInt(searchParams.get('page')) || 1;
   const initialSearch = searchParams.get('search') || '';
   const initialAssessment = searchParams.get('assessment') || '';
@@ -28,7 +27,6 @@ export default function AssessmentParticipantsPage() {
   const [resultRange, setResultRange] = useState(initialResult);
   const [sortBy, setSortBy] = useState(initialSort);
 
-  // Build query params
   const params = useMemo(() => ({
     page,
     limit: 10,
@@ -38,11 +36,9 @@ export default function AssessmentParticipantsPage() {
     sortBy,
   }), [page, search, assessmentSlug, resultRange, sortBy]);
 
-  // Fetch data - now data has { submissions, meta, filters }
   const { data, isLoading, error, isFetching } = useAssessmentParticipants(params);
   const { data: statsData, isLoading: statsLoading } = useAssessmentParticipantStats();
 
-  // Handle filter changes
   const updateUrlParams = (newParams) => {
     const params = new URLSearchParams();
     Object.entries(newParams).forEach(([key, value]) => {
@@ -99,23 +95,15 @@ export default function AssessmentParticipantsPage() {
     page,
   });
 
-  // Access data from the transformed response
   const submissions = data?.submissions || [];
   console.log(data)
   const meta = data?.meta || {};
   const filterOptions = data?.filters || {};
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      {/* <PageHeader
-        title="Assessment Participants"
-        description="View and manage everyone who has completed an assessment"
-      /> */}
-
-      {/* Stats */}
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
       <AssessmentParticipantsStats data={statsData} isLoading={statsLoading} />
 
-      {/* Filters */}
       <AssessmentParticipantsFilters
         search={search}
         onSearchChange={handleSearchChange}
@@ -130,7 +118,6 @@ export default function AssessmentParticipantsPage() {
         onReset={handleReset}
       />
 
-      {/* Table - now passing submissions directly */}
       <AssessmentParticipantsTable
         data={submissions}
         meta={meta}
@@ -138,7 +125,6 @@ export default function AssessmentParticipantsPage() {
         error={error}
       />
 
-      {/* Pagination */}
       <AssessmentParticipantsPagination
         page={meta.page || 1}
         totalPages={meta.pages || 1}
