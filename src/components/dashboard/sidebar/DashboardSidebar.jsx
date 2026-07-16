@@ -343,7 +343,7 @@ export function DashboardSidebar() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={cn(
-            'absolute -right-3.5 top-1/2 hidden -translate-y-1/2 rounded-full p-1.5 transition-all duration-300 hover:scale-110 lg:block',
+            'absolute -right-3.5 top-1/2 hidden -translate-y-1/2 rounded-full p-1.5 transition-all duration-300 hover:scale-110 lg:block cursor-pointer',
             'bg-white/10 backdrop-blur-2xl border border-white/10',
             'shadow-[0_8px_25px_rgba(0,0,0,0.25)]',
             'hover:bg-white/15 hover:border-white/20'

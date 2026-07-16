@@ -290,9 +290,9 @@ export default function AssessmentParticipantDetailPage() {
             {reflections.map((reflection, index) => (
               <div key={index} className="p-3 rounded-lg bg-gray-50">
                 <p className="text-sm font-medium text-gray-700">{reflection.question}</p>
-                <p className="text-sm text-gray-600 mt-1 whitespace-pre-wrap">
-                  {reflection.answer || 'No answer provided'}
-                </p>
+                <p className="text-sm text-primary font-medium mt-1">
+                    Answer: <span className="text-[#10B981]">{reflection.answer || 'No answer provided'}</span>
+                  </p>
               </div>
             ))}
           </div>

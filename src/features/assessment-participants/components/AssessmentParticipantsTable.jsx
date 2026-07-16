@@ -137,7 +137,7 @@ export const AssessmentParticipantsTable = ({
                     {submission.participant?.email || '—'}
                   </a>
                 </TableCell>
-                <TableCell className="whitespace-nowrap">
+                <TableCell className="whitespace-nowrap capitalize">
                   {submission.assessmentSlug || '—'}
                 </TableCell>
                 <TableCell className="text-center whitespace-nowrap">
@@ -161,7 +161,7 @@ export const AssessmentParticipantsTable = ({
                 </TableCell>
                 <TableCell className="text-right whitespace-nowrap">
                   <Link href={`/admin/assessment-participants/${submission._id || submission.id}`}>
-                    <Button variant="ghost" size="sm" className="h-8 px-3">
+                    <Button variant="ghost" size="sm" className="h-8 px-3 cursor-pointer">
                       <Eye className="h-4 w-4 mr-1" />
                       View
                     </Button>
