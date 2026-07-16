@@ -79,11 +79,6 @@ export function useAuth() {
 
                 setError(errorMessage);
 
-                toast.error(errorMessage, {
-                  duration: 5000,
-                  position: "top-right",
-                });
-
                 reject(new Error(errorMessage));
               },
             },
@@ -164,18 +159,11 @@ export function useAuth() {
                   const msg =
                     "An account with this email already exists. Please sign in.";
                   setError(msg);
-                  toast.error(msg, {
-                    duration: 5000,
-                    position: "top-right",
-                  });
+                  reject(new Error(msg));
                 } else {
                   setError(errorMessage);
-                  toast.error(errorMessage, {
-                    duration: 5000,
-                    position: "top-right",
-                  });
+                  reject(new Error(errorMessage));
                 }
-                reject(new Error(errorMessage));
               },
             },
           );
@@ -183,16 +171,13 @@ export function useAuth() {
 
         return result;
       } catch (err) {
-        // Don't show duplicate error again if already handled
-        if (!err.message?.toLowerCase().includes("email already exists")) {
-          const errorMessage =
-            err.message || "Something went wrong during sign up";
-          setError(errorMessage);
-          toast.error(errorMessage, {
-            duration: 5000,
-            position: "top-right",
-          });
-        }
+        const errorMessage =
+          err.message || "Something went wrong during sign up";
+        setError(errorMessage);
+        toast.error(errorMessage, {
+          duration: 5000,
+          position: "top-right",
+        });
         throw err;
       } finally {
         setIsLoading(false);
@@ -200,53 +185,6 @@ export function useAuth() {
     },
     [],
   );
-
-  // const logout = useCallback(async () => {
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     await signOut({
-  //       onSuccess: async () => {
-  //         // Force refetch session
-  //         await refetchSession();
-
-  //         // Dispatch event for any other listeners
-  //         if (typeof window !== "undefined") {
-  //           window.dispatchEvent(new Event("auth:state-change"));
-  //         }
-
-  //         // Use router.push with refresh
-  //         router.push("/auth");
-  //         router.refresh();
-
-  //         toast.success("👋 You have been signed out successfully.", {
-  //           duration: 3000,
-  //           position: "top-right",
-  //         });
-  //       },
-  //       onError: (ctx) => {
-  //         const errorMessage = ctx.error?.message || "Failed to sign out";
-  //         setError(errorMessage);
-  //         toast.error(errorMessage, {
-  //           duration: 5000,
-  //           position: "top-right",
-  //         });
-  //       },
-  //     });
-  //   } catch (err) {
-  //     const errorMessage =
-  //       err.message || "Something went wrong during sign out";
-  //     setError(errorMessage);
-  //     toast.error(errorMessage, {
-  //       duration: 5000,
-  //       position: "top-right",
-  //     });
-  //     throw err;
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [router, refetchSession]);
 
   const logout = useCallback(async () => {
     setIsLoading(true);

@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/api/auth/me',
     UPDATE_PROFILE_IMAGE: '/api/auth/me/profile-image',
     REMOVE_PROFILE_IMAGE: '/api/auth/me/profile-image',
+    CHANGE_PASSWORD: '/api/auth/change-password',
   },
   // Books
   BOOKS: {

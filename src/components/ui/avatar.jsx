@@ -1,4 +1,3 @@
-// src/components/ui/avatar.jsx
 "use client";
 
 import * as React from "react";

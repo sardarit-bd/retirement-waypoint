@@ -8,62 +8,15 @@ import { useSession } from '@/hooks/useSession';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
-  BookOpen,
-  ShoppingBag,
-  FileText,
-  Star,
-  User,
+  LogOut,
   ChevronLeft,
   ChevronRight,
-  LogOut,
-  BookMarked,
-  ShoppingCart,
-  Ticket,
   Sparkles,
-  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
-
-// User menu items with sections
-const userMenuSections = [
-  {
-    title: 'Main',
-    items: [
-      { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-      { icon: BookOpen, label: 'My Books', href: '/dashboard/my-books' },
-      { icon: ShoppingBag, label: 'Orders', href: '/dashboard/orders' },
-    ],
-  },
-  {
-    title: 'Account',
-    items: [
-      { icon: User, label: 'Profile', href: '/dashboard/profile' },
-    ],
-  },
-];
-
-// Admin menu items with sections
-const adminMenuSections = [
-  {
-    title: 'Main',
-    items: [
-      { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
-      { icon: BookMarked, label: 'Books', href: '/admin/books' },
-      { icon: ShoppingCart, label: 'Orders', href: '/admin/orders' },
-      { icon: Star, label: 'Reviews', href: '/admin/reviews' },
-    ],
-  },
-  {
-    title: 'Management',
-    items: [
-      { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
-      { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
-      { icon: Users, label: 'Assessment Participants', href: '/admin/assessment-participants' },
-    ],
-  },
-];
+import { getMenuSections } from './config/menuConfig';
 
 // Animation variants
 const containerVariants = {
@@ -108,7 +61,7 @@ export function DashboardSidebar() {
 
   const user = session?.user;
   const isAdmin = user?.role === 'admin';
-  const menuSections = isAdmin ? adminMenuSections : userMenuSections;
+  const menuSections = getMenuSections(isAdmin);
 
   const handleSignOut = async () => {
     try {
@@ -128,7 +81,7 @@ export function DashboardSidebar() {
     }
   };
 
-  // FIXED: Active link logic with exact match for root paths
+  // Active link logic with exact match for root paths
   const isActiveLink = (href) => {
     // Dashboard should match only exactly
     if (href === '/dashboard') {
