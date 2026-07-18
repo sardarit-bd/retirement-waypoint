@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import sendAnimation from "@/animations/message-sent.json";
+import { useSubmitContactMessage } from "@/features/contact/hooks/useContact";
+import toast from "react-hot-toast";
 
 const ContactPage = () => {
   const [form, setForm] = useState({
@@ -22,25 +24,33 @@ const ContactPage = () => {
     message: "",
   });
 
-  const [isSending, setIsSending] = useState(false);
+  const submitContactMessage = useSubmitContactMessage();
+  const isSending = submitContactMessage.isPending;
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setIsSending(true);
-
-    console.log("Contact form:", form);
-
-    setTimeout(() => {
-      setIsSending(false);
-
-      setForm({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-    }, 2500);
+    submitContactMessage.mutate(form, {
+      onSuccess: () => {
+        toast.success(
+          "✅ Message sent successfully! We'll get back to you soon.",
+          { duration: 4000, position: "top-right" }
+        );
+        setForm({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      },
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to send message. Please try again.",
+          { duration: 5000, position: "top-right" }
+        );
+      },
+    });
   };
 
   return (

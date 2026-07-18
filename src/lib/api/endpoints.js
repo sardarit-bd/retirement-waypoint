@@ -138,4 +138,13 @@ export const API_ENDPOINTS = {
     MY_FILES: '/api/upload/my-files',
     DELETE: (publicId) => `/api/upload/${publicId}`,
   },
+  // Contact
+  CONTACT: {
+    SUBMIT: '/api/contact',
+    ADMIN_ALL: '/api/admin/contact-messages',
+    ADMIN_STATS: '/api/admin/contact-messages/stats',
+    ADMIN_UNREAD_COUNT: '/api/admin/contact-messages/unread-count',
+    ADMIN_SINGLE: (id) => `/api/admin/contact-messages/${id}`,
+    ADMIN_UPDATE_STATUS: (id) => `/api/admin/contact-messages/${id}/status`,
+  },
 };

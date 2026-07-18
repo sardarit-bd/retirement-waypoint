@@ -10,6 +10,7 @@ import {
     Ticket,
     Sparkles,
     Users,
+    Mail,
 } from 'lucide-react';
 
 // User menu items with sections
@@ -47,6 +48,7 @@ export const adminMenuSections = [
             { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
             { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
             { icon: Users, label: 'Assessment Participants', href: '/admin/assessment-participants' },
+            { icon: Mail, label: 'Contact Messages', href: '/admin/contact-messages' },
         ],
     },
     {
