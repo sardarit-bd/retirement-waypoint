@@ -5,10 +5,12 @@ import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, Loader2, RefreshCw } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "@/hooks/useAuth";
+import { ForgotPasswordModal } from "./forgot-password-modal";
 import toast from "react-hot-toast";
 
 export function SignInForm({ onToggle }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const {
     login,
     googleLogin,
@@ -228,9 +230,7 @@ export function SignInForm({ onToggle }) {
             type="button"
             className="text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50"
             disabled={isLoading}
-            onClick={() => {
-              console.log("Forgot password clicked");
-            }}
+            onClick={() => setShowForgotPassword(true)}
           >
             Forgot Password?
           </button>
@@ -290,6 +290,11 @@ export function SignInForm({ onToggle }) {
           </button>
         </p>
       </div>
+
+      <ForgotPasswordModal
+        open={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+      />
     </motion.div>
   );
 }

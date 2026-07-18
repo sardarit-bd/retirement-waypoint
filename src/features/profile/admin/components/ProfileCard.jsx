@@ -83,9 +83,9 @@ export function ProfileCard({ profile, isLoading }) {
             transition={{ duration: 0.3 }}
         >
             <Card className="border-0 bg-white rounded-3xl shadow-[0_8px_40px_rgba(27,43,75,0.08)] overflow-hidden">
-                <CardContent className="p-8 text-center">
+                <CardContent className="text-center">
                     {/* Avatar */}
-                    <div className="relative mx-auto h-[340px] w-full max-w-[320px] overflow-hidden rounded-3xl bg-[#F4F4F4]">
+                    <div className="relative mx-auto h-[340px] overflow-hidden rounded-3xl bg-[#F4F4F4]">
                         {displayImage ? (
                             <img
                                 src={displayImage}
@@ -174,7 +174,7 @@ export function ProfileCard({ profile, isLoading }) {
                         <button
                             onClick={handleRemove}
                             disabled={removeProfileImage.isPending}
-                            className="mt-2 text-xs text-red-500 hover:text-red-600 hover:underline transition-colors disabled:opacity-50"
+                            className="mt-2 text-xs text-red-500 hover:text-red-600 hover:underline transition-colors disabled:opacity-50 cursor-pointer"
                         >
                             {removeProfileImage.isPending ? 'Removing...' : 'Remove photo'}
                         </button>

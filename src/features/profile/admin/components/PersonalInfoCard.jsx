@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/lib/query-client';
 import { useUpdateProfile } from '../hooks/useAdminProfile';
+import { VerifyEmailChangeModal } from '@/components/auth/VerifyEmailChangeModal';
+import { formatUSPhoneNumber, isValidUSPhoneNumber } from '@/lib/phoneFormatter/phone-utils';
 
 export function PersonalInfoCard({ profile, isLoading }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -23,6 +27,8 @@ export function PersonalInfoCard({ profile, isLoading }) {
   });
   const [errors, setErrors] = useState({});
   const updateProfile = useUpdateProfile();
+  const queryClient = useQueryClient();
+  const [pendingEmail, setPendingEmail] = useState(null);
 
   useEffect(() => {
     if (profile) {
@@ -50,6 +56,9 @@ export function PersonalInfoCard({ profile, isLoading }) {
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email.trim())) {
       newErrors.email = 'Please enter a valid email address';
     }
+    if (formData.phone.trim() && !isValidUSPhoneNumber(formData.phone)) {
+      newErrors.phone = 'Please enter a valid US phone number, e.g. (555) 123-4567';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -75,11 +84,13 @@ export function PersonalInfoCard({ profile, isLoading }) {
   const handleSave = async () => {
     if (!validate()) return;
 
-    // Only send fields the backend actually accepts
-    // (see updateUserProfile in auth.service.js)
+    const trimmedEmail = formData.email.trim().toLowerCase();
+    const emailChanged = trimmedEmail !== (profile?.email || '').toLowerCase();
+
+    // Only send fields the backend actually accepts via PATCH /me
+    // (email changes go through the separate emailOTP verification flow below)
     const data = {
       name: formData.name,
-      email: formData.email,
       phone: formData.phone,
       bio: formData.bio,
       preferences: {
@@ -91,12 +102,16 @@ export function PersonalInfoCard({ profile, isLoading }) {
     await updateProfile.mutateAsync(data, {
       onSuccess: () => {
         setIsEditing(false);
+        if (emailChanged) {
+          setPendingEmail(trimmedEmail);
+        }
       },
     });
   };
 
   const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    const nextValue = field === 'phone' ? formatUSPhoneNumber(value) : value;
+    setFormData((prev) => ({ ...prev, [field]: nextValue }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
     }
@@ -118,7 +133,7 @@ export function PersonalInfoCard({ profile, isLoading }) {
       editable: true,
       type: 'email',
       placeholder: 'Enter your email address',
-      hint: 'Changing your email will require re-verification.',
+      hint: "You'll be asked to verify your new email with a code sent to it.",
     },
     { 
       label: 'Phone Number', 
@@ -194,7 +209,7 @@ export function PersonalInfoCard({ profile, isLoading }) {
                 onClick={handleEdit}
                 variant="ghost"
                 size="sm"
-                className="rounded-full text-[#8B5CF6] hover:bg-[#8B5CF6]/10 hover:text-[#7C3AED] cursor-pointer"
+                className="rounded-full text-[#8B5CF6] hover:bg-[#8B5CF6]/10 hover:text-[#7C3AED]"
               >
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
@@ -231,6 +246,8 @@ export function PersonalInfoCard({ profile, isLoading }) {
                       <div>
                         <Input
                           type={row.type || 'text'}
+                          inputMode={row.field === 'phone' ? 'tel' : undefined}
+                          maxLength={row.field === 'phone' ? 18 : undefined}
                           value={formData[row.field]}
                           onChange={(e) => handleChange(row.field, e.target.value)}
                           className={cn(
@@ -239,8 +256,12 @@ export function PersonalInfoCard({ profile, isLoading }) {
                           )}
                           placeholder={row.placeholder}
                         />
-                        {row.hint && (
-                          <p className="mt-1 text-[10px] text-[#1B2B4B]/40">{row.hint}</p>
+                        {row.field === 'phone' && errors.phone ? (
+                          <p className="mt-1 text-[10px] text-red-500">{errors.phone}</p>
+                        ) : (
+                          row.hint && (
+                            <p className="mt-1 text-[10px] text-[#1B2B4B]/40">{row.hint}</p>
+                          )
                         )}
                       </div>
                     )
@@ -287,6 +308,15 @@ export function PersonalInfoCard({ profile, isLoading }) {
           )}
         </CardContent>
       </Card>
+
+      <VerifyEmailChangeModal
+        open={!!pendingEmail}
+        newEmail={pendingEmail}
+        onClose={() => setPendingEmail(null)}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_PROFILE] });
+        }}
+      />
     </motion.div>
   );
 }
