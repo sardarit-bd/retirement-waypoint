@@ -18,6 +18,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import FiveDomainsSection from "@/components/coaching/FiveDomainsSection";
 
 const rightForYou = [
   "You're within 2–3 years of retiring and want to go in prepared",
@@ -187,12 +188,49 @@ const CoachingPage = () => {
               </p>
 
               <p>
-                My coaching draws on frameworks around autonomy, purpose,
-                mastery, and social connection — the four domains that research
-                consistently links to wellbeing and fulfillment in later life.
-                We don&apos;t just talk. We build a clear picture of where you
-                are, where you want to go, and what&apos;s standing in the way.
+                My coaching draws on around the five domains of retirement
+                thriving -{" "}
+                <span className="text-green-500 font-medium">(1) </span>{" "}
+                Identify the purpose,{" "}
+                <span className="text-green-500 font-medium"> (2) </span>
+                Engagement and vitality,{" "}
+                <span className="text-green-500 font-medium"> (3) </span>{" "}
+                Connection and belonging,{" "}
+                <span className="text-green-500 font-medium"> (4) </span> Growth
+                and learning, and{" "}
+                <span className="text-green-500 font-medium"> (5) </span>{" "}
+                Meaning and legacy. These domains consistently link to wellbeing
+                and fulfillment in later life. We don&apos;t just talk. We build
+                a clear picture of where you are, where you want to go, and
+                what&apos;s standing in the way.
               </p>
+
+              <section
+                id="domains-framework"
+                className="px-4 py-24 sm:px-6 lg:px-8 rounded-2xl"
+                style={{ backgroundColor: "#04103A" }}
+              >
+                <div className="mx-auto max-w-7xl">
+                  {/* Section Header */}
+                  <div className="mb-16 text-center">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/5 px-4 py-2 text-sm font-semibold tracking-wide text-[#C9A84C] backdrop-blur-sm">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#C9A84C]"></span>
+                      THE FRAMEWORK
+                    </span>
+                    <h2 className="mt-6 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
+                      Five Domains of Retirement Thriving
+                    </h2>
+                    <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
+                      Grounded in decades of behavioral science, these five
+                      domains provide a practical framework for building a
+                      meaningful and fulfilling retirement.
+                    </p>
+                  </div>
+
+                  {/* Dynamic 5-Column Grid */}
+                  <FiveDomainsSection domains={domains}/>
+                </div>
+              </section>
 
               <p>
                 Your assessment results will be used as a starting point to
@@ -232,96 +270,12 @@ const CoachingPage = () => {
         </div>
       </section>
 
-      {/* Five Domains of Retirement Thriving Section */}
-      <section
-        id="domains-framework"
-        className="px-4 py-24 sm:px-6 lg:px-8"
-        style={{ backgroundColor: "#04103A" }}
-      >
-        <div className="mx-auto max-w-7xl">
-          {/* Section Header */}
-          <div className="mb-16 text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/5 px-4 py-2 text-sm font-semibold tracking-wide text-[#C9A84C] backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#C9A84C]"></span>
-              THE FRAMEWORK
-            </span>
-            <h2 className="mt-6 text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
-              Five Domains of Retirement Thriving
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-white/60">
-              Grounded in decades of behavioral science, these five domains
-              provide a practical framework for building a meaningful and
-              fulfilling retirement.
-            </p>
-          </div>
-
-          {/* Dynamic 5-Column Grid */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
-            {domains.map((domain) => {
-              const Icon = domain.icon;
-              return (
-                <div
-                  key={domain.id}
-                  className={`group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
-                    domain.featured
-                      ? "border border-[#C9A84C]/30 hover:border-[#C9A84C]/70 hover:shadow-[#C9A84C]/20"
-                      : "border border-white/10 hover:border-[#C9A84C]/50 hover:shadow-[#C9A84C]/10"
-                  }`}
-                >
-                  {/* Top Header Area */}
-                  <div
-                    className={`relative overflow-hidden px-5 pb-4 pt-6 ${
-                      domain.featured ? "bg-[#C9A84C]/10" : "bg-[#1B2B4B]/80"
-                    }`}
-                  >
-                    {/* Decorative circle top-right */}
-                    <div
-                      className={`absolute -right-8 -top-8 h-24 w-24 rounded-full ${
-                        domain.featured ? "bg-[#C9A84C]/10" : "bg-[#C9A84C]/5"
-                      }`}
-                    ></div>
-
-                    {/* Icon */}
-                    <div className="mb-3">
-                      <Icon className="h-8 w-8 text-[#C9A84C]" />
-                    </div>
-
-                    {/* Category label */}
-                    <div className="mb-3 text-xs font-semibold tracking-[0.2em] text-[#C9A84C] uppercase">
-                      FIVE DOMAINS
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-xl font-bold leading-tight text-white">
-                      {domain.title}
-                    </h3>
-
-                    {/* Italic subtitle */}
-                    <p className="mt-1 italic text-white/50 text-sm">
-                      {domain.subtitle}
-                    </p>
-                  </div>
-
-                  {/* Bottom Content Area */}
-                  <div className="flex flex-1 bg-[#04103A] px-5 pb-6 pt-4">
-                    <p className="text-sm leading-relaxed text-white/60">
-                      {domain.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Coaching & Services Section */}
-      <section
+      {/* <section
         id="services"
         className="bg-[#F8F5EF] px-4 py-24 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
-          {/* Section Header */}
           <div className="mb-16 text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/80 px-4 py-2 text-sm font-semibold tracking-wide text-[#C9A84C] shadow-sm backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-[#C9A84C]"></span>
@@ -336,8 +290,7 @@ const CoachingPage = () => {
               most in retirement.
             </p>
           </div>
-
-          {/* 3-Column Grid */}
+          
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
               <div
@@ -424,10 +377,10 @@ const CoachingPage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
-      <section
+      {/* <section
         id="cta-section"
         className="bg-white px-4 py-16 text-center sm:px-6 lg:px-8"
       >
@@ -451,7 +404,7 @@ const CoachingPage = () => {
             </Link>
           </Button>
         </div>
-      </section>
+      </section> */}
     </main>
   );
 };

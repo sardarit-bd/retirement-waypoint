@@ -169,7 +169,7 @@ export function AdminAssessmentDomain({
 
   if (!domain) {
     return (
-      <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8">
+      <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8 rounded-2xl">
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           <p className="text-white/70 text-lg">Loading domain...</p>
         </div>
@@ -178,7 +178,7 @@ export function AdminAssessmentDomain({
   }
 
   return (
-    <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8">
+    <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8 rounded-2xl">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute left-0 top-0 h-96 w-96 rounded-full bg-[#C9A84C]/15 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
