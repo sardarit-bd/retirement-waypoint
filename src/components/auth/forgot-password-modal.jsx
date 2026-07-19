@@ -52,7 +52,7 @@ export function ForgotPasswordModal({ open, onClose }) {
       return;
     }
 
-    toast.success("📧 A 6-digit code has been sent to your email.", {
+    toast.success("A 6-digit code has been sent to your email.", {
       duration: 4000,
       position: "top-right",
     });
@@ -71,7 +71,7 @@ export function ForgotPasswordModal({ open, onClose }) {
       });
       return;
     }
-    toast.success("📧 A new code has been sent.", {
+    toast.success("A new code has been sent.", {
       duration: 3000,
       position: "top-right",
     });
@@ -111,7 +111,7 @@ export function ForgotPasswordModal({ open, onClose }) {
       return;
     }
 
-    toast.success("✅ Password reset successfully. Please sign in.", {
+    toast.success("Password reset successfully. Please sign in.", {
       duration: 4000,
       position: "top-right",
     });
@@ -149,7 +149,7 @@ export function ForgotPasswordModal({ open, onClose }) {
               </div>
               <button
                 onClick={handleClose}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -174,7 +174,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                 <button
                   type="submit"
                   disabled={isSending}
-                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70"
+                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 cursor-pointer"
                 >
                   {isSending ? (
                     <span className="flex items-center justify-center gap-2">
@@ -200,7 +200,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                       setOtp(e.target.value.replace(/\D/g, ""))
                     }
                     disabled={isResetting}
-                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-center text-lg tracking-[0.5em] text-slate-100 placeholder:tracking-normal placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-center text-lg tracking-[0.5em] text-slate-100 placeholder:tracking-normal placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50 "
                   />
                 </div>
 
@@ -217,7 +217,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -244,7 +244,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                 <button
                   type="submit"
                   disabled={isResetting}
-                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70"
+                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 cursor-pointer"
                 >
                   {isResetting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -260,7 +260,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                   <button
                     type="button"
                     onClick={() => setStep("email")}
-                    className="hover:text-slate-200"
+                    className="hover:text-slate-200 cursor-pointer"
                   >
                     ← Change email
                   </button>
@@ -268,7 +268,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                     type="button"
                     onClick={handleResendCode}
                     disabled={isSending}
-                    className="text-indigo-400 hover:text-indigo-300 disabled:opacity-50"
+                    className="text-indigo-400 hover:text-indigo-300 disabled:opacity-50 cursor-pointer"
                   >
                     {isSending ? "Sending..." : "Resend code"}
                   </button>

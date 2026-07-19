@@ -8,20 +8,8 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   ChevronDown,
-  User,
   LayoutDashboard,
-  BookOpen,
-  ShoppingBag,
-  FileText,
-  Star,
-  Settings,
   LogOut,
-  Users,
-  BarChart3,
-  BookMarked,
-  ShoppingCart,
-  Ticket,
-  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -61,11 +49,6 @@ const Navbar = () => {
   // Regular user menu items
   const userMenuItems = [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: BookOpen, label: "My Books", href: "/my-books" },
-    { icon: ShoppingBag, label: "Orders", href: "/orders" },
-    { icon: FileText, label: "Invoices", href: "/invoices" },
-    { icon: Star, label: "Reviews", href: "/reviews" },
-    { icon: Settings, label: "Profile Settings", href: "/profile" },
   ];
 
   // Admin menu items
