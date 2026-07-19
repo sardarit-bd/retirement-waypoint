@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -64,7 +65,7 @@ export function ContactMessagesFilters({
             </button>
           )}
         </div>
-        <Button type="submit" className="shrink-0 rounded-full bg-[#C9A84C] font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]">
+        <Button type="submit" className="shrink-0 rounded-full bg-[#C9A84C] font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] cursor-pointer">
           Search
         </Button>
       </form>
@@ -74,7 +75,7 @@ export function ContactMessagesFilters({
           value={status || 'all'}
           onValueChange={(value) => onStatusChange(value === 'all' ? '' : value)}
         >
-          <SelectTrigger className="w-full border-[#1B2B4B]/10 bg-white/80 backdrop-blur-sm sm:w-[160px]">
+          <SelectTrigger className="w-full border-[#1B2B4B]/10 bg-white/80 backdrop-blur-sm sm:w-[160px] cursor-pointer">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -89,7 +90,7 @@ export function ContactMessagesFilters({
         <Button
           variant="outline"
           onClick={onReset}
-          className="shrink-0 rounded-full border-[#1B2B4B]/15 text-[#1B2B4B] hover:bg-[#F8F5EF]"
+          className="shrink-0 rounded-full border-[#1B2B4B]/15 text-[#1B2B4B] hover:bg-[#F8F5EF] cursor-pointer"
         >
           Reset
         </Button>

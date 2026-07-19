@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Lottie from "lottie-react";
 import {
@@ -23,35 +24,79 @@ const ContactPage = () => {
     subject: "",
     message: "",
   });
+  
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const lottieRef = useRef(null);
 
   const submitContactMessage = useSubmitContactMessage();
   const isSending = submitContactMessage.isPending;
 
+  // Reset animation states when not sending
+  useEffect(() => {
+    if (!isSending && !showAnimation) {
+      setIsAnimationComplete(false);
+    }
+  }, [isSending, showAnimation]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Start animation immediately
+    setShowAnimation(true);
+    setIsAnimationComplete(false);
+
     submitContactMessage.mutate(form, {
       onSuccess: () => {
-        toast.success(
-          "✅ Message sent successfully! We'll get back to you soon.",
-          { duration: 4000, position: "top-right" }
-        );
-        setForm({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
+        // Don't show success toast or reset form until animation completes
+        // We'll handle this in the animation completion callback
       },
       onError: (error) => {
+        // For errors, we want to show the toast immediately
+        // But we still let the animation complete
         toast.error(
           error.response?.data?.message ||
             "Failed to send message. Please try again.",
           { duration: 5000, position: "top-right" }
         );
+        // Don't reset form on error, let user retry
       },
     });
   };
+
+  // Handle animation completion
+  const handleAnimationComplete = () => {
+    setIsAnimationComplete(true);
+    setShowAnimation(false);
+    
+    // Only show success and reset form if the mutation was successful
+    // We need to check if there's no error state
+    if (submitContactMessage.isSuccess) {
+      toast.success(
+        "Message sent successfully! We'll get back to you soon.",
+        { duration: 4000, position: "top-right" }
+      );
+      setForm({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      // Reset the mutation state
+      submitContactMessage.reset();
+    }
+  };
+
+  // Handle Lottie animation events
+  const handleLottieComplete = () => {
+    // Only mark as complete if we're still in animation mode
+    if (showAnimation) {
+      handleAnimationComplete();
+    }
+  };
+
+  // Determine if we should show loading state
+  const shouldShowLoading = isSending || showAnimation;
 
   return (
     <main className="min-h-screen bg-[#F8F5EF]">
@@ -223,17 +268,19 @@ const ContactPage = () => {
 
             <Button
               type="submit"
-              disabled={isSending}
+              disabled={shouldShowLoading}
               className="group mt-6 h-13 cursor-pointer rounded-full bg-[#C9A84C] px-4 text-base font-semibold text-[#1B2B4B] transition-all duration-300 hover:bg-[#04103A] hover:text-white disabled:pointer-events-none disabled:opacity-90"
             >
               Send Message
 
               <span className="flex h-10 w-10 items-center justify-center overflow-visible">
-                {isSending ? (
+                {shouldShowLoading ? (
                   <Lottie
+                    lottieRef={lottieRef}
                     animationData={sendAnimation}
                     loop={false}
                     className="h-10 w-10"
+                    onComplete={handleLottieComplete}
                   />
                 ) : (
                   <Send className="h-5 w-5 transition-all duration-300 group-hover:translate-x-2" />

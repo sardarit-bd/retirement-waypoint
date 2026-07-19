@@ -4,14 +4,15 @@ import { useState, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail } from 'lucide-react';
-import {
-  ContactMessagesStats,
-  ContactMessagesFilters,
-  ContactMessagesTable,
-  ContactMessagesPagination,
-  useContactMessages,
-  useContactMessageStats,
-} from '@/features/contact-messages';
+import { ContactMessagesFilters, ContactMessagesPagination, ContactMessagesStats, ContactMessagesTable, useContactMessages, useContactMessageStats } from '@/features/contact-messages/contact-messages-index';
+// import {
+//   ContactMessagesStats,
+//   ContactMessagesFilters,
+//   ContactMessagesTable,
+//   ContactMessagesPagination,
+//   useContactMessages,
+//   useContactMessageStats,
+// } from '@/features/contact-messages';
 
 export default function ContactMessagesPage() {
   const router = useRouter();
