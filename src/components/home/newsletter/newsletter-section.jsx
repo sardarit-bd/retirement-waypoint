@@ -2,17 +2,39 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
+import { useSubscribeNewsletter } from "@/features/newsletter/hooks/useNewsletter";
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState("");
+  const subscribeNewsletter = useSubscribeNewsletter();
+  const isSubscribing = subscribeNewsletter.isPending;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Newsletter email:", email);
-    setEmail("");
+
+    subscribeNewsletter.mutate(
+      { email, source: "homepage" },
+      {
+        onSuccess: () => {
+          toast.success("You've successfully subscribed to our newsletter!", {
+            duration: 4000,
+            position: "top-right",
+          });
+          setEmail("");
+        },
+        onError: (error) => {
+          toast.error(
+            error.response?.data?.message ||
+              "Failed to subscribe. Please try again.",
+            { duration: 5000, position: "top-right" }
+          );
+        },
+      }
+    );
   };
 
   return (
@@ -57,15 +79,26 @@ const NewsletterSection = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="h-12 flex-1 border-0 bg-transparent px-4 text-sm text-[#1B2B4B] shadow-none outline-none placeholder:text-[#1B2B4B]/45 focus-visible:ring-0 sm:h-14 sm:px-5 sm:text-base"
+            disabled={isSubscribing}
+            className="h-12 flex-1 border-0 bg-transparent px-4 text-sm text-[#1B2B4B] shadow-none outline-none placeholder:text-[#1B2B4B]/45 focus-visible:ring-0 disabled:opacity-60 sm:h-14 sm:px-5 sm:text-base"
           />
 
           <Button
             type="submit"
-            className="group h-12 w-full cursor-pointer rounded-xl bg-[#1B2B4B] px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#1B2B4B] sm:h-14 sm:w-auto sm:px-8 sm:text-base"
+            disabled={isSubscribing}
+            className="group h-12 w-full cursor-pointer rounded-xl bg-[#1B2B4B] px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#C9A84C] hover:text-[#1B2B4B] disabled:cursor-not-allowed disabled:opacity-70 sm:h-14 sm:w-auto sm:px-8 sm:text-base"
           >
-            Subscribe
-            <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            {isSubscribing ? (
+              <>
+                Subscribing...
+                <Loader2 className="ml-2 h-5 w-5 animate-spin" />
+              </>
+            ) : (
+              <>
+                Subscribe
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </>
+            )}
           </Button>
         </form>
       </div>

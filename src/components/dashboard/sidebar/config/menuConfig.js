@@ -11,6 +11,7 @@ import {
     Sparkles,
     Users,
     Mail,
+    Send,
 } from 'lucide-react';
 
 // User menu items with sections
@@ -49,6 +50,7 @@ export const adminMenuSections = [
             { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
             { icon: Users, label: 'Assessment Participants', href: '/admin/assessment-participants' },
             { icon: Mail, label: 'Contact Messages', href: '/admin/contact-messages' },
+            { icon: Send, label: 'Newsletter Subscribers', href: '/admin/newsletter-subscribers' },
         ],
     },
     {

@@ -147,4 +147,12 @@ export const API_ENDPOINTS = {
     ADMIN_SINGLE: (id) => `/api/admin/contact-messages/${id}`,
     ADMIN_UPDATE_STATUS: (id) => `/api/admin/contact-messages/${id}/status`,
   },
+  // Newsletter
+  NEWSLETTER: {
+    SUBSCRIBE: '/api/newsletter/subscribe',
+    ADMIN_ALL: '/api/admin/newsletter',
+    ADMIN_STATS: '/api/admin/newsletter/stats',
+    ADMIN_EXPORT: '/api/admin/newsletter/export',
+    ADMIN_SINGLE: (id) => `/api/admin/newsletter/${id}`,
+  },
 };

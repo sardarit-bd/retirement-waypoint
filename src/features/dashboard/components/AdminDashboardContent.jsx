@@ -12,6 +12,7 @@ import {
   Download,
   Mail,
   RefreshCw,
+  Send,
   ShoppingBag,
   Sparkles,
   Star,
@@ -52,7 +53,7 @@ function AdminDashboardSkeleton() {
         <Skeleton className="mt-3 h-5 w-80" />
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[...Array(9)].map((_, index) => (
+        {[...Array(10)].map((_, index) => (
           <div key={index} className={`${cardClass} p-6`}>
             <Skeleton className="h-11 w-11 rounded-full" />
             <Skeleton className="mt-5 h-8 w-20" />
@@ -265,6 +266,7 @@ export function AdminDashboardContent() {
   const orders = data?.orders || {};
   const reviews = data?.reviews || {};
   const contact = data?.contact || {};
+  const newsletter = data?.newsletter || {};
   const metrics = [
     { icon: DollarSign, label: 'Total Revenue', value: formatCurrency(overview.totalRevenue), hint: `${formatCurrency(overview.monthlyRevenue)} this month` },
     { icon: ShoppingBag, label: 'Total Orders', value: formatNumber(overview.totalOrders), hint: `${formatNumber(orders.pendingOrders)} pending` },
@@ -275,6 +277,7 @@ export function AdminDashboardContent() {
     { icon: Clock, label: 'Conversion Rate', value: `${orders.conversionRate || 0}%`, hint: `${formatNumber(orders.paidOrders)} paid orders`, color: 'text-[#1B2B4B]', bg: 'bg-[#1B2B4B]/10' },
     { icon: Sparkles, label: 'Average Rating', value: overview.averageRating?.toFixed?.(1) || '0.0', hint: `${formatNumber(overview.totalReviews)} total reviews`, color: 'text-amber-500', bg: 'bg-amber-500/10' },
     { icon: Mail, label: 'Unread Messages', value: formatNumber(contact.unread), hint: 'New contact inquiries', color: 'text-red-500', bg: 'bg-red-500/10' },
+    { icon: Send, label: 'Newsletter Subscribers', value: formatNumber(newsletter.total), hint: `${formatNumber(newsletter.newToday)} new today`, color: 'text-teal-500', bg: 'bg-teal-500/10' },
   ];
 
   return (
