@@ -81,7 +81,7 @@ export default function MyBookDetailPage() {
       <Button
         variant="ghost"
         onClick={() => router.back()}
-        className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+        className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Library
@@ -164,7 +164,7 @@ export default function MyBookDetailPage() {
               onClick={handleDownload}
               disabled={isDownloading}
               variant="outline"
-              className="rounded-full border-[#1B2B4B]/15 px-8 py-6 text-base font-semibold text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30"
+              className="rounded-full border-[#1B2B4B]/15 px-8 py-6 text-base font-semibold text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 cursor-pointer"
             >
               <Download className={cn('mr-2 h-5 w-5', isDownloading && 'animate-pulse')} />
               {isDownloading ? 'Downloading...' : 'Download PDF'}
