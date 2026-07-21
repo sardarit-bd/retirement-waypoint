@@ -60,20 +60,20 @@ export default function ReadBookPage() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col items-center gap-4">
           <Button
             variant="ghost"
             onClick={() => router.push(`/dashboard/my-books/${bookId}`)}
-            className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B]"
+            className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer border border-gray-200"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>
+        </div>
           <div>
             <h1 className="text-xl font-bold text-[#1B2B4B]">{book.title}</h1>
             <p className="text-sm text-[#1B2B4B]/60">by {book.authorName}</p>
           </div>
-        </div>
       </div>
 
       {/* PDF Viewer */}

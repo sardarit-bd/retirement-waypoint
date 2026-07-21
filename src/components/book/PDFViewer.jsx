@@ -55,7 +55,6 @@ const PDFViewer = ({ pdfUrl, bookTitle, onError }) => {
 
         const loadingTask = pdfjsLib.getDocument({
           url: pdfUrl,
-          withCredentials: true,
         });
 
         const pdf = await loadingTask.promise;

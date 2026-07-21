@@ -26,7 +26,7 @@ export const myBooksApi = {
  */
 export const getReadUrl = async (bookId) => {
   const response = await api.get(`${API_ENDPOINTS.MY_BOOKS.SINGLE(bookId)}/read`);
-  return response.data;
+  return response.data.data;
 };
 
 /**
