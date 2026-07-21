@@ -9,8 +9,6 @@ import {
   User,
   Mail,
   Calendar,
-  DollarSign,
-  CreditCard,
   Package,
   FileText,
   Download,
@@ -31,13 +29,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import toast from 'react-hot-toast';
 import { useUpdateOrderStatus, useUpdatePaymentStatus } from '../../hooks/useOrders';
 import { OrderStatusBadge } from '../OrderStatusBadge';
 
 export function AdminOrderDetailsContent({ order, isLoading }) {
-  const [updatingOrderStatus, setUpdatingOrderStatus] = useState(false);
-  const [updatingPaymentStatus, setUpdatingPaymentStatus] = useState(false);
+  const [isOrderStatusLoading, setIsOrderStatusLoading] = useState(false);
+  const [isPaymentStatusLoading, setIsPaymentStatusLoading] = useState(false);
 
   const updateOrderStatus = useUpdateOrderStatus();
   const updatePaymentStatus = useUpdatePaymentStatus();
@@ -62,16 +59,15 @@ export function AdminOrderDetailsContent({ order, isLoading }) {
 
   const handleOrderStatusChange = (newStatus) => {
     if (!order) return;
-    setOrderStatusLoading(true);
+    setIsOrderStatusLoading(true);
     updateOrderStatus.mutate(
       { orderId: order._id, orderStatus: newStatus },
       {
         onSuccess: () => {
-          setOrderStatusLoading(false);
-          toast.success('Order status updated successfully');
+          setIsOrderStatusLoading(false);
         },
         onError: () => {
-          setOrderStatusLoading(false);
+          setIsOrderStatusLoading(false);
         },
       }
     );
@@ -79,16 +75,15 @@ export function AdminOrderDetailsContent({ order, isLoading }) {
 
   const handlePaymentStatusChange = (newStatus) => {
     if (!order) return;
-    setPaymentStatusLoading(true);
+    setIsPaymentStatusLoading(true);
     updatePaymentStatus.mutate(
       { orderId: order._id, paymentStatus: newStatus },
       {
         onSuccess: () => {
-          setPaymentStatusLoading(false);
-          toast.success('Payment status updated successfully');
+          setIsPaymentStatusLoading(false);
         },
         onError: () => {
-          setPaymentStatusLoading(false);
+          setIsPaymentStatusLoading(false);
         },
       }
     );

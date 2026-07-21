@@ -152,12 +152,12 @@ export function CouponForm({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="border-white/20 bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+      <Card className="border-white/20 bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
+        <CardContent className="p-4 sm:p-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Code */}
             <div>
-              <Label htmlFor="code" className="text-sm font-medium text-[#1B2B4B]">
+              <Label htmlFor="code" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                 Coupon Code *
               </Label>
               <Input
@@ -166,7 +166,7 @@ export function CouponForm({
                 onChange={(e) => handleChange('code', e.target.value.toUpperCase())}
                 placeholder="e.g., SUMMER20"
                 className={cn(
-                  'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 uppercase',
+                  'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 uppercase text-sm sm:text-base',
                   errors.code && 'border-red-500 focus:border-red-500'
                 )}
               />
@@ -175,7 +175,7 @@ export function CouponForm({
 
             {/* Name */}
             <div>
-              <Label htmlFor="name" className="text-sm font-medium text-[#1B2B4B]">
+              <Label htmlFor="name" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                 Coupon Name *
               </Label>
               <Input
@@ -184,7 +184,7 @@ export function CouponForm({
                 onChange={(e) => handleChange('name', e.target.value)}
                 placeholder="e.g., Summer Sale 2024"
                 className={cn(
-                  'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                  'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                   errors.name && 'border-red-500 focus:border-red-500'
                 )}
               />
@@ -193,7 +193,7 @@ export function CouponForm({
 
             {/* Description */}
             <div>
-              <Label htmlFor="description" className="text-sm font-medium text-[#1B2B4B]">
+              <Label htmlFor="description" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                 Description
               </Label>
               <Textarea
@@ -202,21 +202,21 @@ export function CouponForm({
                 onChange={(e) => handleChange('description', e.target.value)}
                 placeholder="Brief description of this coupon"
                 rows={2}
-                className="mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
+                className="mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base"
               />
             </div>
 
             {/* Type and Value */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
-                <Label htmlFor="type" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="type" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Discount Type *
                 </Label>
                 <Select
                   value={formData.type}
                   onValueChange={(value) => handleChange('type', value)}
                 >
-                  <SelectTrigger className="mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20">
+                  <SelectTrigger className="mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,7 +230,7 @@ export function CouponForm({
                 {errors.type && <p className="mt-1 text-xs text-red-500">{errors.type}</p>}
               </div>
               <div>
-                <Label htmlFor="value" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="value" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   {formData.type === 'PERCENTAGE' ? 'Discount (%)' : 'Discount Amount ($)'} *
                 </Label>
                 <Input
@@ -242,7 +242,7 @@ export function CouponForm({
                   onChange={(e) => handleChange('value', e.target.value)}
                   placeholder={formData.type === 'PERCENTAGE' ? 'e.g., 20' : 'e.g., 10.00'}
                   className={cn(
-                    'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                    'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                     errors.value && 'border-red-500 focus:border-red-500'
                   )}
                 />
@@ -251,9 +251,9 @@ export function CouponForm({
             </div>
 
             {/* Minimum and Maximum */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
-                <Label htmlFor="minimumOrderAmount" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="minimumOrderAmount" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Minimum Order Amount ($)
                 </Label>
                 <Input
@@ -265,14 +265,14 @@ export function CouponForm({
                   onChange={(e) => handleChange('minimumOrderAmount', e.target.value)}
                   placeholder="e.g., 25.00"
                   className={cn(
-                    'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                    'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                     errors.minimumOrderAmount && 'border-red-500 focus:border-red-500'
                   )}
                 />
                 {errors.minimumOrderAmount && <p className="mt-1 text-xs text-red-500">{errors.minimumOrderAmount}</p>}
               </div>
               <div>
-                <Label htmlFor="maximumDiscountAmount" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="maximumDiscountAmount" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Maximum Discount ($)
                 </Label>
                 <Input
@@ -284,7 +284,7 @@ export function CouponForm({
                   onChange={(e) => handleChange('maximumDiscountAmount', e.target.value)}
                   placeholder="e.g., 50.00"
                   className={cn(
-                    'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                    'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                     errors.maximumDiscountAmount && 'border-red-500 focus:border-red-500'
                   )}
                 />
@@ -293,9 +293,9 @@ export function CouponForm({
             </div>
 
             {/* Usage Limits */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
-                <Label htmlFor="usageLimit" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="usageLimit" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Total Usage Limit
                 </Label>
                 <Input
@@ -306,14 +306,14 @@ export function CouponForm({
                   onChange={(e) => handleChange('usageLimit', e.target.value)}
                   placeholder="Leave empty for unlimited"
                   className={cn(
-                    'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                    'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                     errors.usageLimit && 'border-red-500 focus:border-red-500'
                   )}
                 />
                 {errors.usageLimit && <p className="mt-1 text-xs text-red-500">{errors.usageLimit}</p>}
               </div>
               <div>
-                <Label htmlFor="perUserLimit" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="perUserLimit" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Per-User Limit *
                 </Label>
                 <Input
@@ -323,7 +323,7 @@ export function CouponForm({
                   value={formData.perUserLimit}
                   onChange={(e) => handleChange('perUserLimit', e.target.value)}
                   className={cn(
-                    'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                    'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                     errors.perUserLimit && 'border-red-500 focus:border-red-500'
                   )}
                 />
@@ -332,9 +332,9 @@ export function CouponForm({
             </div>
 
             {/* Dates */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
-                <Label htmlFor="validFrom" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="validFrom" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Valid From
                 </Label>
                 <Input
@@ -342,11 +342,11 @@ export function CouponForm({
                   type="datetime-local"
                   value={formData.validFrom}
                   onChange={(e) => handleChange('validFrom', e.target.value)}
-                  className="mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
+                  className="mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base"
                 />
               </div>
               <div>
-                <Label htmlFor="expiresAt" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="expiresAt" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                   Expires At *
                 </Label>
                 <Input
@@ -355,7 +355,7 @@ export function CouponForm({
                   value={formData.expiresAt}
                   onChange={(e) => handleChange('expiresAt', e.target.value)}
                   className={cn(
-                    'mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20',
+                    'mt-1 sm:mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 text-sm sm:text-base',
                     errors.expiresAt && 'border-red-500 focus:border-red-500'
                   )}
                 />
@@ -364,36 +364,36 @@ export function CouponForm({
             </div>
 
             {/* Active Status */}
-            <div className="flex items-center space-x-3 pt-2">
+            <div className="flex items-center space-x-2 sm:space-x-3 pt-1 sm:pt-2">
               <Switch
                 id="isActive"
                 checked={formData.isActive}
                 onCheckedChange={(checked) => handleChange('isActive', checked)}
                 className="data-[state=checked]:bg-[#C9A84C]"
               />
-              <Label htmlFor="isActive" className="text-sm font-medium text-[#1B2B4B]">
+              <Label htmlFor="isActive" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
                 Active
               </Label>
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 pt-4 border-t border-[#1B2B4B]/5">
+            <div className="flex flex-col xs:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-[#1B2B4B]/5">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.push('/admin/coupons')}
-                className="rounded-full border-[#1B2B4B]/15 px-6 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30"
+                className="rounded-full border-[#1B2B4B]/15 px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 w-full xs:w-auto"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-6 py-3 font-semibold text-[#04103A] shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all disabled:opacity-70"
+                className="flex-1 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-[#04103A] shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
                     {isEdit ? 'Updating...' : 'Creating...'}
                   </>
                 ) : (

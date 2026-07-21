@@ -38,23 +38,23 @@ export function CouponUsageTable({ usages, meta, isLoading, onPageChange }) {
 
   if (!usages || usages.length === 0) {
     return (
-      <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-8 text-center">
-        <Users className="mx-auto h-8 w-8 text-[#1B2B4B]/20" />
-        <p className="mt-2 text-sm text-[#1B2B4B]/60">No usage history available</p>
+      <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-6 sm:p-8 text-center">
+        <Users className="mx-auto h-6 w-6 sm:h-8 sm:w-8 text-[#1B2B4B]/20" />
+        <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-[#1B2B4B]/60">No usage history available</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
+    <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#1B2B4B]/5 hover:bg-transparent">
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">User</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">Order</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold text-right">Discount</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">Date Used</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm">User</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm hidden sm:table-cell">Order</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm text-right">Discount</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm hidden md:table-cell">Date Used</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,29 +64,29 @@ export function CouponUsageTable({ usages, meta, isLoading, onPageChange }) {
                 className="border-b border-[#1B2B4B]/5 hover:bg-[#F8F5EF]/50 transition-colors"
               >
                 <TableCell>
-                  <span className="text-sm text-[#1B2B4B]">
+                  <span className="text-xs sm:text-sm text-[#1B2B4B]">
                     {usage.userId || 'Unknown User'}
                   </span>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">
                   {usage.orderId ? (
                     <Link
                       href={`/admin/orders/${usage.orderId._id}`}
-                      className="text-sm font-mono text-[#C9A84C] hover:underline"
+                      className="text-xs sm:text-sm font-mono text-[#C9A84C] hover:underline"
                     >
                       #{usage.orderId.orderNumber || 'N/A'}
                     </Link>
                   ) : (
-                    <span className="text-sm text-[#1B2B4B]/60">N/A</span>
+                    <span className="text-xs sm:text-sm text-[#1B2B4B]/60">N/A</span>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
-                  <span className="font-semibold text-emerald-600">
+                  <span className="font-semibold text-emerald-600 text-xs sm:text-sm">
                     {formatCurrency(usage.discountAmount)}
                   </span>
                 </TableCell>
-                <TableCell>
-                  <span className="text-sm text-[#1B2B4B]/60">
+                <TableCell className="hidden md:table-cell">
+                  <span className="text-xs sm:text-sm text-[#1B2B4B]/60">
                     {formatDate(usage.usedAt)}
                   </span>
                 </TableCell>
@@ -97,7 +97,7 @@ export function CouponUsageTable({ usages, meta, isLoading, onPageChange }) {
       </div>
 
       {meta && meta.totalPages > 1 && (
-        <div className="p-4 border-t border-[#1B2B4B]/5">
+        <div className="p-3 sm:p-4 border-t border-[#1B2B4B]/5">
           <OrderPagination meta={meta} onPageChange={onPageChange} />
         </div>
       )}
@@ -107,14 +107,14 @@ export function CouponUsageTable({ usages, meta, isLoading, onPageChange }) {
 
 function CouponUsageSkeleton() {
   return (
-    <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
+    <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#1B2B4B]/5">
               {[...Array(4)].map((_, i) => (
                 <TableHead key={i}>
-                  <div className="h-4 w-16 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 sm:h-4 w-12 sm:w-16 bg-gray-200 rounded animate-pulse" />
                 </TableHead>
               ))}
             </TableRow>
@@ -124,7 +124,7 @@ function CouponUsageSkeleton() {
               <TableRow key={i} className="border-b border-[#1B2B4B]/5">
                 {[...Array(4)].map((_, j) => (
                   <TableCell key={j}>
-                    <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 sm:h-6 w-14 sm:w-20 bg-gray-200 rounded animate-pulse" />
                   </TableCell>
                 ))}
               </TableRow>

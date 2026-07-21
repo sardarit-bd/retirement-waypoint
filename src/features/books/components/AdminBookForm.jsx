@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { X, Upload, Loader2, FileText, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, Loader2, FileText, Image as ImageIcon, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -41,6 +42,8 @@ export function AdminBookForm({
     pageCount: '',
     featured: false,
     status: 'DRAFT',
+    previewEnabled: true,
+    previewEndPage: '5',
   });
   const [coverFile, setCoverFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
@@ -59,6 +62,8 @@ export function AdminBookForm({
         pageCount: initialData.pageCount?.toString() || '',
         featured: initialData.featured || false,
         status: initialData.status || 'DRAFT',
+        previewEnabled: initialData.previewEnabled !== false,
+        previewEndPage: initialData.previewEndPage?.toString() || '5',
       });
       if (initialData.coverImage) {
         setCoverPreview(initialData.coverImage);
@@ -130,6 +135,16 @@ export function AdminBookForm({
     }
     if (!isEdit && !coverFile) newErrors.cover = 'Cover image is required';
     if (!isEdit && !pdfFile) newErrors.pdf = 'PDF file is required';
+    if (formData.previewEnabled) {
+      if (!formData.previewEndPage || isNaN(formData.previewEndPage) || Number(formData.previewEndPage) < 1) {
+        newErrors.previewEndPage = 'Preview end page must be at least 1';
+      } else if (
+        formData.pageCount &&
+        Number(formData.previewEndPage) > Number(formData.pageCount)
+      ) {
+        newErrors.previewEndPage = 'Preview end page cannot exceed total page count';
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -287,6 +302,60 @@ export function AdminBookForm({
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            {/* Book Preview Settings */}
+            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-4 sm:p-5">
+              <div className="flex items-center gap-2">
+                <Eye className="h-4 w-4 text-[#C9A84C]" />
+                <h3 className="text-sm font-semibold text-[#1B2B4B]">
+                  Book Preview Settings
+                </h3>
+              </div>
+              <p className="mt-1 text-xs text-[#1B2B4B]/50">
+                Control how much of this book guests can read before buying.
+              </p>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="flex items-center space-x-3">
+                  <Switch
+                    id="previewEnabled"
+                    checked={formData.previewEnabled}
+                    onCheckedChange={(checked) => handleChange('previewEnabled', checked)}
+                    className="data-[state=checked]:bg-[#C9A84C]"
+                  />
+                  <Label htmlFor="previewEnabled" className="text-sm font-medium text-[#1B2B4B]">
+                    Preview Enabled
+                  </Label>
+                </div>
+                <div>
+                  <Label htmlFor="previewEndPage" className="text-sm font-medium text-[#1B2B4B]">
+                    Preview End Page
+                  </Label>
+                  <Input
+                    id="previewEndPage"
+                    type="number"
+                    min="1"
+                    max={formData.pageCount || undefined}
+                    disabled={!formData.previewEnabled}
+                    value={formData.previewEndPage}
+                    onChange={(e) => handleChange('previewEndPage', e.target.value)}
+                    placeholder="e.g. 4"
+                    className={cn(
+                      'mt-1.5 rounded-xl border-[#1B2B4B]/10 bg-white focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 disabled:opacity-50',
+                      errors.previewEndPage && 'border-red-500 focus:border-red-500'
+                    )}
+                  />
+                  {errors.previewEndPage && (
+                    <p className="mt-1 text-xs text-red-500">{errors.previewEndPage}</p>
+                  )}
+                  {!errors.previewEndPage && (
+                    <p className="mt-1 text-xs text-[#1B2B4B]/40">
+                      Readers can view pages 1 through this page before purchasing.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 

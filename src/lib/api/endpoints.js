@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/api/auth/me',
     UPDATE_PROFILE_IMAGE: '/api/auth/me/profile-image',
     REMOVE_PROFILE_IMAGE: '/api/auth/me/profile-image',
+    CHANGE_PASSWORD: '/api/auth/change-password',
   },
   // Books
   BOOKS: {
@@ -13,6 +14,7 @@ export const API_ENDPOINTS = {
     FEATURED: '/api/public/books/featured',
     SINGLE: (id) => `/api/books/${id}`,
     PUBLIC_SINGLE: (slug) => `/api/public/books/${slug}`,
+    PUBLIC_PREVIEW: (slug) => `/api/public/books/${slug}/preview`,
     PUBLISH: (id) => `/api/books/${id}/publish`,
     ARCHIVE: (id) => `/api/books/${id}/archive`,
   },
@@ -56,12 +58,35 @@ export const API_ENDPOINTS = {
     ADMIN_APPROVE: (id) => `/api/reviews/admin/reviews/${id}/approve`,
     ADMIN_REJECT: (id) => `/api/reviews/admin/reviews/${id}/reject`,
   },
-  // Assessments
+  // Assessments - Public (User taking assessment)
   ASSESSMENTS: {
     SUBMIT: '/api/assessments',
     MY_ASSESSMENTS: '/api/assessments/my-assessments',
     SINGLE: (id) => `/api/assessments/${id}`,
     RESULTS: (id) => `/api/assessments/${id}/results`,
+  },
+  // Assessment Admin - Management (Admin)
+  ASSESSMENT_ADMIN: {
+    // Public routes (no auth required)
+    PUBLIC: '/api/assessments/public',
+    PUBLIC_SLUG: (slug) => `/api/assessments/public/${slug}`,
+
+    // Admin routes (auth + admin role required)
+    ADMIN: '/api/assessments',
+    ADMIN_BY_ID: (id) => `/api/assessments/${id}`,
+    ADMIN_BY_SLUG: (slug) => `/api/assessments/slug/${slug}`,
+    ADMIN_STATS: '/api/assessments/stats',
+    ADMIN_DELETED: '/api/assessments/deleted',
+    ADMIN_DUPLICATE: (id) => `/api/assessments/${id}/duplicate`,
+    ADMIN_PUBLISH: (id) => `/api/assessments/${id}/publish`,
+    ADMIN_ARCHIVE: (id) => `/api/assessments/${id}/archive`,
+    ADMIN_RESTORE: (id) => `/api/assessments/${id}/restore`,
+  },
+  // Assessment Landing
+  ASSESSMENT_LANDING: {
+    PUBLIC: '/api/assessment-landing',
+    ADMIN: '/api/assessment-landing/admin',
+    UPDATE: (id) => `/api/assessment-landing/admin/${id}`,
   },
   // Refunds
   REFUNDS: {
@@ -113,5 +138,22 @@ export const API_ENDPOINTS = {
     BOOK_COVER: '/api/upload/book-cover',
     MY_FILES: '/api/upload/my-files',
     DELETE: (publicId) => `/api/upload/${publicId}`,
+  },
+  // Contact
+  CONTACT: {
+    SUBMIT: '/api/contact',
+    ADMIN_ALL: '/api/admin/contact-messages',
+    ADMIN_STATS: '/api/admin/contact-messages/stats',
+    ADMIN_UNREAD_COUNT: '/api/admin/contact-messages/unread-count',
+    ADMIN_SINGLE: (id) => `/api/admin/contact-messages/${id}`,
+    ADMIN_UPDATE_STATUS: (id) => `/api/admin/contact-messages/${id}/status`,
+  },
+  // Newsletter
+  NEWSLETTER: {
+    SUBSCRIBE: '/api/newsletter/subscribe',
+    ADMIN_ALL: '/api/admin/newsletter',
+    ADMIN_STATS: '/api/admin/newsletter/stats',
+    ADMIN_EXPORT: '/api/admin/newsletter/export',
+    ADMIN_SINGLE: (id) => `/api/admin/newsletter/${id}`,
   },
 };

@@ -79,23 +79,6 @@ export function DashboardHeader() {
           />
         </Link>
 
-        {/* Search - Desktop */}
-        <div className="hidden flex-1 max-w-md lg:block px-8">
-          <motion.div
-            animate={{ scale: isSearchFocused ? 1.02 : 1 }}
-            className="relative"
-          >
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1B2B4B]/40 transition-colors duration-200" />
-            <input
-              type="text"
-              placeholder="Search..."
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-              className="w-full rounded-[18px] border-0 bg-[#F8F5EF] py-2.5 pl-11 pr-4 text-sm text-[#1B2B4B] placeholder:text-[#1B2B4B]/40 outline-none ring-1 ring-transparent transition-all duration-200 focus:ring-[#C9A84C]/50"
-            />
-          </motion.div>
-        </div>
-
         {/* Right Section */}
         <div className="flex items-center gap-3">
           {/* Mobile Search Toggle */}
@@ -105,16 +88,6 @@ export function DashboardHeader() {
           >
             <Search className="h-5 w-5" />
           </button>
-
-          {/* Notifications */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative rounded-full p-2 text-[#1B2B4B]/60 transition-colors hover:bg-[#F8F5EF] hover:text-[#1B2B4B]"
-          >
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
-          </motion.button>
 
           {/* Profile Dropdown */}
           <DropdownMenu>
@@ -141,25 +114,7 @@ export function DashboardHeader() {
                 <span className="text-sm font-semibold text-[#1B2B4B]">{user?.name}</span>
                 <span className="text-xs text-[#1B2B4B]/60">{user?.email}</span>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-[#1B2B4B]/10" />
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/dashboard/profile"
-                  className="flex cursor-pointer items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-[#1B2B4B] transition-colors hover:bg-[#F8F5EF]"
-                >
-                  <User className="h-4 w-4 text-[#1B2B4B]/50" />
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/dashboard/settings"
-                  className="flex cursor-pointer items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-[#1B2B4B] transition-colors hover:bg-[#F8F5EF]"
-                >
-                  <Settings className="h-4 w-4 text-[#1B2B4B]/50" />
-                  Settings
-                </Link>
-              </DropdownMenuItem>
+              {/* <DropdownMenuSeparator className="bg-[#1B2B4B]/10" /> */}
               <DropdownMenuSeparator className="bg-[#1B2B4B]/10" />
               <DropdownMenuItem
                 onClick={handleSignOut}

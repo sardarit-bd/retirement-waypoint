@@ -10,9 +10,6 @@ import {
   XCircle,
   Trash2,
   ShieldCheck,
-  Clock,
-  User,
-  BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -83,7 +80,7 @@ export function AdminReviewTable({
           <Star
             key={i}
             className={cn(
-              'h-4 w-4',
+              'h-3 w-3 sm:h-4 sm:w-4',
               i < rating
                 ? 'fill-[#F59E0B] text-[#F59E0B]'
                 : 'fill-gray-200 text-gray-200'
@@ -104,19 +101,19 @@ export function AdminReviewTable({
 
   return (
     <>
-      <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
+      <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow className="border-b border-[#1B2B4B]/5 hover:bg-transparent">
-                <TableHead className="text-[#1B2B4B]/60 font-semibold">User</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold">Book</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold text-center">Rating</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold">Review</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold text-center">Verified</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold text-center">Status</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold">Date</TableHead>
-                <TableHead className="text-[#1B2B4B]/60 font-semibold text-right">Actions</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm">User</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm hidden sm:table-cell">Book</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm text-center">Rating</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm hidden md:table-cell">Review</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm text-center hidden lg:table-cell">Verified</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm text-center">Status</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm hidden lg:table-cell">Date</TableHead>
+                <TableHead className="text-[#1B2B4B]/60 font-semibold text-xs sm:text-sm text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -135,23 +132,23 @@ export function AdminReviewTable({
                   >
                     {/* User */}
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
                           <AvatarImage src={review.user?.image} />
-                          <AvatarFallback className="bg-[#C9A84C]/20 text-[#1B2B4B] text-xs">
+                          <AvatarFallback className="bg-[#C9A84C]/20 text-[#1B2B4B] text-[10px] sm:text-xs">
                             {userInitial}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm font-medium text-[#1B2B4B] truncate max-w-[100px]">
+                        <span className="text-xs sm:text-sm font-medium text-[#1B2B4B] truncate max-w-[60px] sm:max-w-[100px]">
                           {userName}
                         </span>
                       </div>
                     </TableCell>
 
                     {/* Book */}
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="relative h-10 w-8 shrink-0 overflow-hidden rounded-md bg-[#F8F5EF]">
+                    <TableCell className="hidden sm:table-cell">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="relative h-8 w-6 sm:h-10 sm:w-8 shrink-0 overflow-hidden rounded-md bg-[#F8F5EF]">
                           {review.book?.coverImage ? (
                             <Image
                               src={review.book.coverImage}
@@ -160,12 +157,12 @@ export function AdminReviewTable({
                               className="object-cover"
                             />
                           ) : (
-                            <div className="flex h-full items-center justify-center text-[8px] font-bold text-[#1B2B4B]/30">
+                            <div className="flex h-full items-center justify-center text-[6px] sm:text-[8px] font-bold text-[#1B2B4B]/30">
                               {review.book?.title?.charAt(0) || '?'}
                             </div>
                           )}
                         </div>
-                        <span className="text-sm text-[#1B2B4B] truncate max-w-[120px]">
+                        <span className="text-xs sm:text-sm text-[#1B2B4B] truncate max-w-[60px] sm:max-w-[120px]">
                           {review.book?.title || 'Unknown Book'}
                         </span>
                       </div>
@@ -174,29 +171,29 @@ export function AdminReviewTable({
                     {/* Rating */}
                     <TableCell className="text-center">
                       <div className="flex flex-col items-center">
-                        <span className="text-sm font-bold text-[#1B2B4B]">{review.rating}</span>
+                        <span className="text-xs sm:text-sm font-bold text-[#1B2B4B]">{review.rating}</span>
                         {renderStars(review.rating)}
                       </div>
                     </TableCell>
 
                     {/* Review */}
-                    <TableCell>
-                      <div className="max-w-[200px]">
-                        <p className="text-sm font-medium text-[#1B2B4B] truncate">
+                    <TableCell className="hidden md:table-cell">
+                      <div className="max-w-[120px] sm:max-w-[200px]">
+                        <p className="text-xs sm:text-sm font-medium text-[#1B2B4B] truncate">
                           {review.title}
                         </p>
-                        <p className="text-xs text-[#1B2B4B]/60 truncate">
+                        <p className="text-[10px] sm:text-xs text-[#1B2B4B]/60 truncate">
                           {review.comment}
                         </p>
                       </div>
                     </TableCell>
 
                     {/* Verified */}
-                    <TableCell className="text-center">
+                    <TableCell className="text-center hidden lg:table-cell">
                       {review.isVerifiedPurchase ? (
-                        <ShieldCheck className="h-5 w-5 text-emerald-500 mx-auto" />
+                        <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500 mx-auto" />
                       ) : (
-                        <span className="text-xs text-[#1B2B4B]/30">—</span>
+                        <span className="text-[10px] sm:text-xs text-[#1B2B4B]/30">—</span>
                       )}
                     </TableCell>
 
@@ -204,7 +201,7 @@ export function AdminReviewTable({
                     <TableCell className="text-center">
                       <Badge
                         className={cn(
-                          'border px-3 py-1 text-xs font-medium',
+                          'border px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium',
                           isPending
                             ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
                             : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
@@ -215,23 +212,23 @@ export function AdminReviewTable({
                     </TableCell>
 
                     {/* Date */}
-                    <TableCell>
-                      <span className="text-sm text-[#1B2B4B]/60 whitespace-nowrap">
+                    <TableCell className="hidden lg:table-cell">
+                      <span className="text-[10px] sm:text-sm text-[#1B2B4B]/60 whitespace-nowrap">
                         {formatDate(review.createdAt)}
                       </span>
                     </TableCell>
 
                     {/* Actions */}
                     <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
+                      <div className="flex items-center justify-end gap-0.5 sm:gap-1">
                         {/* View */}
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleView(review)}
-                          className="h-8 w-8 rounded-full p-0 hover:bg-[#F8F5EF]"
+                          className="h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0 hover:bg-[#F8F5EF] cursor-pointer"
                         >
-                          <Eye className="h-4 w-4 text-[#1B2B4B]/60" />
+                          <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-[#1B2B4B]/60" />
                         </Button>
 
                         {/* Approve - Only for pending */}
@@ -241,9 +238,9 @@ export function AdminReviewTable({
                             size="sm"
                             onClick={() => handleApprove(review)}
                             disabled={isApproving}
-                            className="h-8 w-8 rounded-full p-0 text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600"
+                            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0 text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer"
                           >
-                            <CheckCircle className="h-4 w-4" />
+                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         )}
 
@@ -254,9 +251,9 @@ export function AdminReviewTable({
                             size="sm"
                             onClick={() => handleReject(review)}
                             disabled={isRejecting}
-                            className="h-8 w-8 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
                           >
-                            <XCircle className="h-4 w-4" />
+                            <XCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         )}
 
@@ -266,9 +263,9 @@ export function AdminReviewTable({
                           size="sm"
                           onClick={() => onDelete(review._id)}
                           disabled={isDeleting}
-                          className="h-8 w-8 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                          className="h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -319,14 +316,14 @@ export function AdminReviewTable({
 // Skeleton Component
 function AdminReviewTableSkeleton() {
   return (
-    <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
+    <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] overflow-hidden">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#1B2B4B]/5">
               {[...Array(8)].map((_, i) => (
                 <TableHead key={i}>
-                  <div className="h-4 w-16 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-3 sm:h-4 w-12 sm:w-16 bg-gray-200 rounded animate-pulse" />
                 </TableHead>
               ))}
             </TableRow>
@@ -336,7 +333,7 @@ function AdminReviewTableSkeleton() {
               <TableRow key={i} className="border-b border-[#1B2B4B]/5">
                 {[...Array(8)].map((_, j) => (
                   <TableCell key={j}>
-                    <div className="h-6 w-20 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-4 sm:h-6 w-14 sm:w-20 bg-gray-200 rounded animate-pulse" />
                   </TableCell>
                 ))}
               </TableRow>
@@ -351,12 +348,12 @@ function AdminReviewTableSkeleton() {
 // Empty State Component
 function AdminReviewEmptyState() {
   return (
-    <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] p-12 text-center">
-      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#C9A84C]/10 text-[#C9A84C]">
-        <Star className="h-7 w-7" />
+    <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl shadow-[0_15px_50px_rgba(4,16,58,0.08)] p-8 sm:p-12 text-center">
+      <div className="mx-auto mb-3 sm:mb-4 flex h-11 w-11 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-[#C9A84C]/10 text-[#C9A84C]">
+        <Star className="h-5 w-5 sm:h-7 sm:w-7" />
       </div>
-      <h2 className="text-xl font-semibold text-[#1B2B4B]">No reviews found</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm text-[#1B2B4B]/60">
+      <h2 className="text-lg sm:text-xl font-semibold text-[#1B2B4B]">No reviews found</h2>
+      <p className="mx-auto mt-1 sm:mt-2 max-w-md text-xs sm:text-sm text-[#1B2B4B]/60">
         Try adjusting your search or filters to find the right reviews.
       </p>
     </div>

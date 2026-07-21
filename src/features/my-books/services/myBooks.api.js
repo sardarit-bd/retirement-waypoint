@@ -20,3 +20,21 @@ export const myBooksApi = {
     return response.data.data;
   },
 };
+
+/**
+ * Get read URL for a purchased book
+ */
+export const getReadUrl = async (bookId) => {
+  const response = await api.get(`${API_ENDPOINTS.MY_BOOKS.SINGLE(bookId)}/read`);
+  return response.data;
+};
+
+/**
+ * Stream PDF for reading
+ */
+export const getReadStream = async (bookId) => {
+  const response = await api.get(`${API_ENDPOINTS.MY_BOOKS.SINGLE(bookId)}/stream`, {
+    responseType: 'blob',
+  });
+  return response.data;
+};

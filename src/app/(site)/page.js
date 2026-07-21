@@ -15,7 +15,7 @@ const Home = () => {
       <AboutDaveSection />
       <BookSection />
       <SupportSection />
-      {/* <NewsletterSection /> */}
+      <NewsletterSection />
     </>
   );
 };

@@ -8,71 +8,15 @@ import { useSession } from '@/hooks/useSession';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
-  BookOpen,
-  ShoppingBag,
-  FileText,
-  Star,
-  ClipboardCheck,
-  RefreshCw,
-  User,
-  Settings,
+  LogOut,
   ChevronLeft,
   ChevronRight,
-  LogOut,
-  Users,
-  BarChart3,
-  BookMarked,
-  ShoppingCart,
-  Ticket,
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
-
-// User menu items with sections
-const userMenuSections = [
-  {
-    title: 'Main',
-    items: [
-      { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-      { icon: BookOpen, label: 'My Books', href: '/dashboard/my-books' },
-      { icon: ShoppingBag, label: 'Orders', href: '/dashboard/orders' },
-      // { icon: FileText, label: 'Invoices', href: '/dashboard/invoices' },
-    ],
-  },
-  {
-    title: 'Account',
-    items: [
-      // { icon: Star, label: 'Reviews', href: '/dashboard/reviews' },
-      // { icon: ClipboardCheck, label: 'Assessments', href: '/dashboard/assessments' },
-      // { icon: RefreshCw, label: 'Refunds', href: '/dashboard/refunds' },
-      { icon: User, label: 'Profile', href: '/dashboard/profile' },
-      // { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
-    ],
-  },
-];
-
-// Admin menu items with sections
-const adminMenuSections = [
-  {
-    title: 'Main',
-    items: [
-      { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
-      { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
-      { icon: BookMarked, label: 'Books', href: '/admin/books' },
-      { icon: ShoppingCart, label: 'Orders', href: '/admin/orders' },
-      { icon: Star, label: 'Reviews', href: '/admin/reviews' },
-    ],
-  },
-  {
-    title: 'Management',
-    items: [
-      { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
-      { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
-    ],
-  },
-];
+import { getMenuSections } from './config/menuConfig';
 
 // Animation variants
 const containerVariants = {
@@ -117,7 +61,7 @@ export function DashboardSidebar() {
 
   const user = session?.user;
   const isAdmin = user?.role === 'admin';
-  const menuSections = isAdmin ? adminMenuSections : userMenuSections;
+  const menuSections = getMenuSections(isAdmin);
 
   const handleSignOut = async () => {
     try {
@@ -137,7 +81,7 @@ export function DashboardSidebar() {
     }
   };
 
-  // FIXED: Active link logic with exact match for root paths
+  // Active link logic with exact match for root paths
   const isActiveLink = (href) => {
     // Dashboard should match only exactly
     if (href === '/dashboard') {
@@ -177,7 +121,7 @@ export function DashboardSidebar() {
         className={cn(
           'fixed z-50 transition-all duration-300 ease-in-out',
           'lg:top-[88px] lg:left-5 lg:bottom-5 lg:rounded-[32px]',
-          'top-[72px] left-0 bottom-0 rounded-none lg:rounded-[32px]',
+          'top-0 left-0 bottom-0 rounded-none lg:rounded-[32px]',
           isCollapsed ? 'lg:w-[88px]' : 'lg:w-[280px]',
           isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -190,7 +134,7 @@ export function DashboardSidebar() {
         }}
       >
         {/* Sidebar Content */}
-        <div className="flex h-full flex-col overflow-hidden">
+        <div className="flex h-full top-0 flex-col overflow-hidden">
           {/* Brand Area */}
           {!isCollapsed && (
             <motion.div
@@ -326,7 +270,7 @@ export function DashboardSidebar() {
               whileTap={{ scale: 0.98 }}
               onClick={handleSignOut}
               className={cn(
-                'flex w-full items-center rounded-xl px-3 py-3.5 text-sm font-medium transition-all duration-300',
+                'flex w-full items-center rounded-xl px-3 py-3.5 text-sm font-medium transition-all duration-300 cursor-pointer',
                 isCollapsed ? 'justify-center' : 'gap-3',
                 'bg-red-500/8 text-red-400/90 hover:bg-red-500/16 hover:text-red-300',
                 'border border-red-500/20 hover:border-red-500/30'
@@ -352,7 +296,7 @@ export function DashboardSidebar() {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={cn(
-            'absolute -right-3.5 top-1/2 hidden -translate-y-1/2 rounded-full p-1.5 transition-all duration-300 hover:scale-110 lg:block',
+            'absolute -right-3.5 top-1/2 hidden -translate-y-1/2 rounded-full p-1.5 transition-all duration-300 hover:scale-110 lg:block cursor-pointer',
             'bg-white/10 backdrop-blur-2xl border border-white/10',
             'shadow-[0_8px_25px_rgba(0,0,0,0.25)]',
             'hover:bg-white/15 hover:border-white/20'

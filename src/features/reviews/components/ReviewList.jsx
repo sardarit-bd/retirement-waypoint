@@ -9,7 +9,7 @@ export const ReviewList = ({ reviews }) => {
         <div key={review._id}>
           <ReviewItem review={review} />
           {index < reviews.length - 1 && (
-            <div className="border-t border-[#1B2B4B]/10 my-6" />
+            <div className="border-t border-[#1B2B4B]/10 my-4 sm:my-6" />
           )}
         </div>
       ))}

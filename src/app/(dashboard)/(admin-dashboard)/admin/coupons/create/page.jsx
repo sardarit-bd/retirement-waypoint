@@ -17,10 +17,10 @@ export default function CreateCouponPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-[#1B2B4B]">Create New Coupon</h1>
-        <p className="mt-1 text-[#1B2B4B]/60">Create a new promotional coupon</p>
+    <div className="max-w-3xl mx-auto py-4 sm:py-6 px-3 sm:px-0">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1B2B4B]">Create New Coupon</h1>
+        <p className="mt-0.5 sm:mt-1 text-sm sm:text-base text-[#1B2B4B]/60">Create a new promotional coupon</p>
       </div>
       <CouponForm onSubmit={handleSubmit} isSubmitting={isPending} />
     </div>

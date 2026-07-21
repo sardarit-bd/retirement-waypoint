@@ -8,44 +8,25 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
-
-const books = [
-  {
-    title: "Thriving — Not Just Surviving — In Your Retirement Years",
-    price: "$29",
-    image: "/images/books/book-1.jpg",
-    href: "/book",
-  },
-  {
-    title: "The Retirement Readiness Workbook",
-    price: "$24",
-    image: "/images/books/book-2.jpg",
-    href: "/resources",
-  },
-  {
-    title: "Building Purpose After Work",
-    price: "$32",
-    image: "/images/books/book-3.jpg",
-    href: "/resources",
-  },
-  {
-    title: "Structure as Self-Care",
-    price: "$18",
-    image: "/images/books/book-4.jpg",
-    href: "/resources",
-  },
-];
+import { useLatestBooks } from "@/features/books/hooks/useBook";
 
 const BookCard = ({ book }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const bookImage = imageError
+    ? "https://placehold.co/400x600/1B2B4B/FFFFFF?text=Book+Cover"
+    : book.coverImage;
+
   return (
     <Card className="group w-[280px] shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.22)] backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:border-[#C9A84C]/40 hover:bg-white/15 hover:shadow-2xl sm:w-[310px]">
       <div className="relative h-72 overflow-hidden">
         <Image
-          src={book.image}
+          src={bookImage}
           alt={book.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 640px) 280px, 310px"
+          onError={() => setImageError(true)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1B2B4B]/70 via-transparent to-transparent" />
       </div>
@@ -57,14 +38,14 @@ const BookCard = ({ book }) => {
 
         <div className="mt-5 flex items-center justify-between gap-3">
           <span className="text-2xl font-bold text-[#C9A84C]">
-            {book.price}
+            ${book.price}
           </span>
 
           <Button
             asChild
-            className="cursor-pointer rounded-full bg-[#C9A84C] px-5 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]"
+            className="cursor-pointer rounded-full bg-[#C9A84C] px-5 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] hover:text-white"
           >
-            <Link href={book.href}>Buy Now</Link>
+            <Link href={`/book/${book.slug}`}>Buy Now</Link>
           </Button>
         </div>
       </CardContent>
@@ -72,8 +53,40 @@ const BookCard = ({ book }) => {
   );
 };
 
+const BookCardSkeleton = () => {
+  return (
+    <div className="w-[280px] shrink-0 animate-pulse sm:w-[310px]">
+      <div className="rounded-3xl border border-white/10 bg-white/10 p-0">
+        <div className="relative h-72 overflow-hidden rounded-t-3xl bg-white/5" />
+        <div className="p-5 space-y-4">
+          <div className="h-12 bg-white/5 rounded-lg" />
+          <div className="flex items-center justify-between">
+            <div className="h-8 w-16 bg-white/5 rounded-lg" />
+            <div className="h-10 w-24 bg-white/5 rounded-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const BookSection = () => {
   const [popupOpen, setPopupOpen] = useState(false);
+  const { data, isLoading, error } = useLatestBooks(4);
+
+  const books = data?.data || [];
+
+  if (error) {
+    return (
+      <section className="relative overflow-hidden bg-[#1B2B4B] py-20 md:py-28 lg:py-32">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-white/60">Failed to load books. Please try again later.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const handlePopupOpen = () => {
     setPopupOpen(true);
@@ -102,30 +115,48 @@ const BookSection = () => {
           </p>
         </div>
 
-        <div className="relative">
-          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-[#1B2B4B] to-transparent sm:w-24" />
-          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-[#1B2B4B] to-transparent sm:w-24" />
+        {isLoading ? (
+          <div className="relative">
+            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-[#1B2B4B] to-transparent sm:w-24" />
+            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-[#1B2B4B] to-transparent sm:w-24" />
 
-          <div className="overflow-hidden py-4">
-            <Marquee
-              speed={40}
-              gradient={false}
-              pauseOnHover={true}
-              autoFill={true}
-            >
-              {books.map((book, index) => (
-                <div key={`${book.title}-${index}`} className="mx-3">
-                  <BookCard book={book} />
-                </div>
-              ))}
-            </Marquee>
+            <div className="overflow-hidden py-4">
+              <div className="flex gap-6">
+                {[...Array(4)].map((_, index) => (
+                  <BookCardSkeleton key={index} />
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        ) : books.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-white/60">No books available yet. Check back soon!</p>
+          </div>
+        ) : (
+          <div className="relative">
+            <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-[#1B2B4B] to-transparent sm:w-24" />
+            <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-[#1B2B4B] to-transparent sm:w-24" />
+
+            <div className="overflow-hidden py-4">
+              <Marquee
+                speed={80}
+                gradient={false}
+                pauseOnHover={true}
+                autoFill={books.length < 1}
+              >
+                {books.map((book, index) => (
+                  <div key={`${book._id}-${index}`} className="mx-3">
+                    <BookCard book={book} />
+                  </div>
+                ))}
+              </Marquee>
+            </div>
+          </div>
+        )}
 
         <div className="mt-14 text-center">
           <Button
             variant="ghost"
-            // onClick={handlePopupOpen}
             className="group w-full cursor-pointer rounded-full text-sm! bg-white px-5 py-5 font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-lg"
             asChild
           >

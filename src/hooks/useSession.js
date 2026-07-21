@@ -13,7 +13,8 @@ export function useSession() {
 
   return {
     session,
-    isLoading: isPending || isRefetching,
+    isLoading: isPending,
+    isRefetching,
     error,
     refetch,
     user: session?.user || null,

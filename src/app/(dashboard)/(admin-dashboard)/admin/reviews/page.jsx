@@ -8,17 +8,7 @@ import { AdminReviewFilters } from '@/features/reviews/components/admin-review/A
 import { AdminReviewStats } from '@/features/reviews/components/admin-review/AdminReviewStats';
 import { DashboardErrorState } from '@/features/dashboard/components/DashboardErrorState';
 import { useAdminApproveReview, useAdminDeleteReview, useAdminRejectReview, useAdminReviews } from '@/features/reviews/hooks/useReviews';
-// import {
-//   useAdminReviews,
-//   useAdminApproveReview,
-//   useAdminRejectReview,
-//   useAdminDeleteReview,
-// } from '@/features/reviews/hooks/useReviews';
-// import { AdminReviewStats } from '@/features/reviews/components/AdminReviewStats';
-// import { AdminReviewFilters } from '@/features/reviews/components/AdminReviewFilters';
-// import { AdminReviewTable } from '@/features/reviews/components/AdminReviewTable';
-// import { OrderPagination } from '@/features/orders/components/OrderPagination';
-// import { DashboardErrorState } from '@/features/dashboard/components/DashboardErrorState';
+
 
 export default function AdminReviewsPage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -128,7 +118,7 @@ export default function AdminReviewsPage() {
 
     if (error) {
         return (
-            <div className="py-6">
+            <div className="py-4 sm:py-6 px-3 sm:px-0">
                 <DashboardErrorState error={error} refetch={refetch} />
             </div>
         );
@@ -139,13 +129,13 @@ export default function AdminReviewsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6 py-6"
+            className="space-y-4 sm:space-y-6 py-4 sm:py-6 px-3 sm:px-0"
         >
             {/* Header */}
-            <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-6 shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
+            <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-4 sm:p-6 shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
                 <div>
-                    <h1 className="text-3xl font-bold text-[#1B2B4B]">Review Management</h1>
-                    <p className="mt-1 text-[#1B2B4B]/60">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1B2B4B]">Review Management</h1>
+                    <p className="mt-0.5 sm:mt-1 text-sm sm:text-base text-[#1B2B4B]/60">
                         Moderate and manage all customer reviews
                     </p>
                 </div>

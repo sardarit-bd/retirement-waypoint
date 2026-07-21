@@ -21,11 +21,11 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
-      
+
       <span className="px-4 text-sm text-[#1B2B4B]">
         Page {page} of {totalPages}
       </span>
-      
+
       <Button
         variant="outline"
         size="sm"
@@ -39,17 +39,18 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
   );
 };
 
-export const BookStore = ({ 
-  books, 
+export const BookStore = ({
+  books,
   loading,
   pagination,
   onPageChange,
+  pageSize = 8,
 }) => {
   if (loading && books.length === 0) {
     return (
       <section id="book-store" className="px-4 pb-20 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <BookSkeleton count={8} />
+          <BookSkeleton count={pageSize} />
         </div>
       </section>
     );
@@ -73,11 +74,13 @@ export const BookStore = ({
             <h2 className="text-3xl font-semibold text-[#1B2B4B]">
               Explore Books
             </h2>
+
             <p className="mt-1 text-sm text-[#1B2B4B]/60">
-              Showing {books.length} items
-              {pagination?.total && ` (${pagination.total} total)`}
+              Showing {books.length} item{books.length > 1 ? "s" : ""}
+              {pagination?.total ? ` (${pagination.total} total)` : ""}
             </p>
           </div>
+
           <Button
             variant="ghost"
             className="group w-full cursor-pointer rounded-full bg-[#C9A84C] px-6 py-4 font-semibold text-sm! text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-lg"
@@ -88,20 +91,21 @@ export const BookStore = ({
               className="flex items-center justify-center"
             >
               <span>Take Assessment</span>
-              <ArrowRight className="ml-2 h-5 w-5 stroke-current transition-all duration-300 group-hover:translate-x-2" />
+
+              <ArrowRight className="ml-2 h-5 w-5 transition-all duration-300 group-hover:translate-x-2" />
             </Link>
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="flex flex-wrap justify-center gap-6">
           {books.map((book) => (
             <BookCard key={book._id} book={book} />
           ))}
         </div>
 
-        {loading && (
+        {loading && books.length > 0 && (
           <div className="mt-8">
-            <BookSkeleton count={4} />
+            <BookSkeleton count={pageSize} />
           </div>
         )}
 

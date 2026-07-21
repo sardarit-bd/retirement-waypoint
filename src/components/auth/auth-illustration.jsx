@@ -10,12 +10,13 @@ export function AuthIllustration({ mode }) {
   const imageUrl = mode === "signup" ? signUpImage : signInImage;
 
   const title =
-    mode === "signup" ? "Start Planning Your Future Today" : "Welcome Back";
+    mode === "signup" ? "Start Planning Your Future Today" : "";
 
   const description =
     mode === "signup"
       ? "Take control of your retirement journey with confidence and clarity."
-      : "Access your portfolio and continue your financial journey.";
+      : "";
+      // : "Access your portfolio and continue your financial journey.";
 
   return (
     <motion.div

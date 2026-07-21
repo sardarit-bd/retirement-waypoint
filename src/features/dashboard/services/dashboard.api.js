@@ -11,6 +11,8 @@ export const dashboardApi = {
       books,
       reviews,
       recentOrders,
+      contactUnread,
+      newsletterStats,
     ] = await Promise.all([
       api.get(API_ENDPOINTS.ANALYTICS.OVERVIEW),
       api.get(API_ENDPOINTS.ANALYTICS.REVENUE, { params: { period: 'daily' } }),
@@ -25,6 +27,12 @@ export const dashboardApi = {
           sortOrder: 'desc',
         },
       }),
+      api.get(API_ENDPOINTS.CONTACT.ADMIN_UNREAD_COUNT).catch(() => ({
+        data: { data: { unread: 0 } },
+      })),
+      api.get(API_ENDPOINTS.NEWSLETTER.ADMIN_STATS).catch(() => ({
+        data: { data: { total: 0, newToday: 0 } },
+      })),
     ]);
 
     return {
@@ -34,6 +42,8 @@ export const dashboardApi = {
       books: books.data.data,
       reviews: reviews.data.data,
       recentOrders: recentOrders.data.data,
+      contact: contactUnread.data.data,
+      newsletter: newsletterStats.data.data,
     };
   },
 

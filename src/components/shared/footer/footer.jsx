@@ -8,7 +8,6 @@ import {
   FiInstagram,
   FiLinkedin,
   FiMail,
-  FiMapPin,
   FiPhone,
 } from "react-icons/fi";
 
@@ -16,16 +15,12 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Assessment", href: "/assessment" },
-  // { label: "Resources", href: "/resources" },
   { label: "Book", href: "/book" },
 ];
 
 const supportLinks = [
   { label: "Coaching", href: "/coaching" },
-  // { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
-  { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms & Conditions", href: "/terms" },
 ];
 
 const socialLinks = [
@@ -123,13 +118,7 @@ const Footer = () => {
               <div className="flex items-start gap-3">
                 <FiPhone className="mt-0.5 h-5 w-5 text-[#C9A84C]" />
 
-                <p className="text-sm text-white/70">+1 (000) 000-0000</p>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <FiMapPin className="mt-0.5 h-5 w-5 text-[#C9A84C]" />
-
-                <p className="text-sm text-white/70">Rosarito Beach, México</p>
+                <p className="text-sm text-white/70">+1 (760) 960-0162</p>
               </div>
             </div>
 
@@ -156,22 +145,6 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} Retirement Waypoint. All rights
               reserved.
             </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-5">
-              <Link
-                href="/privacy-policy"
-                className="cursor-pointer text-sm text-white/60 transition-colors duration-300 hover:text-[#C9A84C]"
-              >
-                Privacy Policy
-              </Link>
-
-              <Link
-                href="/terms"
-                className="cursor-pointer text-sm text-white/60 transition-colors duration-300 hover:text-[#C9A84C]"
-              >
-                Terms & Conditions
-              </Link>
-            </div>
           </div>
         </div>
       </div>

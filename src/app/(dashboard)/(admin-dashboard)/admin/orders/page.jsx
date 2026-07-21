@@ -8,7 +8,6 @@ import { AdminOrdersFilters } from '@/features/orders/components/admin-order/Adm
 import { DashboardErrorState } from '@/features/dashboard/components/DashboardErrorState';
 import { useAllOrders } from '@/features/orders/hooks/useOrders';
 
-
 export default function AdminOrdersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('all');
@@ -73,7 +72,7 @@ export default function AdminOrdersPage() {
 
   if (error) {
     return (
-      <div className="py-6">
+      <div className="py-6 px-4 sm:px-6">
         <DashboardErrorState error={error} refetch={refetch} />
       </div>
     );
@@ -84,13 +83,13 @@ export default function AdminOrdersPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="space-y-6 py-6"
+      className="space-y-4 sm:space-y-6 py-4 sm:py-6 px-4 sm:px-6"
     >
       {/* Header */}
-      <div className="rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-6 shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
+      <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-4 sm:p-6 shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
         <div>
-          <h1 className="text-3xl font-bold text-[#1B2B4B]">Order Management</h1>
-          <p className="mt-1 text-[#1B2B4B]/60">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#1B2B4B]">Order Management</h1>
+          <p className="mt-1 text-sm sm:text-base text-[#1B2B4B]/60">
             Monitor and manage all customer orders
           </p>
         </div>
@@ -115,7 +114,9 @@ export default function AdminOrdersPage() {
 
       {/* Pagination */}
       {meta.totalPages > 1 && (
-        <OrderPagination meta={meta} onPageChange={handlePageChange} />
+        <div className="pt-2">
+          <OrderPagination meta={meta} onPageChange={handlePageChange} />
+        </div>
       )}
     </motion.div>
   );

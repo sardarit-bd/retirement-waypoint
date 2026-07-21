@@ -320,7 +320,7 @@ export function AdminBooksContent() {
                         size="sm"
                         onClick={() => handlePublish(book._id)}
                         disabled={publishBook.isPending}
-                        className="flex-1 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-70"
+                        className="flex-1 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-70 cursor-pointer"
                       >
                         <CheckCircle2 className="mr-2 h-4 w-4" />
                         Publish
@@ -334,7 +334,7 @@ export function AdminBooksContent() {
                         size="sm"
                         onClick={() => handleArchive(book._id)}
                         disabled={archiveBook.isPending}
-                        className="flex-1 rounded-full border-[#1B2B4B]/10 hover:border-[#C9A84C]/30 hover:bg-[#F8F5EF]"
+                        className="flex-1 rounded-full border-[#1B2B4B]/10 hover:border-[#C9A84C]/30 hover:bg-[#F8F5EF] cursor-pointer"
                       >
                         Archive
                       </Button>
@@ -346,7 +346,7 @@ export function AdminBooksContent() {
                         size="sm"
                         onClick={() => handlePublish(book._id)}
                         disabled={publishBook.isPending}
-                        className="flex-1 rounded-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] disabled:opacity-70"
+                        className="flex-1 rounded-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] disabled:opacity-70 cursor-pointer"
                       >
                         <RefreshCw className="mr-2 h-4 w-4" />
                         Republish
@@ -358,7 +358,7 @@ export function AdminBooksContent() {
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDeleteClick(book)}
-                      className="rounded-full text-red-500 hover:bg-red-50 hover:text-red-600"
+                      className="rounded-full text-red-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
                       disabled={deleteBook.isPending}
                     >
                       <Trash2 className="h-4 w-4" />
