@@ -16,14 +16,14 @@ export function AssessmentCard({ card, isEditing, onEdit, onOpenBuilder, onCardC
             <>
               <Button
                 onClick={onCancelEdit}
-                className="rounded-full border border-white/15 bg-transparent px-3 py-1 text-xs font-semibold text-white hover:bg-white/10"
+                className="rounded-full border border-white/15 bg-transparent px-3 py-1 text-xs font-semibold text-white hover:bg-white/10 cursor-pointer"
               >
                 <X className="mr-1 h-3 w-3" />
                 Cancel
               </Button>
               <Button
                 onClick={onSaveEdit}
-                className="rounded-full bg-[#C9A84C] px-3 py-1 text-xs font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20"
+                className="rounded-full bg-[#C9A84C] px-3 py-1 text-xs font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 cursor-pointer"
               >
                 <Save className="mr-1 h-3 w-3" />
                 Save
@@ -32,7 +32,7 @@ export function AssessmentCard({ card, isEditing, onEdit, onOpenBuilder, onCardC
           ) : (
             <Button
               onClick={() => onEdit(card.id)}
-              className="rounded-full bg-[#C9A84C] px-3 py-1 text-xs font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20"
+              className="rounded-full bg-[#C9A84C] px-3 py-1 text-xs font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 cursor-pointer"
             >
               <Edit className="mr-1 h-3 w-3" />
               Edit
@@ -71,9 +71,9 @@ export function AssessmentCard({ card, isEditing, onEdit, onOpenBuilder, onCardC
             onClick={() => onOpenBuilder(card.slug)}
             disabled={isEditing}
             className={`
-              flex-1 rounded-full px-5 py-2 text-sm font-semibold shadow-lg transition-all duration-300
+              flex-1 rounded-full px-5 py-2 text-sm font-semibold shadow-lg transition-all duration-300 cursor-pointer
               ${isEditing
-                ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                ? 'bg-white/10 text-white/40 cursor-not-allowed '
                 : 'bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] hover:-translate-y-0.5'
               }
             `}

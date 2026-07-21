@@ -204,7 +204,7 @@ export function AdminAssessmentDomain({
                   <Button
                     onClick={onCancelEditing}
                     disabled={isSaving}
-                    className="rounded-full border border-white/15 bg-transparent px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50"
+                    className="rounded-full border border-white/15 bg-transparent px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50 cursor-pointer"
                   >
                     <X className="mr-1 h-3.5 w-3.5" />
                     Cancel
@@ -212,7 +212,7 @@ export function AdminAssessmentDomain({
                   <Button
                     onClick={onSaveEditing}
                     disabled={isSaving}
-                    className="rounded-full bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 disabled:opacity-50"
+                    className="rounded-full bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 disabled:opacity-50 cursor-pointer"
                   >
                     {isSaving ? (
                       <>
@@ -230,7 +230,7 @@ export function AdminAssessmentDomain({
               ) : (
                 <Button
                   onClick={onStartEditing}
-                  className="rounded-full bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20"
+                  className="rounded-full bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] shadow-lg shadow-[#C9A84C]/20 cursor-pointer"
                 >
                   <Edit className="mr-1 h-3.5 w-3.5" />
                   Edit Domain
@@ -339,7 +339,7 @@ export function AdminAssessmentDomain({
               <div className="pt-2">
                 <Button
                   onClick={() => onAddQuestion(domain.id)}
-                  className="w-full rounded-xl border border-dashed border-white/15 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+                  className="w-full rounded-xl border border-dashed border-white/15 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Question

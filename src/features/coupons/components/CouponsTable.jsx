@@ -266,7 +266,7 @@ export function CouponsTable({ coupons, isLoading }) {
                             size="sm"
                             onClick={() => handleAction('deactivate', coupon)}
                             disabled={deactivateCoupon.isPending}
-                            className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 rounded-full p-0 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-600"
+                            className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 rounded-full p-0 text-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 cursor-pointer"
                           >
                             <XCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
                           </Button>
@@ -277,7 +277,7 @@ export function CouponsTable({ coupons, isLoading }) {
                           size="sm"
                           onClick={() => handleAction('delete', coupon)}
                           disabled={deleteCoupon.isPending}
-                          className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600"
+                          className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 rounded-full p-0 text-red-500 hover:bg-red-50 hover:text-red-600 cursor-pointer"
                         >
                           <Trash2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4" />
                         </Button>

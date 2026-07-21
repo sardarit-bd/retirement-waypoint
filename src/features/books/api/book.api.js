@@ -106,6 +106,15 @@ class BookApi {
     return data;
   }
 
+  /**
+   * Get the URL for the page-limited preview PDF.
+   * Fetched directly by the PDF viewer (pdfjs), not via axios.
+   * GET /api/public/books/:slug/preview
+   */
+  getPreviewUrl(slug) {
+    return `${this.baseUrl}/${slug}/preview`;
+  }
+
   async getAdminBooks(params = {}) {
     const queryParams = new URLSearchParams();
 

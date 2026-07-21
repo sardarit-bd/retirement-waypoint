@@ -4,8 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -19,11 +17,11 @@ export const BookCard = ({ book }) => {
   const isPublished = book.status === "PUBLISHED";
 
   return (
-    <Card className="group relative overflow-hidden rounded-[28px] border border-[#1B2B4B]/10 bg-white p-4 shadow-[0_10px_40px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(27,43,75,0.18)]">
+    <Card className="group relative w-[240px] shrink-0 grow-0 overflow-hidden rounded-[28px] border border-[#1B2B4B]/10 bg-white p-4 shadow-[0_10px_40px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(27,43,75,0.18)] sm:w-[260px] md:w-[270px] lg:w-[320px]">
       <div className="absolute inset-0 bg-gradient-to-b from-[#C9A84C]/5 via-transparent to-[#1B2B4B]/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
       <div className="relative z-10">
-        <div className="relative mx-auto h-72 w-48 overflow-visible">
+        <div className="relative mx-auto h-80 w-56 overflow-visible">
           <div className="absolute inset-0 rounded-md bg-[#1B2B4B]/10 blur-xl transition duration-500 group-hover:scale-110" />
 
           <div className="relative h-full w-full overflow-hidden rounded-md border border-[#1B2B4B]/10 bg-[#F8F5EF] shadow-2xl">

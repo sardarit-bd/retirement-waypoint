@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     FEATURED: '/api/public/books/featured',
     SINGLE: (id) => `/api/books/${id}`,
     PUBLIC_SINGLE: (slug) => `/api/public/books/${slug}`,
+    PUBLIC_PREVIEW: (slug) => `/api/public/books/${slug}/preview`,
     PUBLISH: (id) => `/api/books/${id}/publish`,
     ARCHIVE: (id) => `/api/books/${id}/archive`,
   },

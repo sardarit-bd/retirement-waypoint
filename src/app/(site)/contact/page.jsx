@@ -152,19 +152,7 @@ const ContactPage = () => {
                 <div>
                   <h3 className="font-bold text-[#1B2B4B]">Phone</h3>
                   <p className="mt-1 text-sm text-[#1B2B4B]/60">
-                    +1 (000) 000-0000
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#C9A84C]/20 text-[#C9A84C]">
-                  <MapPin className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-[#1B2B4B]">Location</h3>
-                  <p className="mt-1 text-sm text-[#1B2B4B]/60">
-                    Rosarito Beach, México
+                    +1 (760) 960-0162
                   </p>
                 </div>
               </div>
