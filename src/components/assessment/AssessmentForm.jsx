@@ -297,6 +297,7 @@ export default function AssessmentForm({ assessment }) {
         assessment={assessment}
         domains={domains}
         submissionResult={submissionResult}
+        previousSubmission={submissionResult?.previousSubmission || null}
         overallScore={overallScore}
         getDomainScore={getDomainScore}
         chartData={chartData}

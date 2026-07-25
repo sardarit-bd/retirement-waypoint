@@ -1,14 +1,40 @@
-import { Award } from "lucide-react";
+import { Award, TrendingUp, TrendingDown, MinusIcon } from "lucide-react";
 import { Radar } from "react-chartjs-2";
 import AssessmentShell from "./AssessmentShell";
 
 const glassCard = "rounded-[32px] border border-white/15 bg-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.25)] backdrop-blur-2xl";
+
+const ScoreChangeBadge = ({ direction, change }) => {
+  if (direction === "improved") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-sm font-semibold text-emerald-400">
+        <TrendingUp className="h-4 w-4" />
+        +{change}%
+      </span>
+    );
+  }
+  if (direction === "declined") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/20 px-3 py-1 text-sm font-semibold text-red-400">
+        <TrendingDown className="h-4 w-4" />
+        {change}%
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-white/60">
+      <MinusIcon className="h-4 w-4" />
+      No change
+    </span>
+  );
+};
 
 const ResultsPage = ({
   user,
   assessment,
   domains,
   submissionResult,
+  previousSubmission,
   overallScore,
   getDomainScore,
   chartData,
@@ -33,6 +59,14 @@ const ResultsPage = ({
     percentage: getDomainScore(item),
   }));
 
+  // Build a map of previous domain scores keyed by domainKey for easy lookup
+  const prevDomainMap = {};
+  if (previousSubmission?.domainScores) {
+    previousSubmission.domainScores.forEach((ds) => {
+      prevDomainMap[ds.domainKey || ds.domainId] = ds.percentage;
+    });
+  }
+
   return (
     <AssessmentShell>
       <div className="mx-auto max-w-7xl space-y-5">
@@ -48,6 +82,18 @@ const ResultsPage = ({
           <p className="mt-4 text-6xl font-bold text-[#C9A84C]">
             {displayScore}%
           </p>
+
+          {previousSubmission && (
+            <div className="mt-4 flex items-center justify-center gap-3">
+              <span className="text-sm text-white/50">
+                Previous: <span className="font-semibold text-white/80">{previousSubmission.overallScore}%</span>
+              </span>
+              <ScoreChangeBadge
+                direction={previousSubmission.scoreChangeDirection}
+                change={previousSubmission.scoreChange}
+              />
+            </div>
+          )}
 
           {resultData?.resultRange && (
             <p className="mt-4 text-lg text-white/70">
@@ -76,9 +122,16 @@ const ResultsPage = ({
                       {item.domainLabel || domainItem.label || "Domain"}
                     </h3>
 
-                    <span className="font-bold" style={{ color: domainItem.color || '#C9A84C' }}>
-                      {score}%
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {prevDomainMap[item.domainKey || item.domainId] !== undefined && (
+                        <span className="text-xs text-white/40">
+                          {prevDomainMap[item.domainKey || item.domainId]}%
+                        </span>
+                      )}
+                      <span className="font-bold" style={{ color: domainItem.color || '#C9A84C' }}>
+                        {score}%
+                      </span>
+                    </div>
                   </div>
 
                   <div className="h-2 overflow-hidden rounded-full bg-white/15">
