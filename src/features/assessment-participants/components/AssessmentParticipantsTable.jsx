@@ -1,25 +1,50 @@
 'use client';
 
-import Link from 'next/link';
+import { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Eye, AlertCircle } from 'lucide-react';
+import { Eye, AlertCircle, TrendingUp, TrendingDown, MinusIcon } from 'lucide-react';
 import { formatDate } from '@/lib/date-utils';
+import { AssessmentParticipantsHistoryDrawer } from './AssessmentParticipantsHistoryDrawer';
 
-const getResultColor = (color) => {
-  return color || '#534AB7';
+const getResultColor = (color) => color || '#534AB7';
+
+const getScoreColor = (score) => {
+  if (score >= 80) return 'text-emerald-600';
+  if (score >= 60) return 'text-amber-600';
+  if (score >= 40) return 'text-orange-600';
+  return 'text-red-600';
 };
 
-const ResultBadge = ({ title, color }) => (
-  <Badge
-    className="text-white border-0 whitespace-nowrap"
-    style={{ backgroundColor: getResultColor(color) }}
-  >
-    {title}
-  </Badge>
-);
+const ScoreChangeBadge = ({ direction, change }) => {
+  if (direction === 'improved') {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-600">
+        <TrendingUp className="h-3 w-3" />
+        +{Math.abs(change)}
+      </span>
+    );
+  }
+  if (direction === 'declined') {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-red-500">
+        <TrendingDown className="h-3 w-3" />
+        -{Math.abs(change)}
+      </span>
+    );
+  }
+  if (change !== null && change !== undefined) {
+    return (
+      <span className="inline-flex items-center gap-0.5 text-xs text-gray-400">
+        <MinusIcon className="h-3 w-3" />
+        0
+      </span>
+    );
+  }
+  return <span className="text-xs text-gray-300">—</span>;
+};
 
 const TableSkeleton = () => (
   <div className="space-y-3">
@@ -27,11 +52,12 @@ const TableSkeleton = () => (
       <div key={i} className="flex items-center gap-4 p-3 border-b">
         <Skeleton className="h-5 w-20 sm:w-32" />
         <Skeleton className="h-5 w-24 sm:w-40" />
-        <Skeleton className="h-5 w-16 sm:w-24" />
+        <Skeleton className="h-5 w-12" />
         <Skeleton className="h-5 w-12 sm:w-16" />
-        <Skeleton className="h-5 w-16 sm:w-20" />
+        <Skeleton className="h-5 w-12" />
         <Skeleton className="h-5 w-16 sm:w-24" />
-        <Skeleton className="h-8 w-12 sm:w-16" />
+        <Skeleton className="h-5 w-16 sm:w-24" />
+        <Skeleton className="h-8 w-20" />
       </div>
     ))}
   </div>
@@ -51,19 +77,21 @@ const EmptyState = () => (
 
 export const AssessmentParticipantsTable = ({
   data,
+  meta: metaProp,
   isLoading,
   error,
 }) => {
-  let submissions = [];
-  let meta = {};
+  const [historyEmail, setHistoryEmail] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  console.log("ParticipantsTable:", data);
+  let submissions = [];
+  let meta = metaProp || {};
 
   if (data) {
     if (Array.isArray(data.data)) {
       submissions = data.data;
       meta = data.meta || {};
-    } 
+    }
     else if (data.data && Array.isArray(data.data.data)) {
       submissions = data.data.data;
       meta = data.data.meta || {};
@@ -80,6 +108,11 @@ export const AssessmentParticipantsTable = ({
       meta = data.pagination || data.meta || {};
     }
   }
+
+  const handleViewHistory = (email) => {
+    setHistoryEmail(email);
+    setDrawerOpen(true);
+  };
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -102,83 +135,106 @@ export const AssessmentParticipantsTable = ({
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden bg-white">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="whitespace-nowrap">Participant</TableHead>
-              <TableHead className="hidden sm:table-cell whitespace-nowrap">Email</TableHead>
-              <TableHead className="hidden md:table-cell whitespace-nowrap">Assessment</TableHead>
-              <TableHead className="whitespace-nowrap text-center">Score</TableHead>
-              <TableHead className="hidden lg:table-cell whitespace-nowrap">Result</TableHead>
-              <TableHead className="hidden xl:table-cell whitespace-nowrap">Date</TableHead>
-              <TableHead className="hidden sm:table-cell whitespace-nowrap text-center">Status</TableHead>
-              <TableHead className="whitespace-nowrap text-right">Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {submissions.map((submission) => (
-              <TableRow key={submission._id || submission.id}>
-                <TableCell className="font-medium whitespace-nowrap max-w-[120px] sm:max-w-none">
-                  <span className="truncate block" title={submission.participant?.name || '—'}>
-                    {submission.participant?.name || '—'}
-                  </span>
-                </TableCell>
-                <TableCell className="hidden sm:table-cell whitespace-nowrap max-w-[150px]">
-                  <a
-                    href={`mailto:${submission.participant?.email}`}
-                    className="text-primary hover:underline truncate block"
-                    title={submission.participant?.email || '—'}
-                  >
-                    {submission.participant?.email || '—'}
-                  </a>
-                </TableCell>
-                <TableCell className="hidden md:table-cell whitespace-nowrap max-w-[120px]">
-                  <span className="truncate block" title={submission.assessmentSlug || '—'}>
-                    {submission.assessmentSlug || '—'}
-                  </span>
-                </TableCell>
-                <TableCell className="text-center whitespace-nowrap">
-                  <span className="font-semibold">
-                    {submission.overallScore?.toFixed(0) || 0}%
-                  </span>
-                </TableCell>
-                <TableCell className="hidden lg:table-cell whitespace-nowrap">
-                  <ResultBadge
-                    title={submission.resultRange?.title || '—'}
-                    color={submission.resultRange?.color}
-                  />
-                </TableCell>
-                <TableCell className="hidden xl:table-cell whitespace-nowrap">
-                  {submission.completedAt ? formatDate(submission.completedAt) : '—'}
-                </TableCell>
-                <TableCell className="hidden sm:table-cell text-center whitespace-nowrap">
-                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 whitespace-nowrap">
-                    Completed
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right whitespace-nowrap">
-                  <Link href={`/admin/assessment-participants/${submission._id || submission.id}`}>
-                    <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
+    <>
+      <div className="border rounded-lg overflow-hidden bg-white">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="whitespace-nowrap">Participant</TableHead>
+                <TableHead className="hidden sm:table-cell whitespace-nowrap">Email</TableHead>
+                <TableHead className="whitespace-nowrap text-center">Attempts</TableHead>
+                <TableHead className="whitespace-nowrap text-center">Latest Score</TableHead>
+                <TableHead className="hidden md:table-cell whitespace-nowrap">Result</TableHead>
+                <TableHead className="hidden lg:table-cell whitespace-nowrap text-center">Trend</TableHead>
+                <TableHead className="hidden xl:table-cell whitespace-nowrap">Latest Date</TableHead>
+                <TableHead className="hidden sm:table-cell whitespace-nowrap text-center">Status</TableHead>
+                <TableHead className="whitespace-nowrap text-right">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {submissions.map((submission) => (
+                <TableRow key={submission._id || submission.latestSubmissionId}>
+                  <TableCell className="font-medium whitespace-nowrap max-w-[120px] sm:max-w-none">
+                    <span className="truncate block" title={submission.participant?.name || '—'}>
+                      {submission.participant?.name || '—'}
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell whitespace-nowrap max-w-[150px]">
+                    <a
+                      href={`mailto:${submission.participant?.email}`}
+                      className="text-primary hover:underline truncate block"
+                      title={submission.participant?.email || '—'}
+                    >
+                      {submission.participant?.email || '—'}
+                    </a>
+                  </TableCell>
+                  <TableCell className="text-center whitespace-nowrap">
+                    <Badge variant="secondary" className="font-mono text-xs">
+                      {submission.totalAttempts || 1}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center whitespace-nowrap">
+                    <span className={`font-bold ${getScoreColor(submission.latestScore || 0)}`}>
+                      {submission.latestScore?.toFixed(0) || 0}%
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell whitespace-nowrap max-w-[120px]">
+                    {submission.latestResultRange?.title ? (
+                      <Badge
+                        className="text-white border-0 whitespace-nowrap text-xs px-2"
+                        style={{ backgroundColor: getResultColor(submission.latestResultRange?.color) }}
+                      >
+                        <span className="truncate block max-w-[100px]" title={submission.latestResultRange.title}>
+                          {submission.latestResultRange.title}
+                        </span>
+                      </Badge>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="hidden lg:table-cell text-center whitespace-nowrap">
+                    <ScoreChangeBadge direction={submission.scoreChangeDirection} change={submission.scoreChange} />
+                  </TableCell>
+                  <TableCell className="hidden xl:table-cell whitespace-nowrap text-sm text-gray-500">
+                    {submission.latestCompletedAt ? formatDate(submission.latestCompletedAt) : '—'}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell text-center whitespace-nowrap">
+                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 whitespace-nowrap">
+                      Completed
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 sm:px-3 cursor-pointer"
+                      onClick={() => handleViewHistory(submission.participant?.email)}
+                    >
                       <Eye className="h-4 w-4 sm:mr-1" />
                       <span className="hidden sm:inline">View</span>
                     </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="border-t px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+          <span>
+            Showing {submissions.length} of {meta.total || submissions.length || 0} participants
+          </span>
+          <span>
+            Page {meta.page || 1} of {meta.pages || 1}
+          </span>
+        </div>
       </div>
-      <div className="border-t px-3 sm:px-4 py-3 text-xs sm:text-sm text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-2">
-        <span>
-          Showing {submissions.length} of {meta.total || submissions.length || 0} participants
-        </span>
-        <span>
-          Page {meta.page || 1} of {meta.pages || 1}
-        </span>
-      </div>
-    </div>
+
+      <AssessmentParticipantsHistoryDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        email={historyEmail}
+      />
+    </>
   );
 };

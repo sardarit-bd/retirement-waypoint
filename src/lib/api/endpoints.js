@@ -82,6 +82,10 @@ export const API_ENDPOINTS = {
     ADMIN_ARCHIVE: (id) => `/api/assessments/${id}/archive`,
     ADMIN_RESTORE: (id) => `/api/assessments/${id}/restore`,
   },
+  // Assessment Submissions
+  ASSESSMENT_SUBMISSIONS: {
+    GET: (id) => `/api/assessment-submissions/${id}`,
+  },
   // Assessment Landing
   ASSESSMENT_LANDING: {
     PUBLIC: '/api/assessment-landing',

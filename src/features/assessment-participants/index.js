@@ -4,3 +4,4 @@ export { AssessmentParticipantsStats } from './components/AssessmentParticipants
 export { AssessmentParticipantsFilters } from './components/AssessmentParticipantsFilters';
 export { AssessmentParticipantsTable } from './components/AssessmentParticipantsTable';
 export { AssessmentParticipantsPagination } from './components/AssessmentParticipantsPagination';
+export { AssessmentParticipantsHistoryDrawer } from './components/AssessmentParticipantsHistoryDrawer';

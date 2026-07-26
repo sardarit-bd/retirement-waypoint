@@ -16,4 +16,9 @@ export const AssessmentParticipantsAPI = {
   getParticipantById: (id) => {
     return api.get(`/api/admin/assessment-participants/${id}`);
   },
+
+  // Get participant history by email
+  getParticipantHistory: (email) => {
+    return api.get(`/api/admin/assessment-participants/history/${encodeURIComponent(email)}`);
+  },
 };

@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
 import { getMenuSections } from './config/menuConfig';
+import { useSidebar } from '@/context/SidebarContext';
 
 // Animation variants
 const containerVariants = {
@@ -51,8 +52,8 @@ const sectionVariants = {
 export function DashboardSidebar() {
   const pathname = usePathname();
   const { session } = useSession();
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { isCollapsed, setIsCollapsed } = useSidebar();
   const [hoveredItem, setHoveredItem] = useState(null);
 
   useEffect(() => {

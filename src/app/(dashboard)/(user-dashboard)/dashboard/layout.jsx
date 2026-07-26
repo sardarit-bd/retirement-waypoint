@@ -7,9 +7,11 @@ import { motion } from 'framer-motion';
 import { DashboardSidebar } from '@/components/dashboard/sidebar/DashboardSidebar';
 import { DashboardHeader } from '@/components/dashboard/header/DashboardHeader';
 import { useSession } from '@/hooks/useSession';
+import { useSidebar } from '@/context/SidebarContext';
 
 export default function DashboardLayout({ children }) {
   const { session, isLoading } = useSession();
+  const { isCollapsed } = useSidebar();
   const router = useRouter();
 
   useEffect(() => {
@@ -47,7 +49,10 @@ export default function DashboardLayout({ children }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
-          className="flex-1 p-4 md:p-6 lg:p-8 lg:pl-[320px]"
+          className={`
+            flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300 ease-in-out
+            ${isCollapsed ? 'lg:pl-[120px]' : 'lg:pl-[320px]'}
+          `}
         >
           <div className="relative z-10 mx-auto max-w-7xl">
             {children}

@@ -161,3 +161,12 @@ export const archiveAssessment = async (id) => {
   const response = await api.patch(API_ENDPOINTS.ASSESSMENT_ADMIN.ADMIN_ARCHIVE(id));
   return response.data;
 };
+
+/**
+ * Get submission by ID (requires auth)
+ * GET /api/assessment-submissions/:id
+ */
+export const getSubmissionById = async (id) => {
+  const response = await api.get(API_ENDPOINTS.ASSESSMENT_SUBMISSIONS.GET(id));
+  return response.data;
+};

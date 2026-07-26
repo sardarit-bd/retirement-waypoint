@@ -38,7 +38,7 @@ const AboutHero = () => {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white sm:text-lg lg:mx-0">
-            Retirement is more than a financial transition — it's an emotional,
+            Retirement is more than a financial transition — it&apos;s an emotional,
             psychological, and identity shift. Retirement Waypoint was created
             to help professionals move into this next chapter with confidence
             and purpose.
