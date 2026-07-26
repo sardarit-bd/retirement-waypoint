@@ -1,10 +1,9 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { X, Upload, Loader2, FileText, Image as ImageIcon, Eye } from 'lucide-react';
+import { X, Upload, Loader2, FileText, Image as ImageIcon, Eye, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,42 +33,49 @@ export function AdminBookForm({
   isSubmitting = false,
 }) {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    authorName: '',
-    price: '',
-    pageCount: '',
-    featured: false,
-    status: 'DRAFT',
-    previewEnabled: true,
-    previewEndPage: '5',
-  });
+  const getInitialFormData = () =>
+    initialData
+      ? {
+          title: initialData.title || '',
+          description: initialData.description || '',
+          authorName: initialData.authorName || '',
+          price: initialData.price?.toString() || '',
+          pageCount: initialData.pageCount?.toString() || '',
+          featured: !!initialData.featured,
+          status: initialData.status || 'DRAFT',
+          previewEnabled: initialData.previewEnabled !== false,
+          previewEndPage: initialData.previewEndPage?.toString() || '5',
+        }
+      : {
+          title: '',
+          description: '',
+          authorName: '',
+          price: '',
+          pageCount: '',
+          featured: false,
+          status: 'DRAFT',
+          previewEnabled: true,
+          previewEndPage: '5',
+        };
+
+  const [formData, setFormData] = useState(getInitialFormData);
   const [coverFile, setCoverFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
-  const [coverPreview, setCoverPreview] = useState(null);
+  const getInitialCoverPreview = () => (initialData?.coverImage ? initialData.coverImage : null);
+  const [coverPreview, setCoverPreview] = useState(getInitialCoverPreview);
   const [pdfName, setPdfName] = useState(null);
   const [errors, setErrors] = useState({});
 
-  // Load initial data for edit
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        title: initialData.title || '',
-        description: initialData.description || '',
-        authorName: initialData.authorName || '',
-        price: initialData.price?.toString() || '',
-        pageCount: initialData.pageCount?.toString() || '',
-        featured: initialData.featured || false,
-        status: initialData.status || 'DRAFT',
-        previewEnabled: initialData.previewEnabled !== false,
-        previewEndPage: initialData.previewEndPage?.toString() || '5',
-      });
-      if (initialData.coverImage) {
-        setCoverPreview(initialData.coverImage);
-      }
-    }
-  }, [initialData]);
+  // Extract existing PDF info from initialData (lazily, so it's set on first render)
+  const getExistingPdfUrl = () => initialData?.pdfFile || null;
+  const getExistingPdfName = () => {
+    if (!initialData?.pdfFile) return null;
+    const parts = initialData.pdfFile.split('/');
+    return parts[parts.length - 1] || 'Uploaded PDF';
+  };
+  const [existingPdfUrl, setExistingPdfUrl] = useState(getExistingPdfUrl);
+  const [existingPdfName, setExistingPdfName] = useState(getExistingPdfName);
+  const [replacePdf, setReplacePdf] = useState(false);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -120,6 +126,9 @@ export function AdminBookForm({
   const removePdf = () => {
     setPdfFile(null);
     setPdfName(null);
+    setExistingPdfUrl(null);
+    setExistingPdfName(null);
+    setReplacePdf(false);
   };
 
   const validate = () => {
@@ -277,9 +286,9 @@ export function AdminBookForm({
                   id="featured"
                   checked={formData.featured}
                   onCheckedChange={(checked) => handleChange('featured', checked)}
-                  className="data-[state=checked]:bg-[#C9A84C]"
+                  className="data-[state=checked]:bg-[#C9A84C] cursor-pointer"
                 />
-                <Label htmlFor="featured" className="text-sm font-medium text-[#1B2B4B]">
+                <Label htmlFor="featured" className="text-sm font-medium text-[#1B2B4B] cursor-pointer">
                   Featured Book
                 </Label>
               </div>
@@ -291,7 +300,7 @@ export function AdminBookForm({
                   value={formData.status}
                   onValueChange={(value) => handleChange('status', value)}
                 >
-                  <SelectTrigger className="mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20">
+                  <SelectTrigger className="mt-1.5 rounded-xl border-[#1B2B4B]/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 cursor-pointer">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -323,7 +332,7 @@ export function AdminBookForm({
                     id="previewEnabled"
                     checked={formData.previewEnabled}
                     onCheckedChange={(checked) => handleChange('previewEnabled', checked)}
-                    className="data-[state=checked]:bg-[#C9A84C]"
+                    className="data-[state=checked]:bg-[#C9A84C] cursor-pointer"
                   />
                   <Label htmlFor="previewEnabled" className="text-sm font-medium text-[#1B2B4B]">
                     Preview Enabled
@@ -378,7 +387,7 @@ export function AdminBookForm({
                     <button
                       type="button"
                       onClick={removeCover}
-                      className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                      className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600 cursor-pointer"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -408,14 +417,57 @@ export function AdminBookForm({
                 PDF File {!isEdit && '*'}
               </Label>
               <div className="mt-1.5">
-                {pdfName ? (
+                {/* Show existing PDF when editing */}
+                {isEdit && existingPdfName && !replacePdf && !pdfFile ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 rounded-xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-3">
+                      <FileText className="h-5 w-5 text-[#C9A84C]" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-[#1B2B4B]/50">Current PDF</p>
+                        <p className="text-sm font-medium text-[#1B2B4B] truncate">{existingPdfName}</p>
+                      </div>
+                      <div className="flex gap-1 shrink-0">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-xs cursor-pointer"
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(existingPdfUrl);
+                              const arrayBuffer = await response.arrayBuffer();
+                              const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                              const objectUrl = URL.createObjectURL(blob);
+                              window.open(objectUrl, '_blank');
+                            } catch {
+                              window.open(existingPdfUrl, '_blank');
+                            }
+                          }}
+                        >
+                          <Eye className="h-3.5 w-3.5 mr-1" />
+                          View
+                        </Button>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs cursor-pointer"
+                      onClick={() => setReplacePdf(true)}
+                    >
+                      <Upload className="h-3.5 w-3.5 mr-1" />
+                      Replace PDF
+                    </Button>
+                  </div>
+                ) : pdfName ? (
                   <div className="flex items-center gap-3 rounded-xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-3">
                     <FileText className="h-5 w-5 text-[#C9A84C]" />
                     <span className="flex-1 truncate text-sm text-[#1B2B4B]">{pdfName}</span>
                     <button
                       type="button"
                       onClick={removePdf}
-                      className="rounded-full p-1 text-red-500 hover:bg-red-50"
+                      className="rounded-full p-1 text-red-500 hover:bg-red-50 cursor-pointer"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -445,14 +497,14 @@ export function AdminBookForm({
                 type="button"
                 variant="outline"
                 onClick={() => router.push('/admin/books')}
-                className="rounded-full border-[#1B2B4B]/15 px-6 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30"
-              >
+                className="rounded-full border-[#1B2B4B]/15 px-6 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 cursor-pointer"
+               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-6 py-3 font-semibold text-[#04103A] shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all disabled:opacity-70"
+                className="flex-1 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-6 py-3 font-semibold text-[#04103A] shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all disabled:opacity-70 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>

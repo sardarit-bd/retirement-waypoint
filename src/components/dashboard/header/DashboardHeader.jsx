@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Search, ChevronDown, LogOut, User, Settings, Sparkles } from 'lucide-react';
 import { useSession } from '@/hooks/useSession';
+import { useProfile } from '@/features/profile/hooks/useProfile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -22,11 +23,15 @@ import { cn } from '@/lib/utils';
 
 export function DashboardHeader() {
   const { session } = useSession();
+  const { data: profileData } = useProfile();
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const user = session?.user;
+  const profileImage = profileData?.profile?.profileImage;
+
+  console.log("Dashboard:", user);
 
   const getInitials = (name) => {
     if (!name) return 'U';
@@ -95,10 +100,10 @@ export function DashboardHeader() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2 rounded-full px-2 py-1.5 transition-all duration-300 hover:bg-[#F8F5EF]"
+                className="flex items-center gap-2 rounded-full px-2 py-1.5 transition-all duration-300 hover:bg-[#F8F5EF] cursor-pointer"
               >
                 <Avatar className="h-9 w-9 border-2 border-[#C9A84C]/20 shadow-md shadow-[#C9A84C]/10">
-                  <AvatarImage src={user?.profileImage || undefined} />
+                  <AvatarImage src={profileImage || undefined} />
                   <AvatarFallback className="bg-gradient-to-br from-[#C9A84C] to-[#D6B45A] text-xs font-semibold text-[#1B2B4B]">
                     {getInitials(user?.name)}
                   </AvatarFallback>

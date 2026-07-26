@@ -22,6 +22,13 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { OrderPagination } from '@/features/orders/components/OrderPagination';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   useAdminBooks,
   useArchiveBook,
   usePublishBook,
@@ -191,19 +198,23 @@ export function AdminBooksContent() {
                 className="h-10 w-full rounded-full border-[#1B2B4B]/10 bg-[#F8F5EF] pl-9 text-sm text-[#1B2B4B] sm:w-56 lg:w-64"
               />
             </div>
-            <select
+            <Select
               value={status}
-              onChange={(event) => {
+              onValueChange={(value) => {
                 setPage(1);
-                setStatus(event.target.value);
+                setStatus(value);
               }}
-              className="h-10 rounded-full border border-[#1B2B4B]/10 bg-[#F8F5EF] px-3 text-sm text-[#1B2B4B] outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]"
             >
-              <option value="all">All statuses</option>
-              <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published</option>
-              <option value="ARCHIVED">Archived</option>
-            </select>
+              <SelectTrigger className="h-10 w-full sm:w-44 rounded-full border-[#1B2B4B]/10 bg-[#F8F5EF] text-sm text-[#1B2B4B] focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 cursor-pointer">
+                <SelectValue placeholder="All statuses" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="DRAFT">Draft</SelectItem>
+                <SelectItem value="PUBLISHED">Published</SelectItem>
+                <SelectItem value="ARCHIVED">Archived</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="text-sm text-[#1B2B4B]/50">
             {books.length} book{books.length !== 1 ? 's' : ''} found
@@ -236,7 +247,7 @@ export function AdminBooksContent() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`${cardClass} overflow-hidden transition-all duration-300 hover:shadow-[0_20px_60px_rgba(4,16,58,0.12)]`}
               >
-                <div className="relative aspect-4/5 bg-[#F8F5EF]">
+                <div className="relative aspect-[4/3] bg-[#F8F5EF]">
                   {book.coverImage ? (
                     <Image
                       src={book.coverImage}
@@ -251,7 +262,7 @@ export function AdminBooksContent() {
                     </div>
                   )}
                   <div
-                    className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white ${
+                    className={`absolute left-3 top-3 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white ${
                       isPublished
                         ? 'bg-emerald-500'
                         : isArchived
@@ -262,34 +273,34 @@ export function AdminBooksContent() {
                     {book.status}
                   </div>
                   {book.featured && (
-                    <div className="absolute right-4 top-4 rounded-full bg-[#C9A84C] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#1B2B4B]">
+                    <div className="absolute right-3 top-3 rounded-full bg-[#C9A84C] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#1B2B4B]">
                       Featured
                     </div>
                   )}
                 </div>
 
-                <div className="space-y-4 p-5">
+                <div className="p-4 space-y-3">
                   <div>
-                    <p className="text-sm font-medium text-[#C9A84C]">{book.authorName}</p>
-                    <h3 className="mt-1 text-lg font-semibold text-[#1B2B4B] line-clamp-1">
+                    <p className="text-xs font-medium text-[#C9A84C]">{book.authorName}</p>
+                    <h3 className="mt-0.5 text-base font-semibold text-[#1B2B4B] line-clamp-1">
                       {book.title}
                     </h3>
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#1B2B4B]/60">
+                    <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-[#1B2B4B]/60">
                       {book.description}
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 text-xs text-[#1B2B4B]/60">
-                    <span className="rounded-full bg-[#F8F5EF] px-3 py-1">${book.price}</span>
-                    <span className="rounded-full bg-[#F8F5EF] px-3 py-1">
+                  <div className="flex flex-wrap gap-1.5 text-[11px] text-[#1B2B4B]/60">
+                    <span className="rounded-full bg-[#F8F5EF] px-2.5 py-0.5">${book.price}</span>
+                    <span className="rounded-full bg-[#F8F5EF] px-2.5 py-0.5">
                       {book.pageCount} pages
                     </span>
-                    <span className="rounded-full bg-[#F8F5EF] px-3 py-1">
+                    <span className="rounded-full bg-[#F8F5EF] px-2.5 py-0.5">
                       {book.totalReviews || 0} reviews
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {/* View Button */}
                     <Button
                       asChild

@@ -1,6 +1,9 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 import { useAdminBook, useUpdateBook } from '@/features/books/hooks/useAdminBooks';
 import { AdminBookForm } from '@/features/books/components/AdminBookForm';
 
@@ -44,10 +47,21 @@ export default function EditBookPage() {
   return (
     <div className="max-w-3xl mx-auto py-6">
       <div className="mb-6">
+        <Button
+          asChild
+          variant="ghost"
+          className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] mb-4"
+        >
+          <Link href="/admin/books">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Books
+          </Link>
+        </Button>
         <h1 className="text-3xl font-bold text-[#1B2B4B]">Edit Book</h1>
         <p className="mt-1 text-[#1B2B4B]/60">Update book details</p>
       </div>
       <AdminBookForm
+        key={bookId}
         initialData={book}
         isEdit={true}
         onSubmit={handleSubmit}

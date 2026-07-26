@@ -26,6 +26,7 @@ import { themeChangeSections } from "@/lib/themeChangeSections";
 import { navLinks } from "@/lib/navLinks";
 import { signOut } from "@/lib/auth-client";
 import { useSession } from "@/hooks/useSession";
+import { useProfile } from "@/features/profile/hooks/useProfile";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
@@ -33,6 +34,7 @@ const Navbar = () => {
   const router = useRouter();
 
   const { session, isLoading } = useSession();
+  const { data: profileData } = useProfile();
   const user = session?.user || null;
   const isAuthenticated = !!user;
   const isAdmin = user?.role === "admin";
@@ -240,7 +242,7 @@ const Navbar = () => {
                         }`}
                       >
                         <Avatar className="h-8 w-8 border-2 border-white/20">
-                          <AvatarImage src={user?.profileImage || undefined} />
+                          <AvatarImage src={profileData?.profile?.profileImage || undefined} />
                           <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-xs font-semibold text-white">
                             {getInitials(user?.name)}
                           </AvatarFallback>
@@ -257,7 +259,7 @@ const Navbar = () => {
                     >
                       <DropdownMenuLabel className="flex items-center gap-2 p-3">
                         <Avatar className="h-8 w-8 border-2 border-white/20">
-                          <AvatarImage src={user?.profileImage || undefined} />
+                          <AvatarImage src={profileData?.profile?.profileImage || undefined} />
                           <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-xs font-semibold text-white">
                             {getInitials(user?.name)}
                           </AvatarFallback>
@@ -362,7 +364,7 @@ const Navbar = () => {
                     <div className="border-b border-white/10 px-4 py-4">
                       <div className="flex items-center gap-3 rounded-2xl bg-white/5 px-4 py-3">
                         <Avatar className="h-12 w-12 border-2 border-white/20">
-                          <AvatarImage src={user?.profileImage || undefined} />
+                          <AvatarImage src={profileData?.profile?.profileImage || undefined} />
                           <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-base font-semibold text-white">
                             {getInitials(user?.name)}
                           </AvatarFallback>
