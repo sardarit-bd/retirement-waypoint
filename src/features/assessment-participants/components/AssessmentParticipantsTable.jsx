@@ -212,7 +212,7 @@ export const AssessmentParticipantsTable = ({
                       onClick={() => handleViewHistory(submission.participant?.email)}
                     >
                       <Eye className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">View History</span>
+                      <span className="hidden sm:inline">View</span>
                     </Button>
                   </TableCell>
                 </TableRow>
