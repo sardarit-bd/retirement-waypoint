@@ -46,3 +46,15 @@ export const useAssessmentParticipant = (id) => {
     staleTime: 10 * 60 * 1000,
   });
 };
+
+export const useAssessmentParticipantHistory = (email) => {
+  return useQuery({
+    queryKey: ['assessment-participants', 'history', email],
+    queryFn: async () => {
+      const response = await AssessmentParticipantsAPI.getParticipantHistory(email);
+      return response.data?.data || null;
+    },
+    enabled: !!email,
+    staleTime: 5 * 60 * 1000,
+  });
+};
