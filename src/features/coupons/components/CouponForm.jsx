@@ -369,9 +369,9 @@ export function CouponForm({
                 id="isActive"
                 checked={formData.isActive}
                 onCheckedChange={(checked) => handleChange('isActive', checked)}
-                className="data-[state=checked]:bg-[#C9A84C]"
+                className="data-[state=checked]:bg-[#C9A84C] cursor-pointer"
               />
-              <Label htmlFor="isActive" className="text-xs sm:text-sm font-medium text-[#1B2B4B]">
+              <Label htmlFor="isActive" className="text-xs sm:text-sm font-medium text-[#1B2B4B] cursor-pointer">
                 Active
               </Label>
             </div>
@@ -382,14 +382,14 @@ export function CouponForm({
                 type="button"
                 variant="outline"
                 onClick={() => router.push('/admin/coupons')}
-                className="rounded-full border-[#1B2B4B]/15 px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 w-full xs:w-auto"
+                className="rounded-full border-[#1B2B4B]/15 px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 w-full xs:w-auto cursor-pointer"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-[#04103A] shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all disabled:opacity-70"
+                className="flex-1 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-[#04103A] shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all disabled:opacity-70 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>

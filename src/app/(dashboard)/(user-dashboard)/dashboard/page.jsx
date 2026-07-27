@@ -75,7 +75,7 @@ export default function DashboardPage() {
           <QuickActionsCard />
 
           {/* Recommendations */}
-          <RecommendationsCard recommendations={recommendations} />
+          {/* <RecommendationsCard recommendations={recommendations} /> */}
         </div>
       </div>
     </motion.div>

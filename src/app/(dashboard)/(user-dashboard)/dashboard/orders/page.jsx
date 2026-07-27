@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useMyOrders } from '@/features/orders/hooks/useOrders';
-import { OrderGrid } from '@/features/orders/components/OrderGrid';
+import { OrdersTable } from '@/features/orders/components/OrdersTable';
 import { OrderFilters } from '@/features/orders/components/OrderFilters';
 import { OrderPagination } from '@/features/orders/components/OrderPagination';
 import { useSession } from '@/hooks/useSession';
@@ -87,8 +87,8 @@ export default function OrdersPage() {
         isLoading={isLoading}
       />
 
-      {/* Order Grid */}
-      <OrderGrid
+      {/* Orders Table */}
+      <OrdersTable
         orders={orders}
         isLoading={isLoading}
         error={error}
@@ -97,7 +97,12 @@ export default function OrdersPage() {
 
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
-        <OrderPagination meta={meta} onPageChange={handlePageChange} />
+        <div className="flex flex-col items-center gap-3 pt-2">
+          <p className="text-xs text-[#1B2B4B]/50">
+            Showing {((meta.page - 1) * limit) + 1}–{Math.min(meta.page * limit, meta.total)} of {meta.total} orders
+          </p>
+          <OrderPagination meta={meta} onPageChange={handlePageChange} />
+        </div>
       )}
     </motion.div>
   );

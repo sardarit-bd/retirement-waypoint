@@ -128,7 +128,7 @@ export function CouponDetailsCard({ coupon, isLoading }) {
                 )}
                 <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-1 xs:gap-2">
                   <span className="text-xs sm:text-sm text-[#1B2B4B]/60">Type</span>
-                  <Badge className="border-[#1B2B4B]/10 text-[#1B2B4B]/70 text-[10px] sm:text-xs">
+                  <Badge className="border-[#1B2B4B]/10 text-white text-[10px] sm:text-xs">
                     {coupon.type === 'PERCENTAGE' ? 'Percentage' : 'Fixed Amount'}
                   </Badge>
                 </div>
