@@ -29,4 +29,14 @@ export const profileApi = {
     const response = await api.delete(API_ENDPOINTS.AUTH.REMOVE_PROFILE_IMAGE);
     return response.data.data;
   },
+
+  // Change password
+  changePassword: async ({ currentPassword, newPassword }) => {
+    const response = await api.post(API_ENDPOINTS.AUTH.CHANGE_PASSWORD, {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true,
+    });
+    return response.data;
+  },
 };

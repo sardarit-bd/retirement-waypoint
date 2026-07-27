@@ -69,7 +69,7 @@ export default function ProfilePage() {
         <div className="space-y-6">
           <PersonalInformationCard profile={profile} />
           <AccountInformationCard profile={profile} />
-          <ActivitySummaryCard />
+          {/* <ActivitySummaryCard /> */}
         </div>
       </div>
     </motion.div>

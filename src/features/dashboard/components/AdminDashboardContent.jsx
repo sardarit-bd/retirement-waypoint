@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   AlertCircle,
+  ArrowUpRight,
+  ArrowDownRight,
   BarChart3,
   BookOpen,
   ChevronRight,
@@ -22,6 +24,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { OrderStatusBadge } from '@/features/orders/components/OrderStatusBadge';
 import { useAdminDashboard } from '../hooks/useDashboard';
+import { RevenueChart } from './charts/RevenueChart';
+import { BookPerformanceChart } from './charts/BookPerformanceChart';
 
 const formatCurrency = (value = 0) =>
   new Intl.NumberFormat('en-US', {
@@ -49,21 +53,23 @@ function AdminDashboardSkeleton() {
   return (
     <div className="space-y-6">
       <div className={`${cardClass} p-6`}>
-        <Skeleton className="h-8 w-64" />
-        <Skeleton className="mt-3 h-5 w-80" />
+        <Skeleton className="h-8 w-48 sm:w-64" />
+        <Skeleton className="mt-3 h-5 w-64 sm:w-80" />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[...Array(10)].map((_, index) => (
-          <div key={index} className={`${cardClass} p-6`}>
-            <Skeleton className="h-11 w-11 rounded-full" />
-            <Skeleton className="mt-5 h-8 w-20" />
-            <Skeleton className="mt-2 h-4 w-28" />
+      <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+        {[...Array(10)].map((_, i) => (
+          <div key={i} className={`${cardClass} p-4 sm:p-6`}>
+            <Skeleton className="h-10 w-10 sm:h-11 sm:w-11 rounded-full" />
+            <Skeleton className="mt-4 sm:mt-5 h-7 sm:h-8 w-16 sm:w-20" />
+            <Skeleton className="mt-2 h-3 sm:h-4 w-20 sm:w-28" />
           </div>
         ))}
       </div>
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Skeleton className="h-80 rounded-3xl lg:col-span-2" />
-        <Skeleton className="h-80 rounded-3xl" />
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
+        <Skeleton className="h-72 sm:h-80 rounded-3xl lg:col-span-2" />
+        <Skeleton className="h-72 sm:h-80 rounded-3xl" />
+        <Skeleton className="h-64 sm:h-72 rounded-3xl lg:col-span-2" />
+        <Skeleton className="h-64 sm:h-72 rounded-3xl" />
       </div>
     </div>
   );
@@ -74,7 +80,7 @@ function AdminDashboardError({ error, refetch }) {
     error?.response?.data?.message || error?.message || 'Failed to load admin dashboard';
 
   return (
-    <div className="rounded-3xl border border-red-500/20 bg-red-500/5 p-12 text-center">
+    <div className="rounded-3xl border border-red-500/20 bg-red-500/5 p-8 sm:p-12 text-center">
       <div className="mx-auto mb-4 w-fit rounded-full bg-red-500/10 p-4">
         <AlertCircle className="h-10 w-10 text-red-500" />
       </div>
@@ -91,169 +97,147 @@ function AdminDashboardError({ error, refetch }) {
   );
 }
 
-function MetricCard({ icon: Icon, label, value, hint, color = 'text-[#C9A84C]', bg = 'bg-[#C9A84C]/10' }) {
+function TrendBadge({ value }) {
+  if (value === undefined || value === null) return null;
+  const isUp = value >= 0;
+  const Icon = isUp ? ArrowUpRight : ArrowDownRight;
   return (
-    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className={`${cardClass} p-6`}>
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-[#1B2B4B]/60">{label}</p>
-          <p className="mt-2 text-3xl font-bold text-[#1B2B4B]">{value}</p>
-          {hint && <p className="mt-1 text-xs text-[#1B2B4B]/45">{hint}</p>}
+    <span
+      className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+        isUp ? 'text-emerald-600' : 'text-red-500'
+      }`}
+    >
+      <Icon className="h-3 w-3" />
+      {Math.abs(value)}%
+    </span>
+  );
+}
+
+function MetricCard({ icon: Icon, label, value, hint, color = 'text-[#C9A84C]', bg = 'bg-[#C9A84C]/10', trend }) {
+  return (
+    <motion.div whileHover={{ y: -4 }} transition={{ duration: 0.2 }} className={`${cardClass} p-4 sm:p-6`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs sm:text-sm font-medium text-[#1B2B4B]/60 truncate">{label}</p>
+          <p className="mt-1 sm:mt-2 text-xl sm:text-3xl font-bold text-[#1B2B4B] truncate">{value}</p>
+          <div className="mt-0.5 sm:mt-1 flex items-center gap-1.5 flex-wrap">
+            {trend !== undefined && <TrendBadge value={trend} />}
+            {hint && <p className="text-[10px] sm:text-xs text-[#1B2B4B]/45 truncate">{hint}</p>}
+          </div>
         </div>
-        <div className={`rounded-full ${bg} p-3 ${color}`}>
-          <Icon className="h-5 w-5" />
+        <div className={`rounded-full ${bg} p-2 sm:p-3 ${color} shrink-0`}>
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
       </div>
     </motion.div>
   );
 }
 
-function RevenueTrend({ revenue }) {
-  const rows = revenue?.data?.slice(-7) || [];
-  const maxRevenue = Math.max(...rows.map((item) => item.revenue || 0), 1);
-
+function EnhancedRecentOrdersCard({ orders }) {
   return (
-    <div className={`${cardClass} p-6 lg:col-span-2`}>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-[#1B2B4B]">Revenue Trend</h2>
-          <p className="text-sm text-[#1B2B4B]/50">Recent paid order revenue</p>
-        </div>
-        <BarChart3 className="h-5 w-5 text-[#C9A84C]" />
-      </div>
-
-      {rows.length === 0 ? (
-        <div className="flex min-h-52 items-center justify-center rounded-2xl bg-[#F8F5EF] text-sm text-[#1B2B4B]/50">
-          Revenue data will appear after paid orders.
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {rows.map((item) => {
-            const width = `${Math.max(((item.revenue || 0) / maxRevenue) * 100, 4)}%`;
-            return (
-              <div key={item.period}>
-                <div className="mb-2 flex items-center justify-between text-xs">
-                  <span className="font-medium text-[#1B2B4B]/60">{item.period}</span>
-                  <span className="font-semibold text-[#1B2B4B]">
-                    {formatCurrency(item.revenue)}
-                  </span>
-                </div>
-                <div className="h-3 overflow-hidden rounded-full bg-[#F8F5EF]">
-                  <div className="h-full rounded-full bg-[#C9A84C]" style={{ width }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function TopBooksCard({ books }) {
-  const topBooks = books?.topSelling || [];
-
-  return (
-    <div className={`${cardClass} p-6`}>
-      <div className="mb-5 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-[#1B2B4B]">Top Books</h2>
-        <BookOpen className="h-5 w-5 text-[#C9A84C]" />
-      </div>
-
-      {topBooks.length === 0 ? (
-        <div className="rounded-2xl bg-[#F8F5EF] p-6 text-center text-sm text-[#1B2B4B]/50">
-          Sales data will appear here.
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {topBooks.map((book) => (
-            <div key={book.bookId} className="rounded-2xl bg-[#F8F5EF] p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-[#1B2B4B]">{book.title}</p>
-                  <p className="mt-1 text-xs text-[#1B2B4B]/50">
-                    {formatNumber(book.purchaseCount)} purchases
-                  </p>
-                </div>
-                <p className="shrink-0 text-sm font-bold text-[#C9A84C]">
-                  {formatCurrency(book.sales)}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function RecentOrdersCard({ orders }) {
-  return (
-    <div className={`${cardClass} p-6 lg:col-span-2`}>
-      <div className="mb-5 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-[#1B2B4B]">Recent Orders</h2>
-        <Link href="/admin/orders" className="flex items-center gap-1 text-sm text-[#C9A84C] hover:underline">
-          View All <ChevronRight className="h-4 w-4" />
+    <div className={`${cardClass} p-4 sm:p-6 lg:col-span-2`}>
+      <div className="mb-4 sm:mb-5 flex items-center justify-between">
+        <h2 className="text-base sm:text-lg font-semibold text-[#1B2B4B]">Recent Orders</h2>
+        <Link
+          href="/admin/orders"
+          className="flex items-center gap-1 text-xs sm:text-sm font-medium text-[#C9A84C] hover:underline transition-colors shrink-0"
+        >
+          View All <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
         </Link>
       </div>
 
       {!orders || orders.length === 0 ? (
-        <div className="rounded-2xl bg-[#F8F5EF] p-8 text-center text-sm text-[#1B2B4B]/50">
+        <div className="rounded-2xl bg-[#F8F5EF] p-6 sm:p-8 text-center text-sm text-[#1B2B4B]/50">
           New orders will appear here.
         </div>
       ) : (
-        <div className="space-y-3">
-          {orders.map((order) => (
-            <div key={order._id} className="rounded-2xl bg-[#F8F5EF] p-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="font-mono text-sm font-semibold text-[#1B2B4B]">
-                    #{order.orderNumber}
-                  </p>
-                  <p className="mt-1 text-xs text-[#1B2B4B]/50">{formatDate(order.createdAt)}</p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <OrderStatusBadge status={order.paymentStatus} type="payment" />
-                  <span className="text-sm font-bold text-[#1B2B4B]">
-                    {formatCurrency(order.totalAmount)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <div className="min-w-[400px] sm:min-w-0 px-4 sm:px-0">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#1B2B4B]/5 text-left text-xs font-medium text-[#1B2B4B]/50">
+                  <th className="pb-3 pr-3">Order</th>
+                  <th className="pb-3 px-3 hidden sm:table-cell">Date</th>
+                  <th className="pb-3 px-3">Status</th>
+                  <th className="pb-3 pl-3 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order, i) => (
+                  <motion.tr
+                    key={order._id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: i * 0.03 }}
+                    className="group cursor-pointer border-b border-[#1B2B4B]/5 last:border-0 transition-colors hover:bg-[#F8F5EF]/60"
+                    onClick={() => window.location.href = `/admin/orders/${order._id}`}
+                  >
+                    <td className="py-3 pr-3">
+                      <span className="font-mono text-sm font-semibold text-[#1B2B4B] group-hover:text-[#C9A84C] transition-colors">
+                        #{order.orderNumber}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 hidden sm:table-cell">
+                      <span className="text-xs text-[#1B2B4B]/60">{formatDate(order.createdAt)}</span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <OrderStatusBadge status={order.orderStatus || order.paymentStatus} type={order.orderStatus ? 'order' : 'payment'} />
+                    </td>
+                    <td className="py-3 pl-3 text-right">
+                      <span className="text-sm font-bold text-[#1B2B4B]">
+                        {formatCurrency(order.totalAmount)}
+                      </span>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
   );
 }
 
-function QuickActions() {
+function EnhancedQuickActions() {
   const actions = [
-    { label: 'Manage Books', href: '/admin/books', icon: BookOpen },
-    { label: 'Review Orders', href: '/admin/orders', icon: ShoppingBag },
-    { label: 'Moderate Reviews', href: '/admin/reviews', icon: Star },
-    { label: 'View Analytics', href: '/admin/analytics', icon: BarChart3 },
+    { label: 'Manage Books', href: '/admin/books', icon: BookOpen, desc: 'Add or edit titles' },
+    { label: 'Review Orders', href: '/admin/orders', icon: ShoppingBag, desc: 'Process payments' },
+    { label: 'Moderate Reviews', href: '/admin/reviews', icon: Star, desc: 'Approve or reject' }
   ];
 
   return (
-    <div className={`${cardClass} p-6`}>
-      <h2 className="mb-4 text-lg font-semibold text-[#1B2B4B]">Quick Actions</h2>
+    <div className={`${cardClass} p-4 sm:p-6`}>
+      <h2 className="mb-4 text-base sm:text-lg font-semibold text-[#1B2B4B]">Quick Actions</h2>
       <div className="grid grid-cols-2 gap-3">
-        {actions.map(({ label, href, icon: Icon }) => (
+        {actions.map(({ label, href, icon: Icon, desc }) => (
           <Link
             key={label}
             href={href}
-            className="rounded-2xl bg-[#F8F5EF] p-4 text-center transition hover:bg-[#F8F5EF]/80"
+            className="group rounded-2xl bg-[#F8F5EF] p-3 sm:p-4 transition-all duration-300 hover:bg-[#F8F5EF]/80 hover:shadow-sm hover:scale-[1.02]"
           >
-            <div className="mx-auto mb-2 w-fit rounded-full bg-white/60 p-2.5 text-[#C9A84C]">
-              <Icon className="h-5 w-5" />
+            <div className="mx-auto mb-2 w-fit rounded-full bg-white/60 p-2 sm:p-2.5 text-[#C9A84C] transition-transform group-hover:scale-110 group-hover:text-[#D6B45A]">
+              <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
             </div>
-            <span className="text-xs font-semibold text-[#1B2B4B]">{label}</span>
+            <span className="block text-xs font-semibold text-[#1B2B4B]">{label}</span>
+            <span className="mt-0.5 hidden sm:block text-[10px] text-[#1B2B4B]/40">{desc}</span>
           </Link>
         ))}
       </div>
     </div>
   );
+}
+
+function computeTrend(revenueData) {
+  if (!revenueData?.data?.length) return undefined;
+  const rows = [...revenueData.data].reverse();
+  const recent = rows.slice(0, 7);
+  const previous = rows.slice(7, 14);
+  if (recent.length === 0 || previous.length === 0) return undefined;
+  const recentSum = recent.reduce((s, r) => s + (r.revenue || 0), 0);
+  const prevSum = previous.reduce((s, r) => s + (r.revenue || 0), 0);
+  if (prevSum === 0) return recentSum > 0 ? 100 : 0;
+  return Math.round(((recentSum - prevSum) / prevSum) * 100);
 }
 
 export function AdminDashboardContent() {
@@ -267,8 +251,11 @@ export function AdminDashboardContent() {
   const reviews = data?.reviews || {};
   const contact = data?.contact || {};
   const newsletter = data?.newsletter || {};
+
+  const revenueTrend = computeTrend(data?.revenue);
+
   const metrics = [
-    { icon: DollarSign, label: 'Total Revenue', value: formatCurrency(overview.totalRevenue), hint: `${formatCurrency(overview.monthlyRevenue)} this month` },
+    { icon: DollarSign, label: 'Total Revenue', value: formatCurrency(overview.totalRevenue), hint: `${formatCurrency(overview.monthlyRevenue)} this month`, trend: revenueTrend },
     { icon: ShoppingBag, label: 'Total Orders', value: formatNumber(overview.totalOrders), hint: `${formatNumber(orders.pendingOrders)} pending` },
     { icon: BookOpen, label: 'Total Books', value: formatNumber(overview.totalBooks), hint: `${formatNumber(overview.totalPurchases)} purchases` },
     { icon: Users, label: 'Total Users', value: formatNumber(overview.totalUsers), hint: 'Registered accounts', color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -281,36 +268,66 @@ export function AdminDashboardContent() {
   ];
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="space-y-6">
-      <div className={`${cardClass} p-6`}>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="space-y-4 sm:space-y-6">
+      {/* Header */}
+      <div className={`${cardClass} p-4 sm:p-6`}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="mb-3 flex w-fit items-center gap-2 rounded-full bg-[#C9A84C]/10 px-3 py-1.5 text-xs font-semibold text-[#C9A84C]">
-              <Sparkles className="h-3.5 w-3.5" />
+            <div className="mb-2 sm:mb-3 flex w-fit items-center gap-2 rounded-full bg-[#C9A84C]/10 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-[#C9A84C]">
+              <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               Platform Control Center
             </div>
-            <h1 className="text-3xl font-bold text-[#1B2B4B]">Admin Dashboard</h1>
-            <p className="mt-1 text-sm text-[#1B2B4B]/60">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1B2B4B]">Admin Dashboard</h1>
+            <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-[#1B2B4B]/60">
               Monitor revenue, orders, books, downloads, and review moderation.
             </p>
           </div>
-          <Button asChild className="rounded-full bg-[#C9A84C] px-6 font-semibold text-[#1B2B4B] hover:bg-[#D6B45A]">
+          <Button asChild className="rounded-full bg-[#C9A84C] px-5 sm:px-6 text-xs sm:text-sm font-semibold text-[#1B2B4B] hover:bg-[#D6B45A] hover:text-white self-start sm:self-auto">
             <Link href="/admin/books">Manage Books</Link>
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* KPI Grid */}
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
         {metrics.map((metric) => (
           <MetricCard key={metric.label} {...metric} />
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <RevenueTrend revenue={data?.revenue} />
-        <TopBooksCard books={data?.books} />
-        <RecentOrdersCard orders={data?.recentOrders} />
-        <QuickActions />
+      {/* Charts & Analytics Section */}
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
+        {/* Revenue Chart — full width on mobile, colspan 2 on desktop */}
+        <div className="lg:col-span-2">
+          <div className={`${cardClass} p-4 sm:p-6`}>
+            <div className="mb-2 sm:mb-3 flex items-center justify-between">
+              <div>
+                <h2 className="text-base sm:text-lg font-semibold text-[#1B2B4B]">Revenue Analytics</h2>
+                <p className="text-xs sm:text-sm text-[#1B2B4B]/50">Daily revenue over selected period</p>
+              </div>
+              <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-[#C9A84C] shrink-0" />
+            </div>
+            <RevenueChart />
+          </div>
+        </div>
+
+        {/* Book Performance */}
+        <div className={`${cardClass} p-4 sm:p-6`}>
+          <div className="mb-2 sm:mb-3 flex items-center justify-between">
+            <div>
+              <h2 className="text-base sm:text-lg font-semibold text-[#1B2B4B]">Top Selling Books</h2>
+              <p className="text-xs sm:text-sm text-[#1B2B4B]/50">Purchases & revenue</p>
+            </div>
+            <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-[#C9A84C] shrink-0" />
+          </div>
+          <BookPerformanceChart books={data?.books} isLoading={false} />
+        </div>
+
+        {/* Recent Orders */}
+        <EnhancedRecentOrdersCard orders={data?.recentOrders} />
+
+        {/* Quick Actions */}
+        <EnhancedQuickActions />
       </div>
     </motion.div>
   );

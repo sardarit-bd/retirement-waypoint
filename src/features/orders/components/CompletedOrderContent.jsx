@@ -22,7 +22,7 @@ export function CompletedOrderContent({ order, hasInvoice, hasCoupon }) {
         />
 
         {/* Review Section */}
-        <ReviewCard order={order} />
+        {/* <ReviewCard order={order} /> */}
 
         {/* Assessment Shortcut */}
         <AssessmentShortcutCard order={order} />
