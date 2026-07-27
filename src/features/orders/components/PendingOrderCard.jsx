@@ -92,7 +92,7 @@ export function PendingOrderCard({ order, onPaymentSuccess }) {
             // Continue Payment - Primary CTA
             <Button
               onClick={handleContinuePayment}
-              className="w-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] py-6 text-base text-[#04103A] font-semibold shadow-lg shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all duration-300 hover:scale-[1.02]"
+              className="w-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] py-6 text-base text-[#04103A] font-semibold shadow-lg shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all duration-300 hover:scale-[1.02] cursor-pointer"
             >
               <CreditCard className="mr-2 h-5 w-5" />
               Continue Payment
@@ -102,7 +102,7 @@ export function PendingOrderCard({ order, onPaymentSuccess }) {
             <Button
               onClick={handleRetryPayment}
               disabled={isLoading}
-              className="w-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] py-6 text-base text-[#04103A] font-semibold shadow-lg shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] py-6 text-base text-[#04103A] font-semibold shadow-lg shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -121,14 +121,14 @@ export function PendingOrderCard({ order, onPaymentSuccess }) {
 
         {/* Secondary Actions */}
         <div className="flex flex-col gap-2 w-full max-w-sm">
-          <Button
+          {/* <Button
             onClick={handleContactSupport}
             variant="outline"
             className="w-full rounded-full border-[#1B2B4B]/15 bg-white/50 text-[#1B2B4B] hover:bg-white/80 hover:border-[#C9A84C]/30 transition-all backdrop-blur-sm"
           >
             <HelpCircle className="mr-2 h-4 w-4" />
             Contact Support
-          </Button>
+          </Button> */}
 
           {/* Order Summary - Always visible */}
           <div className="mt-2 rounded-xl bg-white/50 p-4 text-sm backdrop-blur-sm">
