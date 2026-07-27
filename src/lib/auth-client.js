@@ -22,4 +22,7 @@ export const {
   sendVerificationEmail,
   verifyEmail,
   emailOtp,
+  linkSocial,
+  unlinkAccount,
+  listAccounts,
 } = authClient;

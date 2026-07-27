@@ -141,7 +141,7 @@ function AlertDialogAction({
   ...props
 }) {
   return (
-    <Button variant={variant} size={size} asChild>
+    <Button variant={variant} size={size} asChild className="cursor-pointer">
       <AlertDialogPrimitive.Action data-slot="alert-dialog-action" className={cn(className)} {...props} />
     </Button>
   );
@@ -154,7 +154,7 @@ function AlertDialogCancel({
   ...props
 }) {
   return (
-    <Button variant={variant} size={size} asChild>
+    <Button variant={variant} size={size} asChild className="cursor-pointer">
       <AlertDialogPrimitive.Cancel data-slot="alert-dialog-cancel" className={cn(className)} {...props} />
     </Button>
   );

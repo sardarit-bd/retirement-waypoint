@@ -28,7 +28,7 @@ export function AssessmentShortcutCard({ order }) {
             asChild
             className="mt-3 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-6 text-[#04103A] font-semibold shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all"
           >
-            <Link href="/dashboard/assessments">
+            <Link href="/assessment">
               Take Assessment
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
