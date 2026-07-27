@@ -17,7 +17,7 @@ const QUICK_ACTIONS = [
   {
     label: 'Assessments',
     icon: ClipboardCheck,
-    href: '/dashboard/assessments',
+    href: '/assessment',
     color: 'text-purple-500',
   },
   { label: 'Profile', icon: User, href: '/dashboard/profile', color: 'text-blue-500' },

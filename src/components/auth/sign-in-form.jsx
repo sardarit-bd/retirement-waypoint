@@ -228,7 +228,7 @@ export function SignInForm({ onToggle }) {
 
           <button
             type="button"
-            className="text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50"
+            className="text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50 cursor-pointer"
             disabled={isLoading}
             onClick={() => setShowForgotPassword(true)}
           >

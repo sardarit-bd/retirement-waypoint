@@ -48,7 +48,7 @@ export function useCreateCoupon() {
   return useMutation({
     mutationFn: (data) => couponApi.adminCreateCoupon(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: couponKeys.adminList() });
+      queryClient.invalidateQueries({ queryKey: couponKeys.admin });
       toast.success('Coupon created successfully');
     },
     onError: (error) => {
@@ -64,7 +64,7 @@ export function useUpdateCoupon() {
   return useMutation({
     mutationFn: ({ couponId, data }) => couponApi.adminUpdateCoupon(couponId, data),
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: couponKeys.adminList() });
+      queryClient.invalidateQueries({ queryKey: couponKeys.admin });
       queryClient.invalidateQueries({ queryKey: couponKeys.adminDetail(variables.couponId) });
       toast.success('Coupon updated successfully');
     },
@@ -81,7 +81,7 @@ export function useActivateCoupon() {
   return useMutation({
     mutationFn: (couponId) => couponApi.adminActivateCoupon(couponId),
     onSuccess: (_, couponId) => {
-      queryClient.invalidateQueries({ queryKey: couponKeys.adminList() });
+      queryClient.invalidateQueries({ queryKey: couponKeys.admin });
       queryClient.invalidateQueries({ queryKey: couponKeys.adminDetail(couponId) });
       toast.success('Coupon activated successfully');
     },
@@ -98,7 +98,7 @@ export function useDeactivateCoupon() {
   return useMutation({
     mutationFn: (couponId) => couponApi.adminDeactivateCoupon(couponId),
     onSuccess: (_, couponId) => {
-      queryClient.invalidateQueries({ queryKey: couponKeys.adminList() });
+      queryClient.invalidateQueries({ queryKey: couponKeys.admin });
       queryClient.invalidateQueries({ queryKey: couponKeys.adminDetail(couponId) });
       toast.success('Coupon deactivated successfully');
     },
@@ -115,7 +115,7 @@ export function useDeleteCoupon() {
   return useMutation({
     mutationFn: (couponId) => couponApi.adminDeleteCoupon(couponId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: couponKeys.adminList() });
+      queryClient.invalidateQueries({ queryKey: couponKeys.admin });
       toast.success('Coupon deleted successfully');
     },
     onError: (error) => {
