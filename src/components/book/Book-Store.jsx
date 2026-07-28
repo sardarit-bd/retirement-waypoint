@@ -50,7 +50,7 @@ export const BookStore = ({
     return (
       <section id="book-store" className="px-4 pb-20 pt-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <BookSkeleton count={pageSize} />
+          <BookSkeleton count={2} />
         </div>
       </section>
     );
@@ -105,7 +105,7 @@ export const BookStore = ({
 
         {loading && books.length > 0 && (
           <div className="mt-8">
-            <BookSkeleton count={pageSize} />
+            <BookSkeleton count={2} />
           </div>
         )}
 

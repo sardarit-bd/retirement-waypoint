@@ -235,7 +235,7 @@ const Navbar = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
-                        className={`flex items-center gap-2 rounded-full border px-2 py-1.5 transition-all duration-300 hover:bg-white/10 ${
+                        className={`flex items-center gap-2 rounded-full border px-2 py-1.5 transition-all duration-300 hover:bg-white/10 cursor-pointer ${
                           darkNavbar
                             ? "border-[#1B2B4B]/20 bg-white/70 text-[#1B2B4B] hover:bg-[#1B2B4B]/10"
                             : "border-white/20 bg-white/10 text-white hover:bg-white/20"
@@ -258,7 +258,7 @@ const Navbar = () => {
                       className="w-56 border-white/10 bg-slate-900/60 backdrop-blur-3xl text-white shadow-2xl"
                     >
                       <DropdownMenuLabel className="flex items-center gap-2 p-3">
-                        <Avatar className="h-8 w-8 border-2 border-white/20">
+                        <Avatar className="h-8 w-8 border-2 border-white/60">
                           <AvatarImage src={profileData?.profile?.profileImage || undefined} />
                           <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-xs font-semibold text-white">
                             {getInitials(user?.name)}
@@ -269,7 +269,7 @@ const Navbar = () => {
                             {user?.name}
                           </span>
                           <span
-                            className="truncate text-xs text-slate-400"
+                            className="truncate text-xs text-white"
                             title={user?.email}
                           >
                             {user?.email}
@@ -285,7 +285,7 @@ const Navbar = () => {
                         <DropdownMenuItem key={item.label} asChild>
                           <Link
                             href={item.href}
-                            className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
+                            className="flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-white hover:bg-white/10 hover:text-white transition-colors"
                           >
                             <item.icon className="h-4 w-4" />
                             {item.label}

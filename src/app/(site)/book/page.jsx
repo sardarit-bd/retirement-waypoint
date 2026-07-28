@@ -65,7 +65,7 @@ function BookPageContent() {
           searchQuery={searchInput}
           setSearchQuery={setSearchInput}
         />
-        <BookSkeleton count={ITEMS_PER_PAGE} />
+        <BookSkeleton count={2} />
       </main>
     );
   }

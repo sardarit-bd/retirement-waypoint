@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
 import { usePublicAssessments } from '@/features/assessment/admin/hooks/useAssessmentQueries';
 import { useLandingContent } from '@/features/assessment/hooks/useAssessmentLanding';
+import { AssessmentSkeleton } from '@/components/assessment/AssessmentSkeleton';
 
 const AssessmentPage = () => {
   // Load landing content from backend
@@ -23,19 +23,24 @@ const AssessmentPage = () => {
   const landing = landingResponse?.data || {};
   const assessments = assessmentsResponse?.data || [];
 
+  const assessmentOrder = {
+    "pre-retiree": 1,
+    "recent-retiree": 2,
+    "established-retiree": 3,
+  }
+
+  const sortedAssessments = [...assessments].sort(
+    (a, b) =>
+    (assessmentOrder[a.slug] ?? 999) - (assessmentOrder[b.slug] ?? 999)
+  );
+
+
   const isLoading = isLandingLoading || isAssessmentsLoading;
   const error = landingError || assessmentsError;
 
   // Loading State
   if (isLoading) {
-    return (
-      <section className="min-h-screen bg-[#1B2B4B] px-4 py-60 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-12 w-12 text-[#C9A84C] animate-spin" />
-          <p className="text-white/70 text-lg">Loading assessments...</p>
-        </div>
-      </section>
-    );
+    return <AssessmentSkeleton />;
   }
 
   // Error State
@@ -82,7 +87,7 @@ const AssessmentPage = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-3">
-            {assessments.map((assessment) => (
+            {sortedAssessments.map((assessment) => (
               <Link
                 key={assessment.slug}
                 href={`/assessment/${assessment.slug}`}
