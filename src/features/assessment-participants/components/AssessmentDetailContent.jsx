@@ -84,6 +84,11 @@ export const AssessmentDetailContent = ({ submission }) => {
               icon={BookOpen}
             />
             <InfoRow
+              label="Assessment Type"
+              value={submission?.assessmentId?.introduction?.badge || submission?.assessmentSlug || '—'}
+              icon={BookOpen}
+            />
+            <InfoRow
               label="Submitted"
               value={submission?.completedAt ? formatDate(submission.completedAt) : '—'}
               icon={Calendar}
