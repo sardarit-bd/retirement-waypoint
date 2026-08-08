@@ -17,6 +17,14 @@ export const AssessmentParticipantsAPI = {
     return api.get(`/api/admin/assessment-participants/${id}`);
   },
 
+  // Export assessment responses
+  exportParticipants: (params) => {
+    return api.get('/api/admin/assessment-participants/export', {
+      params,
+      responseType: 'blob',
+    });
+  },
+
   // Get participant history by email
   getParticipantHistory: (email) => {
     return api.get(`/api/admin/assessment-participants/history/${encodeURIComponent(email)}`);

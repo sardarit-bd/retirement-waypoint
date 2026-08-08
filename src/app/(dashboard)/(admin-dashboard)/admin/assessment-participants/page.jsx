@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { Download, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
+import { AssessmentParticipantsAPI } from '@/features/assessment-participants/api/assessment-participants.api';
 import {
   AssessmentParticipantsStats,
   AssessmentParticipantsFilters,
@@ -38,6 +42,39 @@ export default function AssessmentParticipantsPage() {
 
   const { data, isLoading, error, isFetching } = useAssessmentParticipants(params);
   const { data: statsData, isLoading: statsLoading } = useAssessmentParticipantStats();
+  const [exportingFormat, setExportingFormat] = useState(null);
+
+  const handleExport = async (format) => {
+    if (exportingFormat) return;
+
+    setExportingFormat(format);
+    try {
+      const response = await AssessmentParticipantsAPI.exportParticipants({
+        search: search || undefined,
+        assessmentSlug: assessmentSlug || undefined,
+        resultRange: resultRange || undefined,
+        format,
+      });
+      const contentDisposition = response.headers['content-disposition'] || '';
+      const filenameMatch = contentDisposition.match(/filename="?([^";]+)"?/i);
+      const filename = filenameMatch?.[1] || `assessment-responses.${format}`;
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success(`Assessment responses exported as ${format.toUpperCase()}.`);
+    } catch (exportError) {
+      const message = exportError.response?.data?.message || 'Unable to export assessment responses.';
+      toast.error(message);
+    } finally {
+      setExportingFormat(null);
+    }
+  };
 
   const updateUrlParams = (newParams) => {
     const params = new URLSearchParams();
@@ -96,12 +133,32 @@ export default function AssessmentParticipantsPage() {
   });
 
   const submissions = data?.submissions || [];
-  console.log(data)
   const meta = data?.meta || {};
   const filterOptions = data?.filters || {};
 
   return (
     <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+        <span className="text-sm text-gray-500 sm:mr-auto">Export assessment responses</span>
+        <Button
+          variant="outline"
+          onClick={() => handleExport('csv')}
+          disabled={!!exportingFormat}
+          className="cursor-pointer"
+        >
+          {exportingFormat === 'csv' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+          CSV
+        </Button>
+        <Button
+          onClick={() => handleExport('xlsx')}
+          disabled={!!exportingFormat}
+          className="cursor-pointer"
+        >
+          {exportingFormat === 'xlsx' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+          Excel
+        </Button>
+      </div>
+
       <AssessmentParticipantsStats data={statsData} isLoading={statsLoading} />
 
       <AssessmentParticipantsFilters

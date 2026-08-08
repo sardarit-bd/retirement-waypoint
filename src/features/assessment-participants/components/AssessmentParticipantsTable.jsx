@@ -145,6 +145,7 @@ export const AssessmentParticipantsTable = ({
                 <TableHead className="hidden sm:table-cell whitespace-nowrap">Email</TableHead>
                 <TableHead className="whitespace-nowrap text-center">Attempts</TableHead>
                 <TableHead className="whitespace-nowrap text-center">Latest Score</TableHead>
+                <TableHead className="hidden md:table-cell whitespace-nowrap">Assessment Type</TableHead>
                 <TableHead className="hidden md:table-cell whitespace-nowrap">Result</TableHead>
                 <TableHead className="hidden lg:table-cell whitespace-nowrap text-center">Trend</TableHead>
                 <TableHead className="hidden xl:table-cell whitespace-nowrap">Latest Date</TableHead>
@@ -177,6 +178,11 @@ export const AssessmentParticipantsTable = ({
                   <TableCell className="text-center whitespace-nowrap">
                     <span className={`font-bold ${getScoreColor(submission.latestScore || 0)}`}>
                       {submission.latestScore?.toFixed(0) || 0}%
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell whitespace-nowrap max-w-[140px]">
+                    <span className="truncate block" title={submission.latestAssessmentType || submission.assessmentType || submission.latestAssessmentSlug || '—'}>
+                      {submission.latestAssessmentType || submission.assessmentType || submission.latestAssessmentSlug || '—'}
                     </span>
                   </TableCell>
                   <TableCell className="hidden md:table-cell whitespace-nowrap max-w-[120px]">
