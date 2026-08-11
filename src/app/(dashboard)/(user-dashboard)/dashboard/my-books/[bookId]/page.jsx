@@ -88,16 +88,16 @@ export default function MyBookDetailPage() {
       </Button>
 
       {/* Book Details */}
-      <div className="grid gap-8 lg:grid-cols-[300px_1fr]">
+      <div className="grid gap-6 sm:gap-8 lg:grid-cols-[300px_1fr]">
         {/* Cover */}
-        <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-[#F8F5EF] shadow-xl">
+        <div className="relative aspect-[3/4] max-w-[300px] mx-auto w-full overflow-hidden rounded-3xl bg-[#F8F5EF] shadow-xl">
           <Image
             src={coverImage}
             alt={book.title}
             fill
             className="object-cover"
             onError={() => setImageError(true)}
-            sizes="(max-width: 768px) 100vw, 300px"
+            sizes="(max-width: 640px) 100vw, 300px"
           />
           <div className="absolute top-3 left-3">
             <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
@@ -108,10 +108,10 @@ export default function MyBookDetailPage() {
         </div>
 
         {/* Info */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
-            <h1 className="text-3xl font-bold text-[#1B2B4B]">{book.title}</h1>
-            <p className="text-lg text-[#1B2B4B]/60">by {book.authorName}</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1B2B4B] break-words">{book.title}</h1>
+            <p className="text-base sm:text-lg text-[#1B2B4B]/60">by {book.authorName}</p>
           </div>
 
           {book.description && (

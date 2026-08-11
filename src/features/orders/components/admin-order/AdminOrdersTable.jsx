@@ -77,14 +77,14 @@ export function AdminOrdersTable({ orders, isLoading }) {
         <Table>
           <TableHeader>
             <TableRow className="border-b border-[#1B2B4B]/5 hover:bg-transparent">
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">Order</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">Customer</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">Books</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold text-right">Total</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold text-center">Payment</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold text-center">Status</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold">Date</TableHead>
-              <TableHead className="text-[#1B2B4B]/60 font-semibold text-right">Actions</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold whitespace-nowrap">Order #</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold whitespace-nowrap">Customer</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold whitespace-nowrap">Books</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-right whitespace-nowrap">Total</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-center whitespace-nowrap">Payment</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-center whitespace-nowrap">Status</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold whitespace-nowrap">Date</TableHead>
+              <TableHead className="text-[#1B2B4B]/60 font-semibold text-right whitespace-nowrap">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -98,14 +98,9 @@ export function AdminOrdersTable({ orders, isLoading }) {
                   className="border-b border-[#1B2B4B]/5 hover:bg-[#F8F5EF]/50 transition-colors"
                 >
                   <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-mono text-sm font-semibold text-[#1B2B4B]">
-                        #{order.orderNumber}
-                      </span>
-                      <span className="text-xs text-[#1B2B4B]/40">
-                        {order.items?.length || 0} item{order.items?.length !== 1 ? 's' : ''}
-                      </span>
-                    </div>
+                    <span className="font-mono text-sm font-semibold text-[#1B2B4B] whitespace-nowrap">
+                      #{order.orderNumber}
+                    </span>
                   </TableCell>
 
                   <TableCell>
@@ -116,10 +111,10 @@ export function AdminOrdersTable({ orders, isLoading }) {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col min-w-0">
-                        <span className="text-sm font-medium text-[#1B2B4B] truncate max-w-[120px]">
+                        <span className="text-sm font-medium text-[#1B2B4B] truncate max-w-[140px]">
                           {userName}
                         </span>
-                        <span className="text-xs text-[#1B2B4B]/40 truncate max-w-[120px]">
+                        <span className="text-xs text-[#1B2B4B]/40 truncate max-w-[140px]">
                           {order.user?.email || 'No email'}
                         </span>
                       </div>
@@ -127,9 +122,9 @@ export function AdminOrdersTable({ orders, isLoading }) {
                   </TableCell>
 
                   <TableCell>
-                    <div className="flex flex-col gap-0.5 max-w-[200px]">
+                    <div className="flex flex-col gap-0.5">
                       {order.items?.slice(0, 2).map((item, idx) => (
-                        <span key={idx} className="text-sm text-[#1B2B4B]/70 truncate">
+                        <span key={idx} className="text-sm text-[#1B2B4B]/70 truncate max-w-[180px]">
                           {item.bookTitle}
                         </span>
                       ))}
@@ -195,13 +190,13 @@ export function AdminOrdersTable({ orders, isLoading }) {
           return (
             <div key={order._id} className="p-4 space-y-3">
               {/* Header Row */}
-              <div className="flex items-start justify-between">
-                <div>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-sm font-bold text-[#1B2B4B]">
+                    <span className="font-mono text-sm font-bold text-[#1B2B4B] break-all">
                       #{order.orderNumber}
                     </span>
-                    <span className="text-xs text-[#1B2B4B]/40">
+                    <span className="text-xs text-[#1B2B4B]/40 shrink-0">
                       {order.items?.length || 0} item{order.items?.length !== 1 ? 's' : ''}
                     </span>
                   </div>
@@ -240,12 +235,12 @@ export function AdminOrdersTable({ orders, isLoading }) {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2 flex-wrap">
                   <OrderStatusBadge status={order.paymentStatus} type="payment" />
                   <OrderStatusBadge status={order.orderStatus} type="order" />
                 </div>
-                <span className="font-bold text-[#1B2B4B]">
+                <span className="font-bold text-[#1B2B4B] whitespace-nowrap">
                   {formatCurrency(order.totalAmount)}
                 </span>
               </div>

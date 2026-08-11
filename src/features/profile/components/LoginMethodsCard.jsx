@@ -123,7 +123,7 @@ export function LoginMethodsCard({ profile }) {
                 {/* Email & Password */}
                 <div
                   className={cn(
-                    'flex items-center justify-between rounded-xl border p-4 transition-all',
+                    'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border p-4 transition-all',
                     hasEmailPassword
                       ? 'border-emerald-500/20 bg-emerald-500/5'
                       : 'border-[#1B2B4B]/10 bg-[#F8F5EF]'
@@ -151,7 +151,7 @@ export function LoginMethodsCard({ profile }) {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {hasEmailPassword ? (
                       <>
                         <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
@@ -190,7 +190,7 @@ export function LoginMethodsCard({ profile }) {
                 {/* Google */}
                 <div
                   className={cn(
-                    'flex items-center justify-between rounded-xl border p-4 transition-all',
+                    'flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border p-4 transition-all',
                     hasGoogleLinked
                       ? 'border-emerald-500/20 bg-emerald-500/5'
                       : 'border-[#1B2B4B]/10 bg-[#F8F5EF]'
@@ -218,7 +218,7 @@ export function LoginMethodsCard({ profile }) {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {hasGoogleLinked ? (
                       <>
                         <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">

@@ -30,21 +30,21 @@ export function WelcomeCard({ userName }) {
       <div className="absolute inset-0 bg-[#04103A]/10" />
 
       {/* Content */}
-      <div className="relative z-10 p-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative z-10 p-4 sm:p-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">
               Welcome back, {userName}
             </h1>
 
-            <p className="mt-1 text-white/80">
+            <p className="mt-1 text-sm sm:text-base text-white/80">
               Continue building a meaningful retirement journey.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-white backdrop-blur-md">
-            <Calendar className="h-4 w-4" />
-            <span>{currentDate}</span>
+          <div className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs sm:text-sm text-white backdrop-blur-md whitespace-nowrap w-fit">
+            <Calendar className="h-4 w-4 shrink-0" />
+            <span className="truncate max-w-[200px] sm:max-w-none">{currentDate}</span>
           </div>
         </div>
       </div>

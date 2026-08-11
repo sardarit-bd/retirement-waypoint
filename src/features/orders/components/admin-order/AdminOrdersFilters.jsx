@@ -76,29 +76,29 @@ export function AdminOrdersFilters({
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1B2B4B]/40" />
               <Input
                 type="text"
-                placeholder="Search by order number, customer..."
+                placeholder="Search orders..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
-                className="w-full rounded-full border-white/20 bg-[#F8F5EF] pl-9 pr-4 py-2 text-sm text-[#1B2B4B] placeholder:text-[#1B2B4B]/40 focus:border-[#C9A84C]/50 focus:ring-[#C9A84C]/20 sm:w-56 lg:w-80"
+                className="w-full rounded-full border-white/20 bg-[#F8F5EF] pl-9 pr-4 py-2 text-sm text-[#1B2B4B] placeholder:text-[#1B2B4B]/40 focus:border-[#C9A84C]/50 focus:ring-[#C9A84C]/20"
               />
             </motion.div>
           </div>
 
           {/* Filter Buttons - Wrap on mobile */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap">
             {/* Order Status Filter */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="flex-1 sm:flex-none rounded-full border-white/20 bg-[#F8F5EF] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30"
+                  className="flex-1 sm:flex-none rounded-full border-white/20 bg-[#F8F5EF] px-3 py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30 gap-1"
                 >
-                  <Filter className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  <span className="hidden xs:inline">{currentOrderStatusLabel}</span>
-                  <span className="xs:hidden">Status</span>
-                  <ChevronDown className="ml-1 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50" />
+                  <Filter className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                  <span className="hidden sm:inline">{currentOrderStatusLabel}</span>
+                  <span className="sm:hidden">Status</span>
+                  <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50 shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -127,12 +127,12 @@ export function AdminOrdersFilters({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="flex-1 sm:flex-none rounded-full border-white/20 bg-[#F8F5EF] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30"
+                  className="flex-1 sm:flex-none rounded-full border-white/20 bg-[#F8F5EF] px-3 py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30 gap-1"
                 >
-                  <CreditCard className="mr-1 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  <span className="hidden xs:inline">{currentPaymentStatusLabel}</span>
-                  <span className="xs:hidden">Payment</span>
-                  <ChevronDown className="ml-1 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50" />
+                  <CreditCard className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                  <span className="hidden sm:inline">{currentPaymentStatusLabel}</span>
+                  <span className="sm:hidden">Payment</span>
+                  <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50 shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -161,11 +161,11 @@ export function AdminOrdersFilters({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="flex-1 sm:flex-none rounded-full border-white/20 bg-[#F8F5EF] px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30"
+                  className="flex-1 sm:flex-none rounded-full border-white/20 bg-[#F8F5EF] px-3 py-2 text-xs sm:text-sm font-medium text-[#1B2B4B] hover:bg-white/90 hover:border-[#C9A84C]/30 gap-1"
                 >
                   <span className="hidden sm:inline">{currentSortLabel}</span>
                   <span className="sm:hidden">Sort</span>
-                  <ChevronDown className="ml-1 sm:ml-2 h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50" />
+                  <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 opacity-50 shrink-0" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -192,7 +192,7 @@ export function AdminOrdersFilters({
         </div>
 
         {/* Stats Row */}
-        <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between border-t border-[#1B2B4B]/5 pt-3 gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-[#1B2B4B]/5 pt-3 gap-2">
           <div className="text-xs sm:text-sm text-[#1B2B4B]/50">
             {isLoading ? 'Loading...' : `${totalOrders || 0} order${totalOrders !== 1 ? 's' : ''}`}
           </div>
