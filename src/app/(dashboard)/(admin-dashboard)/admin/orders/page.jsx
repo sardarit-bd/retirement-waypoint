@@ -88,8 +88,8 @@ export default function AdminOrdersPage() {
       {/* Header */}
       <div className="rounded-2xl sm:rounded-3xl border border-white/20 bg-white/80 backdrop-blur-xl p-4 sm:p-6 shadow-[0_15px_50px_rgba(4,16,58,0.08)]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#1B2B4B]">Order Management</h1>
-          <p className="mt-1 text-sm sm:text-base text-[#1B2B4B]/60">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#1B2B4B]">Order Management</h1>
+          <p className="mt-1 text-xs sm:text-sm lg:text-base text-[#1B2B4B]/60">
             Monitor and manage all customer orders
           </p>
         </div>

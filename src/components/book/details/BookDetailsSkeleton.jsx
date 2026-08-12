@@ -1,13 +1,13 @@
 export const BookDetailsSkeleton = () => {
     return (
       <div className="min-h-screen bg-[#F8F5EF]">
-        <div className="mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pt-24 pb-20 sm:pt-24 sm:pb-24 md:pt-28 md:pb-28 lg:pt-32 lg:pb-32 sm:px-6 lg:px-8">
           <div className="h-6 w-32 animate-pulse rounded bg-gray-200 mb-8" />
           
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div className="relative">
               <div className="sticky top-32">
-                <div className="relative mx-auto h-[500px] w-[333px] animate-pulse rounded-lg bg-gray-200" />
+                <div className="relative mx-auto h-[400px] w-[267px] sm:h-[450px] sm:w-[300px] md:h-[500px] md:w-[333px] animate-pulse rounded-lg bg-gray-200" />
               </div>
             </div>
             

@@ -150,7 +150,7 @@ export const BookDetailsContent = ({ book }) => {
   if (sessionLoading) {
     return (
       <main className="min-h-screen bg-[#F8F5EF]">
-        <div className="mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pt-24 sm:pt-24 lg:pt-32 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center h-96">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C9A84C]"></div>
           </div>
@@ -162,7 +162,7 @@ export const BookDetailsContent = ({ book }) => {
   return (
     <main id="book-details" className="min-h-screen bg-[#F8F5EF]">
       <div className="bg-[#F8F5EF]">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:py-24 md:py-28 lg:py-32 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-4 pt-30 pb-20 sm:pt-24 sm:pb-24 md:pt-28 md:pb-28 lg:pt-32 lg:pb-32 sm:px-6 lg:px-8">
           <Link
             href="/book"
             className="inline-flex items-center gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] transition-colors mb-6 sm:mb-8 text-sm sm:text-base"

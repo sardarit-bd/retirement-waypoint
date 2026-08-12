@@ -116,8 +116,6 @@ export function ProfileHeader({ profile }) {
     user: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
   };
 
-  console.log("PROFILE =", profile);
-
   const displayImage = previewImage || profile?.profile?.profileImage;
 
   return (
@@ -191,15 +189,15 @@ export function ProfileHeader({ profile }) {
               )}
 
               {/* User Name */}
-              <h2 className="mt-5 text-2xl font-bold text-[#1B2B4B]">
+              <h2 className="mt-5 text-xl sm:text-2xl font-bold text-[#1B2B4B] text-center">
                 {profile?.name || "User"}
               </h2>
             </div>
 
             {/* Email */}
-            <div className="flex items-center gap-1.5 mt-1 text-sm text-[#1B2B4B]/60">
-              <Mail className="h-3.5 w-3.5" />
-              <span>{profile?.email}</span>
+            <div className="flex items-center gap-1.5 mt-1 text-sm text-[#1B2B4B]/60 max-w-full">
+              <Mail className="h-3.5 w-3.5 shrink-0" />
+              <span className="break-all">{profile?.email}</span>
             </div>
 
             {/* Badges */}

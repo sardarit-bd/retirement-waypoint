@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Search, ChevronDown, LogOut, User, Settings, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ChevronDown, LogOut } from 'lucide-react';
 import { useSession } from '@/hooks/useSession';
 import { useProfile } from '@/features/profile/hooks/useProfile';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -19,19 +17,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { signOut } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
-import { cn } from '@/lib/utils';
 
 export function DashboardHeader() {
   const { session } = useSession();
   const { data: profileData } = useProfile();
-  const router = useRouter();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const user = session?.user;
   const profileImage = profileData?.profile?.profileImage;
-
-  console.log("Dashboard:", user);
 
   const getInitials = (name) => {
     if (!name) return 'U';
@@ -86,14 +78,6 @@ export function DashboardHeader() {
 
         {/* Right Section */}
         <div className="flex items-center gap-3">
-          {/* Mobile Search Toggle */}
-          <button
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="rounded-full p-2 text-[#1B2B4B]/60 transition-colors hover:bg-[#F8F5EF] hover:text-[#1B2B4B] lg:hidden"
-          >
-            <Search className="h-5 w-5" />
-          </button>
-
           {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -132,28 +116,6 @@ export function DashboardHeader() {
           </DropdownMenu>
         </div>
       </div>
-
-      {/* Mobile Search Bar */}
-      <AnimatePresence>
-        {isSearchOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="px-4 pb-4 lg:hidden"
-          >
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#1B2B4B]/40" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full rounded-[18px] border-0 bg-[#F8F5EF] py-2.5 pl-11 pr-4 text-sm text-[#1B2B4B] placeholder:text-[#1B2B4B]/40 outline-none ring-1 ring-[#1B2B4B]/10 focus:ring-[#C9A84C]/50"
-                autoFocus
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.header>
   );
 }
