@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import {
   Chart as ChartJS,
@@ -13,7 +13,8 @@ import {
 import { useAssessmentSubmission } from "@/features/assessment/public/assessment/hooks/useAssessmentSubmission";
 import {
   CoverPage,
-  RegistrationPage,
+  NamePage,
+  EmailPage,
   ResultsPage,
   SurveyPage,
 } from "./index";
@@ -32,7 +33,7 @@ const NAME_REGEX = /^[A-Za-z]+(?:[ '-][A-Za-z]+)*$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const validateName = (value) => {
-  const trimmed = value.trim();
+  const trimmed = (value || "").trim();
   if (!trimmed) return "Name is required.";
   if (trimmed.length < 2) return "Name must be at least 2 characters.";
   if (trimmed.length > 100) return "Name must be at most 100 characters.";
@@ -43,8 +44,8 @@ const validateName = (value) => {
 };
 
 const validateEmail = (value) => {
-  const trimmed = value.trim();
-  if (!trimmed) return "Email address is required.";
+  const trimmed = (value || "").trim();
+  if (!trimmed) return "";
   if (!EMAIL_REGEX.test(trimmed)) {
     return "Please enter a valid email address.";
   }
@@ -58,6 +59,75 @@ export default function AssessmentForm({ assessment }) {
   const [errors, setErrors] = useState({ name: "", email: "" });
   const [answers, setAnswers] = useState({});
   const [submissionResult, setSubmissionResult] = useState(null);
+  const [hasDraft, setHasDraft] = useState(false);
+  const [draftData, setDraftData] = useState(null);
+
+  const assessmentSlug = assessment.slug;
+  const storageKey = assessmentSlug ? `assessment-draft-${assessmentSlug}` : null;
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [current, screen]);
+
+  // Check for saved draft on mount
+  useEffect(() => {
+    if (!storageKey || typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const hasAnswers = parsed.answers && Object.keys(parsed.answers).length > 0;
+        const hasProgress =
+          parsed.current > 0 ||
+          hasAnswers ||
+          (parsed.user?.name && parsed.screen && parsed.screen !== "cover");
+
+        if (hasProgress && parsed.screen !== "results") {
+          setDraftData(parsed);
+          setHasDraft(true);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load draft from localStorage:", err);
+    }
+  }, [storageKey]);
+
+  // Save draft whenever state changes (except on cover or results)
+  useEffect(() => {
+    if (!storageKey || typeof window === "undefined") return;
+    if (screen === "cover" || screen === "results") return;
+
+    try {
+      const draft = {
+        screen,
+        current,
+        answers,
+        user: { name: user.name, email: user.email || "" },
+        updatedAt: new Date().toISOString(),
+      };
+      localStorage.setItem(storageKey, JSON.stringify(draft));
+    } catch (err) {
+      console.error("Failed to save draft to localStorage:", err);
+    }
+  }, [storageKey, screen, current, answers, user.name, user.email]);
+
+  const handleResumeDraft = () => {
+    if (!draftData) return;
+    if (draftData.screen) setScreen(draftData.screen);
+    if (typeof draftData.current === "number") setCurrent(draftData.current);
+    if (draftData.answers) setAnswers(draftData.answers);
+    if (draftData.user) setUser(draftData.user);
+    setHasDraft(false);
+    toast.success("Progress restored");
+  };
+
+  const handleDismissDraft = () => {
+    if (storageKey && typeof window !== "undefined") {
+      localStorage.removeItem(storageKey);
+    }
+    setHasDraft(false);
+    setDraftData(null);
+  };
 
   const submissionMutation = useAssessmentSubmission();
 
@@ -65,7 +135,6 @@ export default function AssessmentForm({ assessment }) {
   const domains = assessment.domains || [];
   const introduction = assessment.introduction || {};
   const hero = assessment.hero || {};
-  const assessmentSlug = assessment.slug;
 
   const domain = domains[current] || {};
 
@@ -88,7 +157,7 @@ export default function AssessmentForm({ assessment }) {
 
   const overallScore = Math.round(
     domains.reduce((sum, item) => sum + getDomainScore(item), 0) /
-      (domains.length || 1),
+    (domains.length || 1),
   );
 
   const totalItems = domains.reduce(
@@ -107,13 +176,14 @@ export default function AssessmentForm({ assessment }) {
 
   const progressPercent = Math.round((answeredTotal / (totalItems || 1)) * 100);
 
+  const totalSteps = (domains.length || 5) + 2;
+
   const handleStart = () => {
     const nameError = validateName(user.name);
-    const emailError = validateEmail(user.email);
 
-    if (nameError || emailError) {
-      setErrors({ name: nameError, email: emailError });
-      toast.error(nameError || emailError);
+    if (nameError) {
+      setErrors((prev) => ({ ...prev, name: nameError }));
+      toast.error(nameError);
       return;
     }
 
@@ -121,10 +191,8 @@ export default function AssessmentForm({ assessment }) {
     setUser((prev) => ({
       ...prev,
       name: prev.name.trim(),
-      email: prev.email.trim().toLowerCase(),
     }));
     setScreen("survey");
-    toast.success("Assessment started");
   };
 
   const handleAnswer = (questionId, value) => {
@@ -142,6 +210,16 @@ export default function AssessmentForm({ assessment }) {
   };
 
   const handleSubmit = async () => {
+    if (user.email && user.email.trim()) {
+      const emailError = validateEmail(user.email);
+      if (emailError) {
+        setErrors((prev) => ({ ...prev, email: emailError }));
+        toast.error(emailError);
+        return;
+      }
+    }
+    setErrors((prev) => ({ ...prev, email: "" }));
+
     // Check if all questions are answered
     let allAnswered = true;
     const missingQuestions = [];
@@ -189,7 +267,7 @@ export default function AssessmentForm({ assessment }) {
     // 3. Build participant object
     const participant = {
       name: user.name.trim(),
-      email: user.email.trim().toLowerCase(),
+      email: (user.email || '').trim().toLowerCase(),
     };
 
     // 4. Final payload - matches backend schema exactly
@@ -207,6 +285,11 @@ export default function AssessmentForm({ assessment }) {
       },
       {
         onSuccess: (response) => {
+          if (storageKey && typeof window !== "undefined") {
+            localStorage.removeItem(storageKey);
+          }
+          setHasDraft(false);
+          setDraftData(null);
           setSubmissionResult(response.data);
           setScreen("results");
         },
@@ -263,28 +346,74 @@ export default function AssessmentForm({ assessment }) {
   // Cover Page
   if (screen === "cover") {
     return (
-      <CoverPage
-        assessment={assessment}
-        introduction={introduction}
-        hero={hero}
-        totalItems={totalItems}
-        domains={domains}
-        onBegin={() => setScreen("register")}
-      />
+      <div className="relative">
+        {hasDraft && (
+          <div className="sticky top-20 z-40 mx-auto mb-4 max-w-2xl px-4 animate-in fade-in slide-in-from-top-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-[#C9A84C]/40 bg-[#0F172A]/95 p-4 shadow-2xl backdrop-blur-xl">
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  You have an assessment in progress
+                </p>
+                <p className="text-xs text-white/60">
+                  Would you like to resume where you left off?
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDismissDraft}
+                  className="cursor-pointer rounded-xl border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-white/15"
+                >
+                  Start Over
+                </button>
+                <button
+                  onClick={handleResumeDraft}
+                  className="cursor-pointer rounded-xl bg-[#C9A84C] px-3.5 py-1.5 text-xs font-semibold text-[#1B2B4B] shadow-md transition hover:bg-[#D6B45A]"
+                >
+                  Resume
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        <CoverPage
+          assessment={assessment}
+          introduction={introduction}
+          hero={hero}
+          totalItems={totalItems}
+          domains={domains}
+          onBegin={() => setScreen("name")}
+        />
+      </div>
     );
   }
 
-  // Registration Page
-  if (screen === "register") {
+  // Name Page (Before we begin)
+  if (screen === "name" || screen === "register") {
     return (
-      <RegistrationPage
+      <NamePage
         user={user}
         errors={errors}
         onUserChange={setUser}
         onBack={() => setScreen("cover")}
         onContinue={handleStart}
         validateName={validateName}
+        totalSteps={totalSteps}
+      />
+    );
+  }
+
+  // Email Page (Before You View Your Report)
+  if (screen === "email") {
+    return (
+      <EmailPage
+        user={user}
+        errors={errors}
+        onUserChange={setUser}
+        onBack={() => setScreen("survey")}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
         validateEmail={validateEmail}
+        totalSteps={totalSteps}
       />
     );
   }
@@ -303,6 +432,11 @@ export default function AssessmentForm({ assessment }) {
         chartData={chartData}
         chartOptions={chartOptions}
         onStartOver={() => {
+          if (storageKey && typeof window !== "undefined") {
+            localStorage.removeItem(storageKey);
+          }
+          setHasDraft(false);
+          setDraftData(null);
           setScreen("cover");
           setCurrent(0);
           setAnswers({});
@@ -328,7 +462,7 @@ export default function AssessmentForm({ assessment }) {
       onPrevious={() => setCurrent(current - 1)}
       onNext={() => {
         if (current === domains.length - 1) {
-          handleSubmit();
+          setScreen("email");
         } else {
           setCurrent(current + 1);
         }
