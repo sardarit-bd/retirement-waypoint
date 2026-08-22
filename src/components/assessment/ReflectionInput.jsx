@@ -2,7 +2,7 @@ const ReflectionInput = ({ domain, value, onChange }) => {
   return (
     <div className="mt-7 rounded-2xl border border-white/10 bg-white/10 p-5">
       <label className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-white/40">
-        Reflection Question
+        Reflection Question (Optional)
       </label>
 
       <p className="mb-3 text-sm italic leading-7 text-white/70">

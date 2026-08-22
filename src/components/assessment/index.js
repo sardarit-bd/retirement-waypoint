@@ -1,5 +1,7 @@
 export { default as AssessmentShell } from './AssessmentShell';
 export { default as CoverPage } from './CoverPage';
+export { default as NamePage } from './NamePage';
+export { default as EmailPage } from './EmailPage';
 export { default as RegistrationPage } from './RegistrationPage';
 export { default as ResultsPage } from './ResultsPage';
 export { default as SurveyPage } from './SurveyPage';

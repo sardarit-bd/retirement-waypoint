@@ -189,16 +189,8 @@ const CoachingPage = () => {
 
               <p>
                 My coaching draws on around the five domains of retirement
-                thriving -{" "}
-                <span className="text-green-500 font-medium">(1) </span>{" "}
-                Identify the purpose,{" "}
-                <span className="text-green-500 font-medium"> (2) </span>
-                Engagement and vitality,{" "}
-                <span className="text-green-500 font-medium"> (3) </span>{" "}
-                Connection and belonging,{" "}
-                <span className="text-green-500 font-medium"> (4) </span> Growth
-                and learning, and{" "}
-                <span className="text-green-500 font-medium"> (5) </span>{" "}
+                thriving - (1) Identify the purpose, (2) Engagement and vitality,
+                (3) Connection and belonging, (4) Growth and learning, and (5)
                 Meaning and legacy. These domains consistently link to wellbeing
                 and fulfillment in later life. We don&apos;t just talk. We build
                 a clear picture of where you are, where you want to go, and

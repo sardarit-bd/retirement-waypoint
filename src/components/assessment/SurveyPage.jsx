@@ -104,7 +104,7 @@ const SurveyPage = ({
                 Submitting...
               </>
             ) : (
-              current === domains.length - 1 ? "Submit Assessment" : "Next domain"
+              current === domains.length - 1 ? "Continue" : "Next domain"
             )}
           </button>
         </div>

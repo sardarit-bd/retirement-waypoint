@@ -50,7 +50,7 @@ const CoverPage = ({
 
           <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { icon: Clock, label: introduction.duration || "10–12 min" },
+              { icon: Clock, label: introduction.duration || "5–8 min" },
               { icon: BarChart3, label: `${totalItems} scaled items` },
               { icon: MessageSquareText, label: `${domains.length} reflections` },
               { icon: Lock, label: "Confidential" },

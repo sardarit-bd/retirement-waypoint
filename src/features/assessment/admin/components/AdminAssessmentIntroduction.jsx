@@ -31,7 +31,7 @@ export function AdminAssessmentIntroduction({ assessmentId, onBegin }) {
         author: assessment.introduction?.author || '',
         subtitle: assessment.introduction?.subtitle || '',
         description: assessment.introduction?.description || '',
-        duration: assessment.introduction?.duration || '10–12 min',
+        duration: assessment.introduction?.duration || '5–8 min',
         ctaButton: assessment.introduction?.ctaButton || 'Begin Assessment',
       });
     }
@@ -45,7 +45,7 @@ export function AdminAssessmentIntroduction({ assessmentId, onBegin }) {
         author: assessment.introduction?.author || '',
         subtitle: assessment.introduction?.subtitle || '',
         description: assessment.introduction?.description || '',
-        duration: assessment.introduction?.duration || '10–12 min',
+        duration: assessment.introduction?.duration || '5–8 min',
         ctaButton: assessment.introduction?.ctaButton || 'Begin Assessment',
       });
       setIsEditing(true);
@@ -96,7 +96,7 @@ export function AdminAssessmentIntroduction({ assessmentId, onBegin }) {
         author: assessment.introduction?.author || '',
         subtitle: assessment.introduction?.subtitle || '',
         description: assessment.introduction?.description || '',
-        duration: assessment.introduction?.duration || '10–12 min',
+        duration: assessment.introduction?.duration || '5–8 min',
         ctaButton: assessment.introduction?.ctaButton || 'Begin Assessment',
       });
     }
@@ -234,7 +234,7 @@ export function AdminAssessmentIntroduction({ assessmentId, onBegin }) {
 
                 <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {[
-                    { icon: Clock, label: assessment.introduction?.duration || '10–12 min' },
+                    { icon: Clock, label: assessment.introduction?.duration || '5–8 min' },
                     { icon: BarChart3, label: `${questionCount} scaled items` },
                     { icon: MessageSquareText, label: `${reflectionCount} reflections` },
                     { icon: Lock, label: 'Confidential' },
@@ -317,7 +317,7 @@ export function AdminAssessmentIntroduction({ assessmentId, onBegin }) {
 
                 <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {[
-                    { icon: Clock, label: tempData?.duration || '10–12 min' },
+                    { icon: Clock, label: tempData?.duration || '5–8 min' },
                     { icon: BarChart3, label: `${questionCount} scaled items` },
                     { icon: MessageSquareText, label: `${reflectionCount} reflections` },
                     { icon: Lock, label: 'Confidential' },

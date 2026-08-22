@@ -5,7 +5,7 @@ export const mockAssessment = {
   subtitle: 'Planning to retire in 3–5 years',
   description: 'This assessment measures your retirement readiness across five key behavioral domains. Answer honestly to get the most accurate results.',
   badge: 'Pre-Retiree',
-  duration: '10–12 min',
+  duration: '5–8 min',
   questionCount: 15,
   reflectionCount: 5,
   ctaButton: 'Begin Assessment',
