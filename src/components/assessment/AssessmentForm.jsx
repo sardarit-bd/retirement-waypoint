@@ -348,7 +348,7 @@ export default function AssessmentForm({ assessment }) {
     return (
       <div className="relative">
         {hasDraft && (
-          <div className="sticky top-20 z-40 mx-auto mb-4 max-w-2xl px-4 animate-in fade-in slide-in-from-top-4">
+          <div className="fixed top-20 left-1/2 z-40 w-full max-w-2xl -translate-x-1/2 px-4 animate-in fade-in slide-in-from-top-4">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border border-[#C9A84C]/40 bg-[#0F172A]/95 p-4 shadow-2xl backdrop-blur-xl">
               <div>
                 <p className="text-sm font-semibold text-white">
