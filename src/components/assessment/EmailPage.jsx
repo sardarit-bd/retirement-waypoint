@@ -43,11 +43,10 @@ const EmailPage = ({
             Email address (Optional)
           </label>
           <input
-            className={`mb-1 w-full rounded-xl border bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:ring-2 ${
-              errors.email
+            className={`mb-1 w-full rounded-xl border bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:ring-2 ${errors.email
                 ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
                 : "border-white/10 focus:border-[#C9A84C] focus:ring-[#C9A84C]/20"
-            }`}
+              }`}
             placeholder="you@example.com"
             type="email"
             value={user.email}
@@ -66,14 +65,14 @@ const EmailPage = ({
           ) : (
             <div className="mb-5" />
           )}
-
+          {/* 
           <div className="mb-7 flex gap-2 rounded-2xl border border-[#C9A84C]/20 bg-[#C9A84C]/10 p-4 text-sm leading-6 text-white/65">
             <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#C9A84C]" />
             <p>
               Your information is never shared or sold. Dr. David Allen may
               follow up with resources tailored to your results.
             </p>
-          </div>
+          </div> */}
 
           <div className="flex items-center justify-between gap-3">
             <button
