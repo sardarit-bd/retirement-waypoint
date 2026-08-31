@@ -1,20 +1,23 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { bookApi } from "../api/book.api";
 
-export function useBooks(initialParams = {}) {
-  const [books, setBooks] = useState([]);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 20,
-    total: 0,
-    totalPages: 0,
-    hasNextPage: false,
-    hasPrevPage: false,
-  });
+export function useBooks(initialParams = {}, initialData = null) {
+  const [books, setBooks] = useState(initialData?.books ?? []);
+  const [pagination, setPagination] = useState(
+    initialData?.pagination ?? {
+      page: 1,
+      limit: 20,
+      total: initialData?.books?.length ?? 0,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPrevPage: false,
+    }
+  );
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState(null);
+  const isFirstMount = useRef(true);
 
   const fetchBooks = useCallback(async (params = {}) => {
     setLoading(true);
@@ -42,10 +45,14 @@ export function useBooks(initialParams = {}) {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchBooks(initialParams);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      if (!initialData) {
+        fetchBooks(initialParams);
+      }
+      return;
+    }
+  }, [fetchBooks, initialData, initialParams]);
 
   return {
     books,

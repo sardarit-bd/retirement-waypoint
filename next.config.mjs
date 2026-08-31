@@ -28,6 +28,20 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/assessments",
+        destination: "/assessment",
+        permanent: true,
+      },
+      {
+        source: "/assessments/:slug*",
+        destination: "/assessment/:slug*",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
