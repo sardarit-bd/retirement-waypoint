@@ -35,15 +35,6 @@ const SurveyPage = ({
         <div className={`${glassCard} mb-5 p-6 sm:p-8`}>
           <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
             <div>
-              <span
-                className="mb-4 inline-block rounded-full px-4 py-1.5 text-xs font-bold text-white"
-                style={{
-                  backgroundColor: `${domain.color || '#C9A84C'}55`,
-                }}
-              >
-                {domain.label}
-              </span>
-
               <h2 className="mb-2 text-2xl font-semibold text-white">
                 {domain.label}
               </h2>

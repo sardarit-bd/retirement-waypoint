@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 
 const AssessmentPreviewSection = () => {
-  const [selectedOption, setSelectedOption] = useState("Somewhat Confident");
+  const [selectedOption, setSelectedOption] = useState("Agree");
   const [popupOpen, setPopupOpen] = useState(false);
 
   const handlePopupOpen = () => {
@@ -41,10 +41,11 @@ const AssessmentPreviewSection = () => {
   ];
 
   const answerOptions = [
-    { value: "Very Confident", label: "Very Confident" },
-    { value: "Somewhat Confident", label: "Somewhat Confident" },
-    { value: "Unsure", label: "Unsure" },
-    { value: "Concerned", label: "Concerned" },
+    { value: "Strongly Agree", label: "Strongly Agree" },
+    { value: "Agree", label: "Agree" },
+    { value: "Neutral", label: "Neutral" },
+    { value: "Disagree", label: "Disagree" },
+    { value: "Strongly Disagree", label: "Strongly Disagree" },
   ];
 
   return (
@@ -143,16 +144,16 @@ const AssessmentPreviewSection = () => {
                   <div className="mb-6">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium text-white/80">
-                        Question 4 of 12
+                        Question 13
                       </span>
                       <span className="text-sm font-semibold text-[#C9A84C]">
-                        67%
+                        52%
                       </span>
                     </div>
                     <div className="w-full bg-white/10 rounded-full h-2">
                       <div
                         className="bg-[#C9A84C] h-2 rounded-full transition-all duration-500"
-                        style={{ width: "67%" }}
+                        style={{ width: "52%" }}
                       />
                     </div>
                   </div>
@@ -160,8 +161,7 @@ const AssessmentPreviewSection = () => {
                   {/* Question */}
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold text-white mb-4">
-                      How confident do you feel about your sense of purpose
-                      after retirement?
+                      My life purpose feels connected to values beyond my career.
                     </h3>
 
                     {/* Answer Options */}

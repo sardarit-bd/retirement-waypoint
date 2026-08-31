@@ -66,7 +66,7 @@ const NewsletterSection = () => {
         </p>
 
         <h2 className="mb-8 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
-          Stay Up to Date With Newsletter
+          Stay Up to Date With Our Newsletter
         </h2>
 
         <form

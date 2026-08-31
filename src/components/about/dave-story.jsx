@@ -39,15 +39,15 @@ const DaveStory = () => {
 
           <div className="mt-6 space-y-5 text-base leading-relaxed text-white/72 sm:text-lg">
             <p>
-              Dave is a PhD industrial psychologist with 40+ years of
-              experience helping people understand work, motivation,
-              leadership, identity, and life transitions.
+              Dave holds a Ph.D. in Industrial/Organizational Psychology from Kansas State University and brings more than 40 years of experience helping people understand work, motivation, leadership, identity, and life transitions.
             </p>
 
             <p>
-              Retirement Waypoint was created from the belief that retirement
-              should not feel like the loss of purpose — but the beginning of
-              a meaningful new chapter.
+              Over the course of his career, he held leadership positions with several national consulting firms — Watson Wyatt, TRI-AD, Kenexa, and Right Management — where his work centered on organizational assessment, research identifying the drivers of employee satisfaction and engagement, coaching, and leadership development.
+            </p>
+
+            <p>
+              Dave started Retirement Waypoint after going through his own transition out of full-time consulting. As he moved from a long, demanding career toward retirement, he found surprisingly few resources built to help with the psychological side of that shift — the questions of identity, the loss of daily structure and purpose, and the work of building a genuinely fulfilling life after work. Drawing on decades spent researching what makes people thrive professionally, he created Retirement Waypoint to close that gap: a resource grounded in psychological science, not just financial planning, to help other professionals move into retirement with the same clarity and intention they brought to their careers.
             </p>
           </div>
 
