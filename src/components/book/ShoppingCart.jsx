@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, X, Plus, Minus, CreditCard, Shield } from "lucide-react";
+import Link from "next/link";
+import { ShoppingCart, X, Plus, Minus, CreditCard, Shield, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,10 +15,13 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
+import { useSession } from "@/hooks/useSession";
 
 export const ShoppingCartSheet = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const { session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
   const { 
     cartItems, 
     cartCount, 
@@ -143,13 +147,31 @@ export const ShoppingCartSheet = () => {
             </div>
           </div>
 
-          <Button
-            className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] cursor-pointer h-12 text-base font-bold"
-            onClick={handleCheckout}
-            disabled={cartItems.length === 0}
-          >
-            Proceed to Checkout
-          </Button>
+          {isAdmin ? (
+            <div className="space-y-2">
+              <div className="rounded-xl bg-[#C9A84C]/10 border border-[#C9A84C]/20 p-3 text-center text-xs text-[#1B2B4B] font-medium">
+                Admin Account: Purchasing is disabled for administrators.
+              </div>
+              <Button
+                asChild
+                className="w-full bg-[#1B2B4B] text-white hover:bg-[#253961] cursor-pointer h-12 text-sm font-bold"
+                onClick={() => setIsOpen(false)}
+              >
+                <Link href="/admin/books">
+                  <Settings className="mr-2 h-4 w-4 text-[#C9A84C]" />
+                  Manage Books in Admin Dashboard
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <Button
+              className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] cursor-pointer h-12 text-base font-bold"
+              onClick={handleCheckout}
+              disabled={cartItems.length === 0}
+            >
+              Proceed to Checkout
+            </Button>
+          )}
         </div>
       </SheetContent>
     </Sheet>

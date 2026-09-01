@@ -13,6 +13,7 @@ import {
   FileText,
   BookOpen,
   Eye,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,13 +38,14 @@ export const BookDetailsContent = ({ book }) => {
     useFeaturedBooks(4);
   const { session, isLoading: sessionLoading } = useSession();
   const isAuthenticated = !!session?.user;
+  const isAdmin = session?.user?.role === "admin";
 
   // Check if user has purchased this book - ONLY when authenticated
   const {
     data: purchaseData,
     isLoading: purchaseLoading,
     refetch: refetchPurchase,
-  } = useCheckPurchase(book._id, isAuthenticated);
+  } = useCheckPurchase(book._id, isAuthenticated && !isAdmin);
 
   const hasPurchased = purchaseData?.hasPurchased || false;
 
@@ -69,6 +71,11 @@ export const BookDetailsContent = ({ book }) => {
   const publishedDate = formatDate(book.publishedAt);
 
   const handleBuyNow = async () => {
+    if (isAdmin) {
+      toast.error("Administrators cannot purchase their own books.");
+      return;
+    }
+
     if (!isPublished) {
       toast.error("This book is not available for purchase");
       return;
@@ -232,8 +239,32 @@ export const BookDetailsContent = ({ book }) => {
               </div>
 
               <div className="space-y-4">
-                {/* Conditional Button: Read Now if purchased, Buy Now if not */}
-                {hasPurchased ? (
+                {/* Conditional Button: Admin manage, Read Now if purchased, Buy Now if not */}
+                {isAdmin ? (
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      asChild
+                      className="flex-1 bg-[#1B2B4B] text-white hover:bg-[#253961] h-12 sm:h-14 text-base sm:text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                    >
+                      <Link href={`/admin/books/${book._id}/edit`}>
+                        <Settings className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-[#C9A84C]" />
+                        Manage Book in Admin Dashboard
+                      </Link>
+                    </Button>
+
+                    {isPublished && book.previewEnabled !== false && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsPreviewOpen(true)}
+                        className="h-12 sm:h-14 border-[#1B2B4B]/15 text-[#1B2B4B] text-base sm:text-lg font-bold hover:bg-[#F8F5EF] hover:border-[#C9A84C]/40 transition-all duration-300 cursor-pointer sm:w-auto sm:px-6"
+                      >
+                        <Eye className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                        Preview Book
+                      </Button>
+                    )}
+                  </div>
+                ) : hasPurchased ? (
                   <Button
                     onClick={handleReadNow}
                     className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12 sm:h-14 text-base sm:text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
@@ -305,6 +336,8 @@ export const BookDetailsContent = ({ book }) => {
         onOpenChange={setIsPreviewOpen}
         previewUrl={book.slug ? bookApi.getPreviewUrl(book.slug) : null}
         bookTitle={book.title}
+        bookId={book._id}
+        isAdmin={isAdmin}
         isPurchasing={isPurchasing}
         onBuyNow={() => {
           setIsPreviewOpen(false);
