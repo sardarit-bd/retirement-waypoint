@@ -149,6 +149,8 @@ export const API_ENDPOINTS = {
     DOWNLOADS: '/api/admin/analytics/downloads',
     REVIEWS: '/api/admin/analytics/reviews',
     COUPONS: '/api/admin/analytics/coupons',
+    ASSESSMENTS: '/api/admin/analytics/assessments',
+    GROWTH: '/api/admin/analytics/growth',
   },
   // Users
   USERS: {
