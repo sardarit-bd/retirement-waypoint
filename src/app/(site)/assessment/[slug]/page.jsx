@@ -2,11 +2,13 @@ import AssessmentForm from '@/components/assessment/AssessmentForm';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 async function getAssessment(slug) {
   const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
   try {
     const res = await fetch(`${backendUrl}/api/assessments/public/${slug}`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
     if (!res.ok) return null;
     const json = await res.json();

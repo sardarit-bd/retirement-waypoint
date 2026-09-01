@@ -51,6 +51,18 @@ export function useAssessmentBuilder(assessmentSlug) {
     delete payload.createdAt;
     delete payload.updatedAt;
 
+    if (Array.isArray(payload.domains)) {
+      payload.domains = payload.domains.map((d) => {
+        const qText = d.reflection?.question ?? d.openQuestion ?? d.open ?? '';
+        return {
+          ...d,
+          reflection: { question: qText },
+          openQuestion: qText,
+          open: qText,
+        };
+      });
+    }
+
     // Call update mutation
     updateMutation.mutate({
       id: assessment._id,
@@ -119,10 +131,27 @@ export function useAssessmentBuilder(assessmentSlug) {
     const target = isEditing ? tempAssessment : assessment;
     if (!target) return;
     
+    let reflectionObj = {};
+    if (typeof data === 'string') {
+      reflectionObj = {
+        reflection: { question: data },
+        openQuestion: data,
+        open: data,
+      };
+    } else if (data && typeof data === 'object') {
+      const qText = data.reflection?.question ?? data.openQuestion ?? data.open ?? '';
+      reflectionObj = {
+        ...data,
+        reflection: { question: qText },
+        openQuestion: qText,
+        open: qText,
+      };
+    }
+    
     const updated = {
       ...target,
       domains: target.domains.map((d) =>
-        d.id === domainId ? { ...d, ...data } : d
+        d.id === domainId ? { ...d, ...reflectionObj } : d
       ),
     };
     

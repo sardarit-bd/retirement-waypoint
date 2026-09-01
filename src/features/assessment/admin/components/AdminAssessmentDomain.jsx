@@ -86,6 +86,8 @@ function QuestionItem({ question, index, domainId, isEditing, onUpdate, onDelete
 }
 
 function ReflectionBlock({ domain, domainId, isEditing, onUpdate }) {
+  const reflectionText = domain.reflection?.question ?? domain.openQuestion ?? domain.open ?? '';
+
   return (
     <div className="mt-7 rounded-2xl border border-white/10 bg-white/10 p-5 group">
       <div className="flex items-center justify-between mb-2">
@@ -109,8 +111,14 @@ function ReflectionBlock({ domain, domainId, isEditing, onUpdate }) {
       {isEditing ? (
         <div>
           <Textarea
-            value={domain.openQuestion || ''}
-            onChange={(e) => onUpdate(domainId, { openQuestion: e.target.value })}
+            value={reflectionText}
+            onChange={(e) =>
+              onUpdate(domainId, {
+                reflection: { ...(domain.reflection || {}), question: e.target.value },
+                openQuestion: e.target.value,
+                open: e.target.value,
+              })
+            }
             className="border-white/10 bg-white/5 text-white focus:border-[#C9A84C] focus:ring-[#C9A84C]/20 rounded-xl resize-none"
             rows={2}
           />
@@ -118,7 +126,7 @@ function ReflectionBlock({ domain, domainId, isEditing, onUpdate }) {
       ) : (
         <>
           <p className="mb-3 text-sm italic leading-7 text-white/70">
-            {domain.openQuestion || 'No reflection question set.'}
+            {reflectionText || 'No reflection question set.'}
           </p>
           <textarea
             className="min-h-[110px] w-full resize-y rounded-xl border border-white/10 bg-white/10 p-4 text-sm leading-7 text-white outline-none transition placeholder:text-white/35 focus:border-[#C9A84C] focus:ring-2 focus:ring-[#C9A84C]/20"

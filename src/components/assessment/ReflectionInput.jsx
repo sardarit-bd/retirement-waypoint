@@ -6,7 +6,7 @@ const ReflectionInput = ({ domain, value, onChange }) => {
       </label>
 
       <p className="mb-3 text-sm italic leading-7 text-white/70">
-        {domain.reflection?.question || domain.open || ''}
+        {domain.reflection?.question || domain.openQuestion || domain.open || ''}
       </p>
 
       <textarea

@@ -260,7 +260,7 @@ export default function AssessmentForm({ assessment }) {
     const reflections = domains.map((domain) => ({
       domainId: domain.id,
       domainKey: domain.key,
-      question: domain.reflection?.question || domain.open || '',
+      question: domain.reflection?.question || domain.openQuestion || domain.open || '',
       answer: answers[`${domain.key}_open`] || '',
     }));
 
