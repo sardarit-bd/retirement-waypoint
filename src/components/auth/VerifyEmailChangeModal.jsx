@@ -15,10 +15,35 @@ export function VerifyEmailChangeModal({ open, newEmail, onClose, onSuccess }) {
 
   const sendCode = async () => {
     setIsSending(true);
+    setError('');
+
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+      const checkRes = await fetch(
+        `${backendUrl}/api/auth/check-email?email=${encodeURIComponent(newEmail)}`
+      );
+      if (checkRes.ok) {
+        const checkData = await checkRes.json();
+        if (checkData?.data?.exists) {
+          setIsSending(false);
+          const msg = 'This email address is already registered to an account.';
+          setError(msg);
+          toast.error(msg, {
+            duration: 5000,
+            position: 'top-right',
+          });
+          return;
+        }
+      }
+    } catch (e) {
+      // Proceed to requestEmailChange if pre-check fails
+    }
+
     const { error: reqError } = await emailOtp.requestEmailChange({ newEmail });
     setIsSending(false);
 
     if (reqError) {
+      setError(reqError.message || 'Failed to send verification code');
       toast.error(reqError.message || 'Failed to send verification code', {
         duration: 5000,
         position: 'top-right',
