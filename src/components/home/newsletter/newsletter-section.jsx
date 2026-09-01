@@ -17,6 +17,7 @@ const NewsletterSection = ({ content }) => {
   const subtitle =
     content?.subtitle ||
     "Our retirement transition insights are designed to guide you through every step of the process.";
+  const bgImage = content?.backgroundImage || "/images/newsletter-bg.jpg";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -46,12 +47,13 @@ const NewsletterSection = ({ content }) => {
     <section className="relative overflow-hidden py-10 sm:py-20 md:py-24 lg:py-10">
       {/* Background Image */}
       <Image
-        src="/images/newsletter-bg.jpg"
+        src={bgImage}
         alt="Newsletter background"
         fill
         priority
         sizes="100vw"
         className="absolute inset-0 z-0 object-cover object-center"
+        unoptimized={bgImage.startsWith("http")}
       />
 
       {/* Dark Overlay */}

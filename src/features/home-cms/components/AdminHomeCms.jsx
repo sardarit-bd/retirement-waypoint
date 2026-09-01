@@ -46,6 +46,8 @@ export function AdminHomeCms() {
   const fileInputRef = useRef(null);
   const [isUploadingSupportBg, setIsUploadingSupportBg] = useState(false);
   const supportFileInputRef = useRef(null);
+  const [isUploadingNewsletterBg, setIsUploadingNewsletterBg] = useState(false);
+  const newsletterFileInputRef = useRef(null);
 
   // Initialize local form state when backend data loads
   useEffect(() => {
@@ -396,6 +398,49 @@ export function AdminHomeCms() {
     } finally {
       setIsUploadingSupportBg(false);
       if (supportFileInputRef.current) supportFileInputRef.current.value = '';
+    }
+  };
+
+  // Handle Newsletter background image upload
+  const handleNewsletterBgImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select a valid image file');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Maximum allowed image size is 5MB.');
+      return;
+    }
+
+    setIsUploadingNewsletterBg(true);
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+    uploadData.append('folder', 'home-cms');
+
+    try {
+      const res = await api.post('/api/upload/single', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const uploadedUrl = res.data?.data?.url || res.data?.url;
+      if (uploadedUrl) {
+        handleFieldChange('newsletter', 'backgroundImage', uploadedUrl);
+        toast.success('Newsletter background image uploaded successfully!');
+      } else {
+        throw new Error('No image URL returned from upload server');
+      }
+    } catch (error) {
+      console.error('Newsletter upload error:', error);
+      toast.error(error.response?.data?.message || 'Failed to upload background image');
+    } finally {
+      setIsUploadingNewsletterBg(false);
+      if (newsletterFileInputRef.current) newsletterFileInputRef.current.value = '';
     }
   };
 
@@ -1411,7 +1456,87 @@ export function AdminHomeCms() {
                       Heading and subtext above the homepage email subscription input.
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-5">
+                    {/* Background Image Upload & Input */}
+                    <div className="rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF]/60 p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-bold uppercase tracking-wider text-[#1B2B4B]">
+                          Newsletter Background Image
+                        </Label>
+                        {formData.newsletter?.backgroundImage && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleFieldChange('newsletter', 'backgroundImage', '/images/newsletter-bg.jpg')
+                            }
+                            className="h-6 text-[11px] text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer"
+                          >
+                            Reset Default
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Thumbnail Preview */}
+                      <div className="relative h-36 w-full overflow-hidden rounded-xl border border-[#1B2B4B]/15 bg-[#04103A] shadow-inner group">
+                        <div
+                          className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                          style={{
+                            backgroundImage: `url('${formData.newsletter?.backgroundImage || '/images/newsletter-bg.jpg'}')`,
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-3">
+                          <span className="text-[11px] font-medium text-white/90 truncate">
+                            {formData.newsletter?.backgroundImage || '/images/newsletter-bg.jpg'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Controls */}
+                      <div className="flex gap-2">
+                        <Input
+                          value={formData.newsletter?.backgroundImage || ''}
+                          onChange={(e) =>
+                            handleFieldChange('newsletter', 'backgroundImage', e.target.value)
+                          }
+                          placeholder="/images/newsletter-bg.jpg or https://..."
+                          className="bg-white text-xs"
+                        />
+                        <input
+                          ref={newsletterFileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleNewsletterBgImageUpload}
+                          className="hidden"
+                          id="newsletter-bg-file"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={isUploadingNewsletterBg}
+                          onClick={() => newsletterFileInputRef.current?.click()}
+                          className="bg-white border-[#1B2B4B]/20 text-xs font-bold text-[#1B2B4B] hover:bg-[#F8F5EF] shrink-0 cursor-pointer"
+                        >
+                          {isUploadingNewsletterBg ? (
+                            <>
+                              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                              Uploading...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="mr-1.5 h-3.5 w-3.5 text-[#C9A84C]" />
+                              Upload
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      <p className="text-[11px] text-[#1B2B4B]/60 font-medium">
+                        Recommended format: PNG/JPG (Max 5MB)
+                      </p>
+                    </div>
+
                     <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-[#1B2B4B]">Headline</Label>
                       <Input
