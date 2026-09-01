@@ -52,13 +52,13 @@ export default function AdminLayout({ children }) {
         <motion.main 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className={`
-            flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300 ease-in-out
-            ${isCollapsed ? 'lg:pl-[120px]' : 'lg:pl-[320px]'}
+            flex-1 min-w-0 p-4 md:p-6 lg:py-6 lg:pr-6 transition-all duration-300 ease-in-out
+            ${isCollapsed ? 'lg:pl-[116px]' : 'lg:pl-[312px]'}
           `}
         >
-          <div className="relative z-10 mx-auto max-w-7xl">
+          <div className="relative z-10 w-full">
             {children}
           </div>
         </motion.main>

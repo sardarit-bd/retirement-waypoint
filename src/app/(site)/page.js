@@ -1,23 +1,13 @@
-import AboutDaveSection from "@/components/home/about-dave/about-dave-section";
-import AssessmentPreviewSection from "@/components/home/assessment-preview/assessment-preview-section";
-import BookSection from "@/components/home/book/book-section";
-import HeroSection from "@/components/home/hero/hero";
-import SupportSection from "@/components/home/hero/support-section";
-import NewsletterSection from "@/components/home/newsletter/newsletter-section";
-import TrustSection from "@/components/home/trust/trust-section";
+import { HomeClient } from "@/components/home/HomeClient";
+
+export const metadata = {
+  title: "Retirement Waypoint | Navigate Retirement With Confidence & Purpose",
+  description:
+    "Retirement Waypoint helps professionals understand their readiness, rediscover purpose, and build a meaningful next chapter through guided assessments and expert insights.",
+};
 
 const Home = () => {
-  return (
-    <>
-      <HeroSection />
-      <TrustSection />
-      <AssessmentPreviewSection />
-      {/* <AboutDaveSection /> */}
-      <BookSection />
-      <SupportSection />
-      <NewsletterSection />
-    </>
-  );
+  return <HomeClient />;
 };
 
 export default Home;

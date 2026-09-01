@@ -10,8 +10,14 @@ import {
   Sparkles,
 } from "lucide-react";
 
-const TrustSection = () => {
-  const statsData = [
+const TrustSection = ({ content }) => {
+  const badge = content?.badge || "Built for meaningful transition";
+  const title = content?.title || "Built on Psychology, Purpose, and Progress";
+  const subtitle =
+    content?.subtitle ||
+    "Helping professionals transition into retirement with clarity, confidence, and a practical framework for building a meaningful next chapter.";
+
+  const defaultStats = [
     {
       icon: Briefcase,
       value: "40+",
@@ -42,6 +48,26 @@ const TrustSection = () => {
     },
   ];
 
+  const iconMap = {
+    Briefcase,
+    ClipboardCheck,
+    TrendingUp,
+    Lightbulb,
+  };
+
+  const statsData = content?.stats?.length
+    ? content.stats.map((stat, idx) => {
+        const defaultIcons = [Briefcase, ClipboardCheck, TrendingUp, Lightbulb];
+        const IconComponent = iconMap[stat.iconName] || defaultIcons[idx % 4];
+        return {
+          icon: IconComponent,
+          value: stat.value,
+          label: stat.label,
+          description: stat.description,
+        };
+      })
+    : defaultStats;
+
   return (
     <section className="relative overflow-hidden bg-[#1B2B4B] py-20 md:py-28 lg:py-32">
       {/* Background Glow */}
@@ -56,24 +82,18 @@ const TrustSection = () => {
         <div className="mx-auto mb-14 max-w-3xl text-center md:mb-18 lg:mb-20">
           <div className="mb-5 inline-flex animate-fade-in items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/10 px-4 py-2 text-sm font-medium text-white/90 backdrop-blur-2xl">
             <Sparkles className="h-4 w-4 text-[#C9A84C]" />
-            <span>Built for meaningful transition</span>
+            <span>{badge}</span>
             <CheckCircle2 className="h-4 w-4 text-[#C9A84C]" />
           </div>
 
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-            Built on{" "}
-            <span className="bg-gradient-to-r from-[#C9A84C] via-white to-[#C9A84C] bg-clip-text text-transparent">
-              Psychology, Purpose,
-            </span>
-            and Progress
+            {title}
           </h2>
 
           <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-[#C9A84C]" />
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
-            Helping professionals transition into retirement with clarity,
-            confidence, and a practical framework for building a meaningful next
-            chapter.
+            {subtitle}
           </p>
         </div>
 

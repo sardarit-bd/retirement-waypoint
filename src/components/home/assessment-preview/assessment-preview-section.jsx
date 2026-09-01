@@ -14,15 +14,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const AssessmentPreviewSection = () => {
-  const [selectedOption, setSelectedOption] = useState("Agree");
-  const [popupOpen, setPopupOpen] = useState(false);
+const AssessmentPreviewSection = ({ content }) => {
+  const badge = content?.badge || "Retirement Readiness Assessment";
+  const title = content?.title || "Understand Where You Are — And What Comes Next";
+  const description =
+    content?.description ||
+    "Gain personalized insights into your emotional readiness, lifestyle structure, purpose, and confidence as you prepare for retirement.";
 
-  const handlePopupOpen = () => {
-    setPopupOpen(true);
-  };
-
-  const steps = [
+  const defaultSteps = [
     {
       icon: Target,
       title: "Answer Guided Questions",
@@ -40,13 +39,49 @@ const AssessmentPreviewSection = () => {
     },
   ];
 
-  const answerOptions = [
-    { value: "Strongly Agree", label: "Strongly Agree" },
-    { value: "Agree", label: "Agree" },
-    { value: "Neutral", label: "Neutral" },
-    { value: "Disagree", label: "Disagree" },
-    { value: "Strongly Disagree", label: "Strongly Disagree" },
+  const steps = content?.steps?.length
+    ? content.steps.map((step, idx) => ({
+        icon: idx === 0 ? Target : idx === 1 ? BarChart3 : TrendingUp,
+        title: step.title,
+        description: step.description,
+      }))
+    : defaultSteps;
+
+  const defaultOptions = [
+    "Strongly Agree",
+    "Agree",
+    "Neutral",
+    "Disagree",
+    "Strongly Disagree",
   ];
+
+  const rawOptions = content?.sampleCard?.options?.length
+    ? content.sampleCard.options
+    : defaultOptions;
+
+  const answerOptions = rawOptions.map((opt) => {
+    const val = typeof opt === "string" ? opt : opt?.label || opt?.value || "";
+    return { value: val, label: val };
+  });
+
+  const questionNumber = content?.sampleCard?.questionNumber || "Question 13";
+  const progressPercent = content?.sampleCard?.progressPercent || "52%";
+  const questionText =
+    content?.sampleCard?.questionText ||
+    "My life purpose feels connected to values beyond my career.";
+  const defaultSelectedIndex =
+    typeof content?.sampleCard?.selectedOptionIndex === "number"
+      ? content.sampleCard.selectedOptionIndex
+      : 1;
+  const initialOption =
+    answerOptions[defaultSelectedIndex]?.value ||
+    answerOptions[0]?.value ||
+    "Agree";
+
+  const [selectedOption, setSelectedOption] = useState(initialOption);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const footerText =
+    content?.sampleCard?.footerText || "Powered by behavioral psychology";
 
   return (
     <section className="relative overflow-hidden bg-[#1B2B4B] py-20 md:py-28 lg:py-32">
@@ -66,20 +101,17 @@ const AssessmentPreviewSection = () => {
             {/* Glass Badge */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/5 px-4 py-2 text-sm font-medium text-[#C9A84C] backdrop-blur-xl">
               <Sparkles className="h-4 w-4" />
-              <span>Retirement Readiness Assessment</span>
+              <span>{badge}</span>
             </div>
 
             {/* Heading */}
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
-              Understand Where You Are —
-              <span className="text-[#C9A84C]"> And What Comes Next</span>
+              {title}
             </h2>
 
             {/* Description */}
             <p className="text-base sm:text-lg text-white/70 mb-8 leading-relaxed">
-              Gain personalized insights into your emotional readiness,
-              lifestyle structure, purpose, and confidence as you prepare for
-              retirement.
+              {description}
             </p>
 
             {/* Steps */}
@@ -108,7 +140,6 @@ const AssessmentPreviewSection = () => {
             {/* CTA Button */}
             <Button
               variant="ghost"
-              // onClick={handlePopupOpen}
               className="group w-full cursor-pointer rounded-full bg-[#C9A84C] px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:!bg-[#04103A] hover:!text-white hover:shadow-2xl sm:w-auto md:text-lg"
               asChild
             >
@@ -144,16 +175,20 @@ const AssessmentPreviewSection = () => {
                   <div className="mb-6">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm font-medium text-white/80">
-                        Question 13
+                        {questionNumber}
                       </span>
                       <span className="text-sm font-semibold text-[#C9A84C]">
-                        52%
+                        {progressPercent}
                       </span>
                     </div>
                     <div className="w-full bg-white/10 rounded-full h-2">
                       <div
                         className="bg-[#C9A84C] h-2 rounded-full transition-all duration-500"
-                        style={{ width: "52%" }}
+                        style={{
+                          width: progressPercent.includes("%")
+                            ? progressPercent
+                            : `${progressPercent}%`,
+                        }}
                       />
                     </div>
                   </div>
@@ -161,16 +196,16 @@ const AssessmentPreviewSection = () => {
                   {/* Question */}
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold text-white mb-4">
-                      My life purpose feels connected to values beyond my career.
+                      {questionText}
                     </h3>
 
                     {/* Answer Options */}
                     <div className="space-y-3">
-                      {answerOptions.map((option) => {
+                      {answerOptions.map((option, optIdx) => {
                         const isSelected = selectedOption === option.value;
                         return (
                           <button
-                            key={option.value}
+                            key={`${optIdx}-${option.value}`}
                             onClick={() => setSelectedOption(option.value)}
                             className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
                               isSelected
@@ -199,7 +234,7 @@ const AssessmentPreviewSection = () => {
                     </div>
                     <div className="relative flex justify-center text-xs">
                       <span className="mt-12 bg-transparent text-white/50">
-                        Powered by behavioral psychology
+                        {footerText}
                       </span>
                     </div>
                   </div>

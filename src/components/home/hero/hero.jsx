@@ -11,14 +11,17 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-const HeroSection = () => {
+const HeroSection = ({ content }) => {
   const [popupOpen, setPopupOpen] = useState(false);
 
-  const handlePopupOpen = () => {
-    setPopupOpen(true);
-  };
+  const badge = content?.badge || "Retirement made clearer";
+  const title = content?.title || "Navigate Retirement With Confidence, Purpose, and Clarity";
+  const subtitle = content?.subtitle || "Retirement Waypoint helps professionals understand their readiness, rediscover purpose, and build a meaningful next chapter through guided assessments and expert insights.";
+  const ctaText = content?.ctaText || "Take Assessment";
+  const ctaLink = content?.ctaLink || "/assessment";
+  const backgroundImage = content?.backgroundImage || "/images/hero-bg.png";
 
-  const trustPoints = [
+  const defaultTrustPoints = [
     {
       icon: TrendingUp,
       text: "Psychology-based guidance",
@@ -33,11 +36,13 @@ const HeroSection = () => {
     },
   ];
 
-  const readinessMetrics = [
-    { label: "Purpose & Identity", value: 78 },
-    { label: "Lifestyle Structure", value: 65 },
-    { label: "Social Connection", value: 72 },
-  ];
+  const iconList = [TrendingUp, Users, Target];
+  const trustPoints = content?.trustPoints?.length
+    ? content.trustPoints.map((item, idx) => ({
+        icon: iconList[idx % iconList.length],
+        text: typeof item === 'string' ? item : item?.text || '',
+      }))
+    : defaultTrustPoints;
 
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden">
@@ -45,7 +50,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <div
           className="h-full w-full bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/hero-bg.png')" }}
+          style={{ backgroundImage: `url('${backgroundImage}')` }}
         />
       </div>
 
@@ -67,57 +72,38 @@ const HeroSection = () => {
             <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
               <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white/90 backdrop-blur-xl sm:text-sm">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
-                <span className="line-clamp-1">
-                  Retirement made clearer
-                </span>
+                <span className="line-clamp-1">{badge}</span>
               </div>
 
               <h1 className="mb-6 text-[38px] font-bold leading-[1.15] tracking-tight text-white sm:mb-8 sm:text-5xl lg:text-5xl">
-                Navigate Retirement With Confidence, Purpose, and Clarity
+                {title}
               </h1>
 
               <p className="mx-auto mb-8 max-w-xl text-sm leading-relaxed text-white sm:text-lg md:text-xl lg:mx-0">
-                Retirement Waypoint helps professionals understand their
-                readiness, rediscover purpose, and build a meaningful next
-                chapter through guided assessments and expert insights.
+                {subtitle}
               </p>
 
               <div className="mb-9 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
                 <Button
                   variant="ghost"
-                  // onClick={handlePopupOpen}
                   className="group w-full cursor-pointer rounded-full bg-white px-8 py-6 text-base font-semibold text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A]! hover:text-white! hover:shadow-2xl sm:w-auto md:text-lg"
                   asChild
                 >
                   <Link
-                    href="/assessment"
+                    href={ctaLink}
                     className="flex items-center justify-center"
                   >
-                    <span>Take Assessment</span>
+                    <span>{ctaText}</span>
 
                     <ArrowRight className="ml-2 h-5 w-5 stroke-current transition-all duration-300 group-hover:translate-x-2" />
                   </Link>
                 </Button>
-
-                {/* <Button
-                  variant="outline"
-                  // onClick={handlePopupOpen}
-                  className="w-full cursor-pointer rounded-full border border-white/40 bg-white/10 px-8 py-6 text-base font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 hover:text-white sm:w-auto md:text-lg"
-                  asChild
-                >
-                  <Link
-                    href="/resources"
-                    className="flex items-center justify-center"
-                  >
-                    Explore Resources
-                  </Link>
-                </Button> */}
               </div>
 
               <div className="flex flex-col items-start justify-center gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5 lg:justify-start">
-                {trustPoints.map(({ icon: Icon, text }) => (
+                {trustPoints.map(({ icon: Icon, text }, idx) => (
                   <div
-                    key={text}
+                    key={`${idx}-${text}`}
                     className="flex w-full items-center gap-2 sm:w-auto"
                   >
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl">
@@ -131,8 +117,6 @@ const HeroSection = () => {
                 ))}
               </div>
             </div>
-
-            {/* Right Glass Assessment Card */}
           </div>
         </div>
       </div>

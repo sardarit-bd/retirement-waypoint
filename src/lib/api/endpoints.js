@@ -92,6 +92,12 @@ export const API_ENDPOINTS = {
     ADMIN: '/api/assessment-landing/admin',
     UPDATE: (id) => `/api/assessment-landing/admin/${id}`,
   },
+  // Home CMS
+  HOME_CMS: {
+    PUBLIC: '/api/home-cms',
+    ADMIN: '/api/home-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/home-cms/admin/${id}` : '/api/home-cms/admin'),
+  },
   // Refunds
   REFUNDS: {
     ALL: '/api/refunds',

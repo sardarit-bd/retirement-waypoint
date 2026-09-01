@@ -12,6 +12,7 @@ import {
     Users,
     Mail,
     Send,
+    LayoutTemplate,
 } from 'lucide-react';
 
 // User menu items with sections
@@ -46,6 +47,7 @@ export const adminMenuSections = [
     {
         title: 'Management',
         items: [
+            { icon: LayoutTemplate, label: 'Home Page CMS', href: '/admin/home-cms' },
             { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
             { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
             { icon: Users, label: 'Assessment Participants', href: '/admin/assessment-participants' },

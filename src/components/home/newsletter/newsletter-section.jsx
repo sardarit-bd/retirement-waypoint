@@ -8,10 +8,15 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { useSubscribeNewsletter } from "@/features/newsletter/hooks/useNewsletter";
 
-const NewsletterSection = () => {
+const NewsletterSection = ({ content }) => {
   const [email, setEmail] = useState("");
   const subscribeNewsletter = useSubscribeNewsletter();
   const isSubscribing = subscribeNewsletter.isPending;
+
+  const title = content?.title || "Stay Up to Date With Our Newsletter";
+  const subtitle =
+    content?.subtitle ||
+    "Our retirement transition insights are designed to guide you through every step of the process.";
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,12 +66,11 @@ const NewsletterSection = () => {
         </div>
 
         <p className="mx-auto mb-6 max-w-2xl text-sm leading-relaxed text-white/75 sm:text-base md:mb-8 md:text-lg">
-          Our retirement transition insights are designed to guide you through
-          every step of the process.
+          {subtitle}
         </p>
 
         <h2 className="mb-8 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
-          Stay Up to Date With Our Newsletter
+          {title}
         </h2>
 
         <form
