@@ -98,6 +98,12 @@ export const API_ENDPOINTS = {
     ADMIN: '/api/home-cms/admin',
     UPDATE: (id) => (id && id !== 'undefined' ? `/api/home-cms/admin/${id}` : '/api/home-cms/admin'),
   },
+  // About CMS
+  ABOUT_CMS: {
+    PUBLIC: '/api/about-cms',
+    ADMIN: '/api/about-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/about-cms/admin/${id}` : '/api/about-cms/admin'),
+  },
   // Refunds
   REFUNDS: {
     ALL: '/api/refunds',
