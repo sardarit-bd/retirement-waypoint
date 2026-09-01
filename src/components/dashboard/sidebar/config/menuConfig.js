@@ -48,15 +48,20 @@ export const adminMenuSections = [
     {
         title: 'Management',
         items: [
-            { icon: LayoutTemplate, label: 'Home Page CMS', href: '/admin/home-cms' },
-            { icon: UserCheck, label: 'About Page CMS', href: '/admin/about-cms' },
-            { icon: Sparkles, label: 'Coaching Page CMS', href: '/admin/coaching-cms' },
-            { icon: Mail, label: 'Contact Page CMS', href: '/admin/contact-cms' },
             { icon: Ticket, label: 'Coupons', href: '/admin/coupons' },
             { icon: FileText, label: 'Assessments', href: '/admin/assessments' },
             { icon: Users, label: 'Assessment Participants', href: '/admin/assessment-participants' },
             { icon: Mail, label: 'Contact Messages', href: '/admin/contact-messages' },
             { icon: Send, label: 'Newsletter Subscribers', href: '/admin/newsletter-subscribers' },
+        ],
+    },
+    {
+        title: 'Content Management',
+        items: [
+            { icon: LayoutTemplate, label: 'Home Page CMS', href: '/admin/home-cms' },
+            { icon: UserCheck, label: 'About Page CMS', href: '/admin/about-cms' },
+            { icon: Sparkles, label: 'Coaching Page CMS', href: '/admin/coaching-cms' },
+            { icon: Mail, label: 'Contact Page CMS', href: '/admin/contact-cms' },
         ],
     },
     {

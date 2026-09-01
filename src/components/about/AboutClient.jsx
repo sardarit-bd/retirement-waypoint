@@ -7,9 +7,9 @@ import LifestyleCTA from "@/components/about/lifestyle-cta";
 import FinalCTA from "@/components/about/final-cta";
 import { useAboutCms } from "@/features/about-cms/hooks/useAboutCms";
 
-export function AboutClient() {
+export function AboutClient({ initialContent }) {
   const { data: response } = useAboutCms();
-  const cms = response?.data;
+  const cms = initialContent !== undefined && initialContent !== null ? initialContent : response?.data;
 
   return (
     <main className="overflow-hidden bg-white">

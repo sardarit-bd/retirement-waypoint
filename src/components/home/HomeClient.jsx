@@ -8,9 +8,9 @@ import SupportSection from "@/components/home/hero/support-section";
 import NewsletterSection from "@/components/home/newsletter/newsletter-section";
 import { useHomeCms } from "@/features/home-cms/hooks/useHomeCms";
 
-export function HomeClient() {
+export function HomeClient({ initialContent }) {
   const { data: response } = useHomeCms();
-  const cms = response?.data;
+  const cms = initialContent !== undefined && initialContent !== null ? initialContent : response?.data;
 
   return (
     <>
