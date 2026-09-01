@@ -195,3 +195,76 @@ body {
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
+/* ==========================================================================
+   Print & PDF Export Stylesheet
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+
+  html,
+  body {
+    background-color: #1B2B4B !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Hide interactive, navigation, and decoration elements */
+  header,
+  footer,
+  nav,
+  aside,
+  .no-print,
+  [data-no-print],
+  button:not(.print-visible),
+  .toaster,
+  div[role="status"] {
+    display: none !important;
+  }
+
+  /* Prevent page-break splits across cards and charts */
+  .break-inside-avoid,
+  [class*="glassCard"],
+  .rounded-2xl,
+  .rounded-3xl,
+  .rounded-\[32px\] {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* High performance canvas rendering for Chart.js Radar */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Remove backdrop filters for sharp text and border rasterization in print */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Force container visibility */
+  main,
+  section {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    min-height: 0 !important;
+  }
+}
+
