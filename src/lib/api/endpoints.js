@@ -104,6 +104,12 @@ export const API_ENDPOINTS = {
     ADMIN: '/api/about-cms/admin',
     UPDATE: (id) => (id && id !== 'undefined' ? `/api/about-cms/admin/${id}` : '/api/about-cms/admin'),
   },
+  // Coaching CMS
+  COACHING_CMS: {
+    PUBLIC: '/api/coaching-cms',
+    ADMIN: '/api/coaching-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/coaching-cms/admin/${id}` : '/api/coaching-cms/admin'),
+  },
   // Refunds
   REFUNDS: {
     ALL: '/api/refunds',

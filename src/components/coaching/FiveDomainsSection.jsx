@@ -1,31 +1,66 @@
-import React from "react";
+import React from 'react';
+import {
+  Compass,
+  Zap,
+  HeartHandshake,
+  GraduationCap,
+  Sparkles,
+  Target,
+  ShieldCheck,
+  Users,
+  Lightbulb,
+  CheckCircle2,
+  TrendingUp,
+} from 'lucide-react';
 
-function FiveDomainsSection({ domains }) {
+const iconMap = {
+  Compass,
+  Zap,
+  HeartHandshake,
+  GraduationCap,
+  Sparkles,
+  Target,
+  ShieldCheck,
+  Users,
+  Lightbulb,
+  CheckCircle2,
+  TrendingUp,
+};
+
+function FiveDomainsSection({ domains = [] }) {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {domains.map((domain) => {
-        const Icon = domain.icon;
+      {domains.map((domain, index) => {
+        let Icon = Compass;
+        if (typeof domain.icon === 'function') {
+          Icon = domain.icon;
+        } else if (domain.iconName && iconMap[domain.iconName]) {
+          Icon = iconMap[domain.iconName];
+        }
+
+        const isFeatured = domain.featured || index === 2; // highlight 3rd by default if not set
+
         return (
           <div
-            key={domain.id}
-            className={`group relative flex flex-col overflow-hidden rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
-              domain.featured
-                ? "border border-[#C9A84C]/30 hover:border-[#C9A84C]/70 hover:shadow-[#C9A84C]/20"
-                : "border border-white/10 hover:border-[#C9A84C]/50 hover:shadow-[#C9A84C]/10"
+            key={domain.id || index}
+            className={`group relative flex flex-col overflow-hidden rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
+              isFeatured
+                ? 'border border-[#C9A84C]/40 hover:border-[#C9A84C]/80 hover:shadow-[#C9A84C]/20'
+                : 'border border-white/10 hover:border-[#C9A84C]/50 hover:shadow-[#C9A84C]/10'
             }`}
           >
             {/* Top Header Area */}
             <div
               className={`relative overflow-hidden px-5 pb-4 pt-6 ${
-                domain.featured ? "bg-[#C9A84C]/10" : "bg-[#1B2B4B]/80"
+                isFeatured ? 'bg-[#C9A84C]/10' : 'bg-[#1B2B4B]/80'
               }`}
             >
               {/* Decorative circle top-right */}
               <div
                 className={`absolute -right-8 -top-8 h-24 w-24 rounded-full ${
-                  domain.featured ? "bg-[#C9A84C]/10" : "bg-[#C9A84C]/5"
+                  isFeatured ? 'bg-[#C9A84C]/15' : 'bg-[#C9A84C]/5'
                 }`}
-              ></div>
+              />
 
               {/* Icon */}
               <div className="mb-3">
@@ -34,7 +69,7 @@ function FiveDomainsSection({ domains }) {
 
               {/* Category label */}
               <div className="mb-3 text-xs font-semibold tracking-[0.2em] text-[#C9A84C] uppercase">
-                FIVE DOMAINS
+                {domain.tag || 'FIVE DOMAINS'}
               </div>
 
               {/* Title */}
@@ -43,9 +78,11 @@ function FiveDomainsSection({ domains }) {
               </h3>
 
               {/* Italic subtitle */}
-              <p className="mt-1 italic text-white/50 text-sm">
-                {domain.subtitle}
-              </p>
+              {domain.subtitle && (
+                <p className="mt-1 italic text-white/50 text-sm">
+                  {domain.subtitle}
+                </p>
+              )}
             </div>
 
             {/* Bottom Content Area */}
