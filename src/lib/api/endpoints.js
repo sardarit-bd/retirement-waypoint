@@ -110,6 +110,12 @@ export const API_ENDPOINTS = {
     ADMIN: '/api/coaching-cms/admin',
     UPDATE: (id) => (id && id !== 'undefined' ? `/api/coaching-cms/admin/${id}` : '/api/coaching-cms/admin'),
   },
+  // Contact CMS
+  CONTACT_CMS: {
+    PUBLIC: '/api/contact-cms',
+    ADMIN: '/api/contact-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/contact-cms/admin/${id}` : '/api/contact-cms/admin'),
+  },
   // Refunds
   REFUNDS: {
     ALL: '/api/refunds',
