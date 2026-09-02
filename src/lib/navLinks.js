@@ -3,7 +3,7 @@ export const navLinks = [
     { name: "About", href: "/about" },
     { name: "Assessment", href: "/assessment" },
     // { name: "Resources", href: "/resources" },
-    { name: "Book", href: "/book" },
+    { name: "Books", href: "/book" },
     { name: "Coaching", href: "/coaching" },
     { name: "Contact", href: "/contact" },
   ];

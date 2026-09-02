@@ -3,7 +3,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
-import { Lock, Loader2, ShoppingCart, AlertCircle } from "lucide-react";
+import { Lock, Loader2, ShoppingCart, AlertCircle, Settings } from "lucide-react";
+import Link from "next/link";
 
 import {
   Dialog,
@@ -34,6 +35,8 @@ export function BookPreviewModal({
   onOpenChange,
   previewUrl,
   bookTitle,
+  bookId,
+  isAdmin = false,
   onBuyNow,
   isPurchasing = false,
 }) {
@@ -205,19 +208,35 @@ export function BookPreviewModal({
                   End of Free Preview
                 </h3>
                 <p className="mx-auto mt-1.5 max-w-sm text-sm text-[#1B2B4B]/60">
-                  The remaining chapters are available after purchasing{" "}
-                  {bookTitle ? `"${bookTitle}"` : "this book"}. Purchase the
-                  full book to continue reading.
+                  {isAdmin
+                    ? "As an administrator, purchasing is disabled for your account. You can manage this title directly in the Admin Dashboard."
+                    : `The remaining chapters are available after purchasing ${
+                        bookTitle ? `"${bookTitle}"` : "this book"
+                      }. Purchase the full book to continue reading.`}
                 </p>
-                <Button
-                  type="button"
-                  onClick={onBuyNow}
-                  disabled={isPurchasing}
-                  className="mt-5 cursor-pointer rounded-2xl bg-[#C9A84C] px-8 py-5 font-bold text-[#1B2B4B] shadow-lg transition-all duration-300 hover:bg-[#D6B45A] hover:shadow-xl disabled:cursor-not-allowed"
-                >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  {isPurchasing ? "Processing..." : "Buy Now"}
-                </Button>
+                {isAdmin ? (
+                  <Button
+                    type="button"
+                    asChild
+                    className="mt-5 cursor-pointer rounded-2xl bg-[#1B2B4B] px-8 py-5 font-bold text-white shadow-lg transition-all duration-300 hover:bg-[#253961]"
+                    onClick={() => onOpenChange(false)}
+                  >
+                    <Link href={bookId ? `/admin/books/${bookId}/edit` : "/admin/books"}>
+                      <Settings className="mr-2 h-4 w-4 text-[#C9A84C]" />
+                      Manage Book in Admin Dashboard
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={onBuyNow}
+                    disabled={isPurchasing}
+                    className="mt-5 cursor-pointer rounded-2xl bg-[#C9A84C] px-8 py-5 font-bold text-[#1B2B4B] shadow-lg transition-all duration-300 hover:bg-[#D6B45A] hover:shadow-xl disabled:cursor-not-allowed"
+                  >
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    {isPurchasing ? "Processing..." : "Buy Now"}
+                  </Button>
+                )}
               </div>
             </div>
           )}

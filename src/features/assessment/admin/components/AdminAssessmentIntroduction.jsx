@@ -137,7 +137,7 @@ export function AdminAssessmentIntroduction({ assessmentId, onBegin }) {
   }
 
   const questionCount = assessment.domains?.reduce((total, d) => total + (d.questions?.length || 0), 0) || 0;
-  const reflectionCount = assessment.domains?.filter(d => d.reflection?.question?.trim()).length || 0;
+  const reflectionCount = assessment.domains?.filter(d => (d.reflection?.question?.trim() || d.openQuestion?.trim() || d.open?.trim())).length || 0;
 
   return (
     <section className="relative min-h-screen overflow-x-hidden bg-[#1B2B4B] px-4 pb-20 pt-36 sm:px-6 lg:px-8 rounded-2xl">

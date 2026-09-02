@@ -1,21 +1,37 @@
-import AboutHero from "@/components/about/about-hero";
-import DaveStory from "@/components/about/dave-story";
-import MissionVision from "@/components/about/mission-vision";
-import ProfessionalTimeline from "@/components/about/professional-timeline";
-import CoreValues from "@/components/about/core-values";
-import LifestyleCTA from "@/components/about/lifestyle-cta";
-import FinalCTA from "@/components/about/final-cta";
+import { AboutClient } from '@/components/about/AboutClient';
+import { getCmsData } from '@/lib/cms/fetchCmsData';
 
-export default function AboutPage() {
-  return (
-    <main className="overflow-hidden bg-white">
-      {/* <AboutHero /> */}
-      <DaveStory />
-      <MissionVision />
-      {/* <ProfessionalTimeline /> */}
-      <CoreValues />
-      <LifestyleCTA />
-      <FinalCTA />
-    </main>
-  );
+export async function generateMetadata() {
+  const data = await getCmsData('/api/about-cms');
+  const hero = data?.hero;
+  const missionVision = data?.missionVision;
+
+  const title = hero?.title
+    ? `${hero.title} | Retirement Waypoint`
+    : 'About Dave & Retirement Waypoint | Psychology-Based Retirement Transition';
+  const description =
+    missionVision?.subtitle ||
+    'Learn about Dr. Dave Allen and how 40+ years of behavioral psychology helps professionals navigate retirement with clarity, structure, and purpose.';
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      images: hero?.profileImage ? [{ url: hero.profileImage }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: hero?.profileImage ? [hero.profileImage] : [],
+    },
+  };
+}
+
+export default async function AboutPage() {
+  const data = await getCmsData('/api/about-cms');
+  return <AboutClient initialContent={data} />;
 }

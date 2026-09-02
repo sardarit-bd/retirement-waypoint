@@ -1,64 +1,64 @@
-'use client';
-
 import Link from 'next/link';
-import { usePublicAssessments } from '@/features/assessment/admin/hooks/useAssessmentQueries';
-import { useLandingContent } from '@/features/assessment/hooks/useAssessmentLanding';
-import { AssessmentSkeleton } from '@/components/assessment/AssessmentSkeleton';
 
-const AssessmentPage = () => {
-  // Load landing content from backend
-  const { 
-    data: landingResponse, 
-    isLoading: isLandingLoading, 
-    error: landingError 
-  } = useLandingContent();
+export const metadata = {
+  title: 'Choose Your Assessment | Retirement Waypoint',
+  description:
+    'Select the retirement readiness assessment tailored to your stage: pre-retiree, recent-retiree, or established retiree.',
+  openGraph: {
+    title: 'Choose Your Assessment | Retirement Waypoint',
+    description:
+      'Select the retirement readiness assessment tailored to your stage: pre-retiree, recent-retiree, or established retiree.',
+    type: 'website',
+  },
+  alternates: {
+    canonical: '/assessment',
+  },
+};
 
-  // Load assessments from backend
-  const { 
-    data: assessmentsResponse, 
-    isLoading: isAssessmentsLoading, 
-    error: assessmentsError 
-  } = usePublicAssessments();
+const assessmentOrder = {
+  'pre-retiree': 1,
+  'recent-retiree': 2,
+  'established-retiree': 3,
+};
 
-  const landing = landingResponse?.data || {};
-  const assessments = assessmentsResponse?.data || [];
+async function getAssessmentLandingData() {
+  const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+  try {
+    const [landingRes, assessmentsRes] = await Promise.all([
+      fetch(`${backendUrl}/api/assessment-landing`, { next: { revalidate: 60 } }).catch(() => null),
+      fetch(`${backendUrl}/api/assessments/public`, { next: { revalidate: 60 } }).catch(() => null),
+    ]);
 
-  const assessmentOrder = {
-    "pre-retiree": 1,
-    "recent-retiree": 2,
-    "established-retiree": 3,
+    const landingJson = landingRes?.ok ? await landingRes.json() : null;
+    const assessmentsJson = assessmentsRes?.ok ? await assessmentsRes.json() : null;
+
+    return {
+      landing: landingJson?.data || {},
+      assessments: Array.isArray(assessmentsJson?.data) ? assessmentsJson.data : [],
+    };
+  } catch (err) {
+    console.error('Error fetching assessment data on server:', err);
+    return { landing: {}, assessments: [] };
   }
+}
+
+const segmentLabels = {
+  'pre-retiree': 'Pre-Retiree',
+  'recent-retiree': 'Recent-Retiree',
+  'established-retiree': 'Established-Retiree',
+};
+
+export default async function AssessmentPage() {
+  const { landing, assessments } = await getAssessmentLandingData();
 
   const sortedAssessments = [...assessments].sort(
-    (a, b) =>
-    (assessmentOrder[a.slug] ?? 999) - (assessmentOrder[b.slug] ?? 999)
+    (a, b) => (assessmentOrder[a.slug] ?? 999) - (assessmentOrder[b.slug] ?? 999)
   );
-
-
-  const isLoading = isLandingLoading || isAssessmentsLoading;
-  const error = landingError || assessmentsError;
-
-  // Loading State
-  if (isLoading) {
-    return <AssessmentSkeleton />;
-  }
-
-  // Error State
-  if (error) {
-    return (
-      <section className="min-h-screen bg-[#1B2B4B] px-4 py-60 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-400 text-lg mb-2">Failed to load assessments</p>
-          <p className="text-white/50 text-sm">{error.message || 'Please try again later.'}</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="min-h-screen bg-[#1B2B4B] px-4 py-60">
       <div className="mx-auto max-w-6xl text-center">
-        {/* Hero Section - 100% Backend Driven */}
+        {/* Hero Section - Pre-rendered on Server */}
         <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-[#C9A84C]">
           {landing.badge || 'Retirement Waypoint'}
         </p>
@@ -72,16 +72,15 @@ const AssessmentPage = () => {
         </p>
 
         <p className="mx-auto mb-12 max-w-4xl text-base leading-relaxed text-white/70">
-          {landing.description || 
+          {landing.description ||
             'Each assessment draws on psychological research and includes reflection ' +
-            'questions that will be analyzed alongside the assessment items to ' +
-            'provide a complete and transparent measure of your current retirement ' +
-            'readiness and overall status.'
-          }
+              'questions that will be analyzed alongside the assessment items to ' +
+              'provide a complete and transparent measure of your current retirement ' +
+              'readiness and overall status.'}
         </p>
 
         {/* Assessment Cards */}
-        {assessments.length === 0 ? (
+        {sortedAssessments.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-white/60 text-lg">No assessments available at this time.</p>
           </div>
@@ -94,14 +93,16 @@ const AssessmentPage = () => {
                 className="cursor-pointer rounded-3xl border border-white/10 bg-white/10 p-7 text-left shadow-xl backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:border-[#C9A84C]/40 hover:bg-white/15"
               >
                 <h2 className="mb-3 text-2xl font-bold text-white capitalize">
-                  {assessment.slug || 
-                   assessment.hero?.title || 
-                   assessment.slug}
+                  {segmentLabels[assessment.slug] ||
+                    assessment.segment ||
+                    assessment.slug?.replace(/-/g, ' ')}
                 </h2>
 
                 <p className="mb-6 text-white/65">
-                  {assessment.hero?.subtitle || 
-                   assessment.introduction?.subtitle || ''}
+                  {assessment.hero?.subtitle ||
+                    assessment.introduction?.subtitle ||
+                    assessment.intro ||
+                    ''}
                 </p>
 
                 <span className="font-semibold text-[#C9A84C]">
@@ -114,6 +115,4 @@ const AssessmentPage = () => {
       </div>
     </section>
   );
-};
-
-export default AssessmentPage;
+}

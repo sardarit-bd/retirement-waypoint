@@ -92,6 +92,30 @@ export const API_ENDPOINTS = {
     ADMIN: '/api/assessment-landing/admin',
     UPDATE: (id) => `/api/assessment-landing/admin/${id}`,
   },
+  // Home CMS
+  HOME_CMS: {
+    PUBLIC: '/api/home-cms',
+    ADMIN: '/api/home-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/home-cms/admin/${id}` : '/api/home-cms/admin'),
+  },
+  // About CMS
+  ABOUT_CMS: {
+    PUBLIC: '/api/about-cms',
+    ADMIN: '/api/about-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/about-cms/admin/${id}` : '/api/about-cms/admin'),
+  },
+  // Coaching CMS
+  COACHING_CMS: {
+    PUBLIC: '/api/coaching-cms',
+    ADMIN: '/api/coaching-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/coaching-cms/admin/${id}` : '/api/coaching-cms/admin'),
+  },
+  // Contact CMS
+  CONTACT_CMS: {
+    PUBLIC: '/api/contact-cms',
+    ADMIN: '/api/contact-cms/admin',
+    UPDATE: (id) => (id && id !== 'undefined' ? `/api/contact-cms/admin/${id}` : '/api/contact-cms/admin'),
+  },
   // Refunds
   REFUNDS: {
     ALL: '/api/refunds',
@@ -125,6 +149,8 @@ export const API_ENDPOINTS = {
     DOWNLOADS: '/api/admin/analytics/downloads',
     REVIEWS: '/api/admin/analytics/reviews',
     COUPONS: '/api/admin/analytics/coupons',
+    ASSESSMENTS: '/api/admin/analytics/assessments',
+    GROWTH: '/api/admin/analytics/growth',
   },
   // Users
   USERS: {

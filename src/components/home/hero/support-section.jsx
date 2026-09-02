@@ -50,23 +50,77 @@ const supportItems = [
   },
 ];
 
-const SupportSection = () => {
+const SupportSection = ({ content }) => {
+  const badge = content?.badge || "How Retirement Waypoint Helps";
+  const title = content?.title || "Support For Your Next Chapter";
+  const subtitle =
+    content?.subtitle ||
+    "A simple, structured way to understand your readiness, build purpose, and move into retirement with confidence.";
+  const bgImage = content?.backgroundImage || "/images/support-bg.jpg";
+
+  const defaultSupportItems = [
+    {
+      icon: ClipboardCheck,
+      title: "Readiness Assessment",
+      description:
+        "Understand your emotional, lifestyle, and purpose readiness before retirement.",
+    },
+    {
+      icon: LineChart,
+      title: "Progress Tracking",
+      description:
+        "Track your growth over time and see where your next chapter is improving.",
+    },
+    {
+      icon: Compass,
+      title: "Purpose & Identity",
+      description:
+        "Navigate the shift from career identity to a more meaningful life structure.",
+    },
+    {
+      icon: BookOpen,
+      title: "Guided Resources",
+      description:
+        "Access practical books, worksheets, and insights designed for transition.",
+    },
+    {
+      icon: HeartHandshake,
+      title: "Coaching Support",
+      description:
+        "Receive personal guidance for building confidence, clarity, and direction.",
+    },
+    {
+      icon: Lightbulb,
+      title: "Expert Insights",
+      description:
+        "Learn from behavioral psychology principles and real retirement experience.",
+    },
+  ];
+
+  const iconList = [ClipboardCheck, LineChart, Compass, BookOpen, HeartHandshake, Lightbulb];
+
+  const supportItems = content?.items?.length
+    ? content.items.map((item, idx) => ({
+        icon: iconList[idx % iconList.length],
+        title: item.title,
+        description: item.description,
+      }))
+    : defaultSupportItems;
+
   return (
     <section className="relative overflow-hidden py-20 md:py-28 lg:py-32">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/support-bg.jpg"
+          src={bgImage}
           alt="Retirement lifestyle support"
           fill
           className="object-cover"
           sizes="100vw"
           priority={false}
+          unoptimized={bgImage.startsWith("http")}
         />
       </div>
-
-      {/* Navy Overlay */}
-      {/* <div className="absolute inset-0 bg-[#1B2B4B]/10" /> */}
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#1B2B4B]/20 via-[#1B2B4B]/80 to-[#1B2B4B]/40" />
@@ -78,16 +132,15 @@ const SupportSection = () => {
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <div className="mb-5 inline-flex items-center rounded-full border border-[#C9A84C]/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-2xl">
-            How Retirement Waypoint Helps
+            {badge}
           </div>
 
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-            Support For Your Next Chapter
+            {title}
           </h2>
 
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
-            A simple, structured way to understand your readiness, build
-            purpose, and move into retirement with confidence.
+            {subtitle}
           </p>
         </div>
 

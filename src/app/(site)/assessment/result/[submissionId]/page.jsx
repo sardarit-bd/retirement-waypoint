@@ -104,6 +104,9 @@ const AssessmentResultPage = () => {
     domainScores: submission.domainScores,
     resultRange: submission.resultRange,
     recommendations: submission.recommendations,
+    reflections: submission.reflections || [],
+    answers: submission.answers || [],
+    completedAt: submission.completedAt || submission.createdAt,
   };
 
   // Build chart data from domainScores percentages
@@ -134,6 +137,7 @@ const AssessmentResultPage = () => {
       user={submission.participant || { name: 'User', email: '' }}
       assessment={assessment}
       domains={domains}
+      answers={submission.answers || []}
       submissionResult={submissionResult}
       previousSubmission={submission.previousSubmission || null}
       overallScore={submission.overallScore}

@@ -22,7 +22,6 @@ export async function proxy(request) {
     "/reviews",
     "/profile",
     "/settings",
-    "/assessments",
     "/refunds",
   ];
 
@@ -51,7 +50,6 @@ export const config = {
     "/reviews/:path*",
     "/profile/:path*",
     "/settings/:path*",
-    "/assessments/:path*",
     "/refunds/:path*",
   ],
 };

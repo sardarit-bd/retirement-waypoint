@@ -3,13 +3,31 @@
 import Image from "next/image";
 import { Brain } from "lucide-react";
 
-const credentials = [
+const defaultCredentials = [
   "40+ Years Experience",
   "Industrial Psychologist",
   "Retirement Transition Specialist",
 ];
 
-const DaveStory = () => {
+const defaultBioParagraphs = [
+  "Dave holds a Ph.D. in Industrial/Organizational Psychology from Kansas State University and brings more than 40 years of experience helping people understand work, motivation, leadership, identity, and life transitions.",
+  "Over the course of his career, he held leadership positions with several national consulting firms — Watson Wyatt, TRI-AD, Kenexa, and Right Management — where his work centered on organizational assessment, research identifying the drivers of employee satisfaction and engagement, coaching, and leadership development.",
+  "Dave started Retirement Waypoint after going through his own transition out of full-time consulting. As he moved from a long, demanding career toward retirement, he found surprisingly few resources built to help with the psychological side of that shift — the questions of identity, the loss of daily structure and purpose, and the work of building a genuinely fulfilling life after work. Drawing on decades spent researching what makes people thrive professionally, he created Retirement Waypoint to close that gap: a resource grounded in psychological science, not just financial planning, to help other professionals move into retirement with the same clarity and intention they brought to their careers.",
+];
+
+const DaveStory = ({ content }) => {
+  const badge = content?.badge || "Psychology Meets Purpose";
+  const title =
+    content?.title || "The Psychology Behind Retirement Waypoint";
+  const bioParagraphs = content?.bioParagraphs?.length
+    ? content.bioParagraphs
+    : defaultBioParagraphs;
+  const credentials = content?.credentials?.length
+    ? content.credentials
+    : defaultCredentials;
+  const profileImage =
+    content?.profileImage || "/images/about/dave-story-2.png";
+
   return (
     <section id="story" className="relative bg-[#1B2B4B] py-28 sm:py-24 lg:py-28">
       <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[#C9A84C]/10 blur-3xl" />
@@ -18,11 +36,12 @@ const DaveStory = () => {
         <div className="relative order-2 lg:order-1">
           <div className="overflow-hidden rounded-[32px] shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             <Image
-              src="/images/about/dave-story-2.png"
+              src={profileImage}
               alt="Dave, retirement transition specialist"
               width={900}
               height={1050}
               className="h-[420px] w-full object-cover sm:h-[560px]"
+              unoptimized={profileImage.startsWith("http")}
             />
           </div>
         </div>
@@ -30,31 +49,23 @@ const DaveStory = () => {
         <div className="order-1 text-center lg:order-2 lg:text-left">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-xl">
             <Brain className="h-4 w-4 text-[#C9A84C]" />
-            Psychology Meets Purpose
+            {badge}
           </div>
 
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            The Psychology Behind Retirement Waypoint
+            {title}
           </h2>
 
           <div className="mt-6 space-y-5 text-base leading-relaxed text-white/72 sm:text-lg">
-            <p>
-              Dave is a PhD industrial psychologist with 40+ years of
-              experience helping people understand work, motivation,
-              leadership, identity, and life transitions.
-            </p>
-
-            <p>
-              Retirement Waypoint was created from the belief that retirement
-              should not feel like the loss of purpose — but the beginning of
-              a meaningful new chapter.
-            </p>
+            {bioParagraphs.map((p, idx) => (
+              <p key={idx}>{p}</p>
+            ))}
           </div>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
-            {credentials.map((item) => (
+            {credentials.map((item, idx) => (
               <span
-                key={item}
+                key={idx}
                 className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-xl"
               >
                 {item}

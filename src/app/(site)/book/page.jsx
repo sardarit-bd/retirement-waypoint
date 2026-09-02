@@ -1,100 +1,46 @@
-"use client";
+import { BookStoreClient } from '@/components/book/BookStoreClient';
 
-import { useState, useEffect } from "react";
-import { useSyncExternalStore } from "react";
-import { BookHero } from "@/components/book/Book-Hero";
-import { BookStore } from "@/components/book/Book-Store";
-import { BookReviews } from "@/components/book/Book-Reviews";
-import { useBooks } from "@/features/books/hooks/useBooks";
-import { useDebouncedSearch } from "@/features/books/hooks/useDebouncedSearch";
-import { BookSkeleton } from "@/components/book/Book-Skeleton";
-import { BookError } from "@/components/book/Book-Error";
+export const metadata = {
+  title: 'Books & Guides | Retirement Waypoint',
+  description:
+    'Explore books and guides by David Allen, Ph.D. designed to help you navigate retirement psychology, identity, and lifestyle planning.',
+  openGraph: {
+    title: 'Books & Guides | Retirement Waypoint',
+    description:
+      'Explore books and guides by David Allen, Ph.D. designed to help you navigate retirement psychology, identity, and lifestyle planning.',
+    type: 'website',
+  },
+  alternates: {
+    canonical: '/book',
+  },
+};
 
-const emptySubscribe = () => () => {};
-
-export default function BookPage() {
-  const mounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
-
-  if (!mounted) {
-    return null;
+async function getInitialBooks() {
+  const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+  try {
+    const res = await fetch(
+      `${backendUrl}/api/public/books?page=1&limit=12&sortBy=publishedAt&sortOrder=desc`,
+      { next: { revalidate: 60 } }
+    );
+    if (!res.ok) return { books: [], pagination: null };
+    const json = await res.json();
+    return {
+      books: json?.data || [],
+      pagination: json?.meta || null,
+    };
+  } catch (error) {
+    console.error('Failed to fetch books on server:', error);
+    return { books: [], pagination: null };
   }
-
-  return <BookPageContent />;
 }
 
-function BookPageContent() {
-  const [searchInput, setSearchInput] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 12;
-
-  const [searchValue, setSearchValue, debouncedSearch] = useDebouncedSearch("", 500);
-  
-  useEffect(() => {
-    setSearchValue(searchInput);
-  }, [searchInput, setSearchValue]);
-
-  const { books, pagination, loading, error, refetch } = useBooks({
-    page: currentPage,
-    limit: ITEMS_PER_PAGE,
-    search: debouncedSearch || undefined,
-    sortBy: "publishedAt",
-    sortOrder: "desc",
-  });
-
-  useEffect(() => {
-    refetch({
-      page: currentPage,
-      limit: ITEMS_PER_PAGE,
-      search: debouncedSearch || undefined,
-    });
-  }, [debouncedSearch, currentPage, refetch]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  if (loading && books.length === 0) {
-    return (
-      <main className="min-h-screen bg-[#F8F5EF]">
-        <BookHero
-          searchQuery={searchInput}
-          setSearchQuery={setSearchInput}
-        />
-        <BookSkeleton count={2} />
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="min-h-screen bg-[#F8F5EF]">
-        <BookHero
-          searchQuery={searchInput}
-          setSearchQuery={setSearchInput}
-        />
-        <BookError error={error} onRetry={() => refetch()} />
-      </main>
-    );
-  }
+export default async function BookPage() {
+  const { books, pagination } = await getInitialBooks();
 
   return (
-    <main className="min-h-screen bg-[#F8F5EF]">
-      <BookHero
-        searchQuery={searchInput}
-        setSearchQuery={setSearchInput}
-      />
-      <BookStore
-        books={books}
-        loading={loading}
-        pagination={pagination}
-        onPageChange={handlePageChange}
-      />
-      {/* <BookReviews /> */}
-    </main>
+    <BookStoreClient
+      initialBooks={books}
+      initialPagination={pagination}
+    />
   );
-}
+}

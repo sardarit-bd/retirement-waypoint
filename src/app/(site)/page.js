@@ -1,23 +1,36 @@
-import AboutDaveSection from "@/components/home/about-dave/about-dave-section";
-import AssessmentPreviewSection from "@/components/home/assessment-preview/assessment-preview-section";
-import BookSection from "@/components/home/book/book-section";
-import HeroSection from "@/components/home/hero/hero";
-import SupportSection from "@/components/home/hero/support-section";
-import NewsletterSection from "@/components/home/newsletter/newsletter-section";
-import TrustSection from "@/components/home/trust/trust-section";
+import { HomeClient } from '@/components/home/HomeClient';
+import { getCmsData } from '@/lib/cms/fetchCmsData';
 
-const Home = () => {
-  return (
-    <>
-      <HeroSection />
-      <TrustSection />
-      <AssessmentPreviewSection />
-      {/* <AboutDaveSection /> */}
-      <BookSection />
-      <SupportSection />
-      <NewsletterSection />
-    </>
-  );
-};
+export async function generateMetadata() {
+  const data = await getCmsData('/api/home-cms');
+  const hero = data?.hero;
 
-export default Home;
+  const title = hero?.title
+    ? `${hero.title} | Retirement Waypoint`
+    : 'Retirement Waypoint | Navigate Retirement With Confidence & Purpose';
+  const description =
+    hero?.subtitle ||
+    'Retirement Waypoint helps professionals understand their readiness, rediscover purpose, and build a meaningful next chapter through guided assessments and expert insights.';
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      images: hero?.backgroundImage ? [{ url: hero.backgroundImage }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: hero?.backgroundImage ? [hero.backgroundImage] : [],
+    },
+  };
+}
+
+export default async function HomePage() {
+  const data = await getCmsData('/api/home-cms');
+  return <HomeClient initialContent={data} />;
+}

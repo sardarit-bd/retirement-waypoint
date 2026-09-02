@@ -13,6 +13,8 @@ export const dashboardApi = {
       recentOrders,
       contactUnread,
       newsletterStats,
+      assessments,
+      growth,
     ] = await Promise.all([
       api.get(API_ENDPOINTS.ANALYTICS.OVERVIEW),
       api.get(API_ENDPOINTS.ANALYTICS.REVENUE, { params: { period: 'daily' } }),
@@ -33,6 +35,12 @@ export const dashboardApi = {
       api.get(API_ENDPOINTS.NEWSLETTER.ADMIN_STATS).catch(() => ({
         data: { data: { total: 0, newToday: 0 } },
       })),
+      api.get(API_ENDPOINTS.ANALYTICS.ASSESSMENTS).catch(() => ({
+        data: { data: { totalSubmissions: 0, readinessDistribution: [], domainAverages: [] } },
+      })),
+      api.get(API_ENDPOINTS.ANALYTICS.GROWTH).catch(() => ({
+        data: { data: { growth: [] } },
+      })),
     ]);
 
     return {
@@ -44,6 +52,8 @@ export const dashboardApi = {
       recentOrders: recentOrders.data.data,
       contact: contactUnread.data.data,
       newsletter: newsletterStats.data.data,
+      assessments: assessments.data.data,
+      growth: growth.data.data,
     };
   },
 

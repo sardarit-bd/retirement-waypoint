@@ -31,12 +31,21 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderData, setOrderData] = useState(null);
 
-  // Redirect if cart is empty
+  const isAdmin = user?.role === "admin";
+
+  // Redirect if cart is empty or if user is admin
   useEffect(() => {
-    if (!userLoading && (!user || cartItems.length === 0)) {
-      router.push("/book");
+    if (!userLoading) {
+      if (isAdmin) {
+        toast.error("Administrators cannot purchase books.");
+        router.push("/admin/books");
+        return;
+      }
+      if (!user || cartItems.length === 0) {
+        router.push("/book");
+      }
     }
-  }, [user, cartItems, userLoading, router]);
+  }, [user, isAdmin, cartItems, userLoading, router]);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
@@ -58,6 +67,11 @@ export default function CheckoutPage() {
   };
 
   const handleCompletePayment = async () => {
+    if (isAdmin) {
+      toast.error("Administrators cannot purchase their own books.");
+      return;
+    }
+
     if (cartItems.length === 0) {
       toast.error("Your cart is empty");
       return;

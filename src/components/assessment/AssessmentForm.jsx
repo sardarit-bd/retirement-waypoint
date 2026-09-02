@@ -260,7 +260,7 @@ export default function AssessmentForm({ assessment }) {
     const reflections = domains.map((domain) => ({
       domainId: domain.id,
       domainKey: domain.key,
-      question: domain.reflection?.question || domain.open || '',
+      question: domain.reflection?.question || domain.openQuestion || domain.open || '',
       answer: answers[`${domain.key}_open`] || '',
     }));
 
@@ -290,7 +290,10 @@ export default function AssessmentForm({ assessment }) {
           }
           setHasDraft(false);
           setDraftData(null);
-          setSubmissionResult(response.data);
+          setSubmissionResult({
+            ...(response?.data || {}),
+            reflections: response?.data?.reflections || reflections,
+          });
           setScreen("results");
         },
       }
@@ -425,6 +428,7 @@ export default function AssessmentForm({ assessment }) {
         user={user}
         assessment={assessment}
         domains={domains}
+        answers={answers}
         submissionResult={submissionResult}
         previousSubmission={submissionResult?.previousSubmission || null}
         overallScore={overallScore}
