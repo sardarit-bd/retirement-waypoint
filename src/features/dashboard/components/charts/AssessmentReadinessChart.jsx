@@ -79,7 +79,7 @@ export function AssessmentReadinessChart({ assessments, isLoading }) {
     <div className="space-y-4">
       {/* Donut Chart Container */}
       <div className="relative h-[220px] w-full flex items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" debounce={150}>
           <PieChart>
             <Tooltip content={<CustomTooltip />} />
             <Pie

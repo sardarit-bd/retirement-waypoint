@@ -50,7 +50,7 @@ export default function DashboardLayout({ children }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className={`
-            flex-1 min-w-0 p-4 md:p-6 lg:py-6 lg:pr-6 transition-all duration-300 ease-in-out
+            flex-1 min-w-0 p-4 md:p-6 lg:py-6 lg:pr-6 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] will-change-[padding]
             ${isCollapsed ? 'lg:pl-[116px]' : 'lg:pl-[312px]'}
           `}
         >

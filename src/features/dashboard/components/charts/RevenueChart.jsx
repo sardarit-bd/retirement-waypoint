@@ -179,7 +179,7 @@ export function RevenueChart() {
         <EmptyChartState message="Daily transactions and revenue trends will graph here automatically." />
       ) : (
         <div className="w-full h-[280px] sm:h-[320px] pt-2">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" debounce={150}>
             <AreaChart
               data={chartData}
               margin={{ top: 10, right: 10, left: -15, bottom: 0 }}

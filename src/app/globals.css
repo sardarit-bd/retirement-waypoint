@@ -182,6 +182,18 @@ body {
   background: rgba(201, 168, 76, 0.8);
 }
 
+/* Hide scrollbar for Chrome, Safari, Opera, Edge, and Firefox */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
