@@ -4,20 +4,20 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { 
-  ArrowLeft, 
-  CreditCard, 
-  Shield, 
-  Lock, 
-  Loader2 
+import {
+  ArrowLeft,
+  CreditCard,
+  Shield,
+  Lock,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import { useCart } from "@/context/CartContext";
 import { orderApi } from "@/features/orders/api/order.api";
+import { couponApi } from "@/features/coupons/api/coupon.api";
 import { paymentApi } from "@/features/payments/api/payment.api";
 import { useSession } from "@/hooks/useSession";
 
@@ -29,7 +29,7 @@ export default function CheckoutPage() {
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
   const [couponCode, setCouponCode] = useState("");
-  const [notes, setNotes] = useState("");
+  const [couponError, setCouponError] = useState("");
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderData, setOrderData] = useState(null);
@@ -51,19 +51,38 @@ export default function CheckoutPage() {
   }, [isAdmin, cartItems, userLoading, router]);
 
   const handleApplyCoupon = async () => {
-    if (!couponCode.trim()) {
-      toast.error("Please enter a coupon code");
+    const trimmedCode = couponCode.trim();
+    if (!trimmedCode) {
+      setCouponError("Please enter a coupon code");
       return;
     }
 
+    setCouponError("");
     setIsApplyingCoupon(true);
     try {
-      // This would be implemented based on your backend coupon API
-      // const response = await orderApi.applyCoupon(couponCode);
-      // setOrderData(response.data);
-      toast.success("Coupon code applied successfully");
+      const response = await couponApi.validateCoupon(trimmedCode, cartSubtotal);
+      const couponData = response?.data || response;
+      const discount = couponData?.discountAmount ?? couponData?.discount ?? 0;
+
+      if (discount > 0) {
+        setCouponError("");
+        setOrderData({
+          discount,
+          total: couponData.finalAmount ?? Math.max(0, cartSubtotal - discount),
+          coupon: couponData.coupon,
+        });
+        toast.success("Coupon applied successfully!");
+      } else {
+        setOrderData(null);
+        setCouponError(response?.message || "Invalid or expired coupon code");
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Coupon code is invalid or expired");
+      setOrderData(null);
+      setCouponError(
+        error.response?.data?.message ||
+        error.message ||
+        "Invalid or expired coupon code"
+      );
     } finally {
       setIsApplyingCoupon(false);
     }
@@ -108,8 +127,7 @@ export default function CheckoutPage() {
         })),
         guestName: !user ? guestName.trim() : undefined,
         guestEmail: !user ? guestEmail.trim().toLowerCase() : undefined,
-        notes: notes || undefined,
-        couponCode: couponCode || undefined,
+        couponCode: orderData?.discount > 0 ? (orderData?.coupon?.code || couponCode.trim()) : undefined,
       };
 
       // Call Create Order API
@@ -146,8 +164,8 @@ export default function CheckoutPage() {
       console.error("Order creation error:", error);
       toast.error(
         error.response?.data?.message ||
-          error.message ||
-          "Failed to create order. Please try again.",
+        error.message ||
+        "Failed to create order. Please try again.",
       );
     } finally {
       setIsProcessing(false);
@@ -181,57 +199,53 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F8F5EF] py-24 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#F8F5EF] pt-28 pb-20 sm:pt-32 sm:pb-24 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        {/* Back Button */}
-        <Link
-          href="/book"
-          className="inline-flex items-center gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] transition-colors mb-8"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Store
-        </Link>
+        {/* Back to Store Link */}
+        <div className="pt-6 pb-2">
+          <Link
+            href="/book"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#1B2B4B]/70 hover:text-[#1B2B4B] transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Store
+          </Link>
+        </div>
 
-        <h1 className="text-3xl font-bold text-[#1B2B4B] mb-8">Checkout</h1>
+        <h1 className="text-3xl font-bold text-[#1B2B4B] mt-2 mb-8">Checkout</h1>
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Left Column - Customer Information */}
+          {/* Left Column - Customer Information & Coupon */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Customer Info */}
-            <div className="rounded-2xl bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
-              <h2 className="text-xl font-semibold text-[#1B2B4B] mb-4">
+            {/* Customer Information Card */}
+            <div className="rounded-2xl bg-white p-6 sm:p-7 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+              <h2 className="text-xl font-semibold text-[#1B2B4B] mb-6">
                 Customer Information
               </h2>
               {user ? (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <Label className="text-sm font-medium text-[#1B2B4B]">Name</Label>
-                    <Input
-                      value={user.name || "Logged-in User"}
-                      disabled
-                      className="bg-[#F8F5EF] cursor-not-allowed"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-sm font-medium text-[#1B2B4B]">Email</Label>
+                    <Label className="text-sm font-medium text-[#1B2B4B]">
+                      Email Address
+                    </Label>
                     <Input
                       value={user.email || "user@example.com"}
                       disabled
-                      className="bg-[#F8F5EF] cursor-not-allowed"
+                      className="bg-[#F8F5EF] cursor-not-allowed h-12 mt-1.5"
                     />
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
                     <Label className="text-sm font-medium text-[#1B2B4B]">
                       Full Name <span className="text-red-500">*</span>
                     </Label>
                     <Input
-                      placeholder="e.g. John Doe"
+                      placeholder="Enter Your Full Name"
                       value={guestName}
                       onChange={(e) => setGuestName(e.target.value)}
-                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C] h-12 mt-1.5"
                     />
                   </div>
                   <div>
@@ -240,12 +254,12 @@ export default function CheckoutPage() {
                     </Label>
                     <Input
                       type="email"
-                      placeholder="e.g. john@example.com"
+                      placeholder="Enter Your Email Address"
                       value={guestEmail}
                       onChange={(e) => setGuestEmail(e.target.value)}
-                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C] h-12 mt-1.5"
                     />
-                    <p className="text-xs text-[#1B2B4B]/60 mt-1">
+                    <p className="text-xs text-[#1B2B4B]/60 mt-2">
                       Your secure book download link and receipt will be delivered to this email.
                     </p>
                   </div>
@@ -254,7 +268,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Coupon Section */}
-            <div className="rounded-2xl bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+            <div className="rounded-2xl bg-white p-6 sm:p-7 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
               <h2 className="text-xl font-semibold text-[#1B2B4B] mb-4">
                 Coupon
               </h2>
@@ -262,13 +276,25 @@ export default function CheckoutPage() {
                 <Input
                   placeholder="Enter coupon code"
                   value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-1"
+                  onChange={(e) => {
+                    setCouponCode(e.target.value);
+                    if (couponError) {
+                      setCouponError("");
+                    }
+                    if (orderData?.coupon) {
+                      setOrderData(null);
+                    }
+                  }}
+                  className={`flex-1 h-12 ${
+                    couponError
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+                  }`}
                 />
                 <Button
                   onClick={handleApplyCoupon}
                   disabled={isApplyingCoupon || !couponCode.trim()}
-                  className="bg-[#1B2B4B] text-white hover:bg-[#1B2B4B]/90"
+                  className="bg-[#1B2B4B] text-white hover:bg-[#1B2B4B]/90 h-12 px-6 font-medium"
                 >
                   {isApplyingCoupon ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -277,25 +303,37 @@ export default function CheckoutPage() {
                   )}
                 </Button>
               </div>
-            </div>
 
-            {/* Notes Section */}
-            <div className="rounded-2xl bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
-              <h2 className="text-xl font-semibold text-[#1B2B4B] mb-4">
-                Order Notes
-              </h2>
-              <Textarea
-                placeholder="Add any special instructions or notes about your order..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="min-h-[100px]"
-              />
+              {couponError && (
+                <p className="text-xs text-red-500 font-medium mt-2">
+                  {couponError}
+                </p>
+              )}
+
+              {orderData?.coupon && (
+                <div className="mt-3 flex items-center justify-between text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                  <span>
+                    Coupon <strong>{orderData.coupon.code}</strong> applied (-${Number(orderData.discount).toFixed(2)})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOrderData(null);
+                      setCouponCode("");
+                      setCouponError("");
+                    }}
+                    className="text-red-500 hover:text-red-700 font-medium ml-2 underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Right Column - Order Summary */}
           <div className="space-y-6">
-            <div className="rounded-2xl bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)] sticky top-24">
+            <div className="rounded-2xl bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)] sticky top-28">
               <h2 className="text-xl font-semibold text-[#1B2B4B] mb-4">
                 Order Summary
               </h2>
@@ -334,13 +372,13 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Discount</span>
                   <span className="font-semibold text-green-600">
-                    {orderData?.discount ? `- $${orderData.discount}` : "$0.00"}
+                    {orderData?.discount ? `- $${Number(orderData.discount).toFixed(2)}` : "$0.00"}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-bold pt-2 border-t">
                   <span className="text-[#1B2B4B]">Total</span>
                   <span className="text-[#1B2B4B]">
-                    $ {orderData?.total?.toFixed(2) || cartSubtotal.toFixed(2)}
+                    $ {(orderData?.total !== undefined ? Number(orderData.total) : cartSubtotal).toFixed(2)}
                   </span>
                 </div>
               </div>
