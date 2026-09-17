@@ -23,7 +23,7 @@ import { useSession } from "@/hooks/useSession";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cartItems, cartSubtotal, clearCart } = useCart();
+  const { cartItems, cartSubtotal, clearCart, removeFromCart } = useCart();
   const { session, isLoading: userLoading } = useSession();
   const user = session?.user;
   const [guestName, setGuestName] = useState("");
@@ -36,19 +36,15 @@ export default function CheckoutPage() {
 
   const isAdmin = user?.role === "admin";
 
-  // Redirect if cart is empty or if user is admin
+  // Redirect if user is admin
   useEffect(() => {
     if (!userLoading) {
       if (isAdmin) {
         toast.error("Administrators cannot purchase books.");
         router.push("/admin/books");
-        return;
-      }
-      if (cartItems.length === 0) {
-        router.push("/book");
       }
     }
-  }, [isAdmin, cartItems, userLoading, router]);
+  }, [isAdmin, userLoading, router]);
 
   const handleApplyCoupon = async () => {
     const trimmedCode = couponCode.trim();
@@ -182,14 +178,14 @@ export default function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-[#F8F5EF] py-32">
-        <div className="mx-auto max-w-2xl px-4 text-center">
-          <h1 className="text-3xl font-bold text-[#1B2B4B]">Your Cart is Empty</h1>
-          <p className="mt-2 text-[#1B2B4B]/60">
-            Add some books to your cart before proceeding to checkout.
+      <div className="min-h-screen bg-[#F8F5EF] pt-32 pb-24 px-4 sm:px-6">
+        <div className="mx-auto max-w-md rounded-2xl bg-white p-8 text-center shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
+          <h1 className="text-2xl font-bold text-[#1B2B4B]">Your Cart is Empty</h1>
+          <p className="mt-2 text-sm text-[#1B2B4B]/60">
+            You don&apos;t have any books in your checkout cart.
           </p>
           <Link href="/book">
-            <Button className="mt-6 bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A]">
+            <Button className="mt-6 bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] font-semibold">
               Browse Books
             </Button>
           </Link>
@@ -338,30 +334,48 @@ export default function CheckoutPage() {
                 Order Summary
               </h2>
 
-              <div className="space-y-4 max-h-[300px] overflow-y-auto">
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex gap-3 items-start">
-                    <div className="relative h-14 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
-                      <Image
-                        src={item.coverImage}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                      />
+              <div className="space-y-3 max-h-[350px] overflow-y-auto">
+                {cartItems.map((item) => {
+                  const itemId = item._id || item.id;
+                  const itemPrice = Number(item.price) || 0;
+                  return (
+                    <div
+                      key={itemId}
+                      className="flex items-center justify-between py-2 border-b border-slate-100 last:border-none"
+                    >
+                      <div className="flex items-center gap-3 min-w-0 pr-3">
+                        <div className="relative h-16 w-12 shrink-0 overflow-hidden rounded-md bg-muted border border-slate-100">
+                          <Image
+                            src={item.coverImage}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="text-sm font-semibold text-slate-800 line-clamp-1">
+                            {item.title}
+                          </h4>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              removeFromCart(itemId);
+                              if (orderData) {
+                                setOrderData(null);
+                              }
+                            }}
+                            className="text-xs text-red-500 hover:text-red-700 underline mt-0.5 cursor-pointer block text-left"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 shrink-0">
+                        ${itemPrice.toFixed(2)}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#1B2B4B] truncate">
-                        {item.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Qty: {item.quantity} × $ {item.price}
-                      </p>
-                    </div>
-                    <p className="text-sm font-semibold text-[#1B2B4B]">
-                      $ {(item.price * item.quantity).toFixed(2)}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="border-t mt-4 pt-4 space-y-3">

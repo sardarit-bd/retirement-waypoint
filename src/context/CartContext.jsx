@@ -2,6 +2,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
+import toast from "react-hot-toast";
 
 const CartContext = createContext();
 
@@ -32,13 +33,13 @@ export function CartProvider({ children }) {
   // Load cart from localStorage on mount
   useEffect(() => {
     const items = loadCartFromStorage();
-    // Normalize cart items to use consistent id field
-    const normalizedItems = items.map(item => ({
+    // Normalize cart items to use consistent id field and enforce quantity: 1 for digital books
+    const normalizedItems = items.map((item) => ({
       id: item._id || item.id,
       title: item.title,
-      price: item.price,
+      price: Number(item.price) || 0,
       coverImage: item.coverImage || item.image,
-      quantity: item.quantity || 1,
+      quantity: 1, // Enforce single license for digital books
       _id: item._id || item.id, // Keep for backward compatibility
     }));
     setCartItems(normalizedItems);
@@ -54,30 +55,30 @@ export function CartProvider({ children }) {
 
   // Add item to cart
   const addToCart = useCallback((book) => {
-    if (book.status !== "PUBLISHED") return;
+    if (book.status && book.status !== "PUBLISHED") return;
+
+    const bookId = book._id || book.id;
 
     setCartItems((prev) => {
-      const existingIndex = prev.findIndex((item) => item.id === book._id);
+      const existing = prev.find((item) => item.id === bookId || item._id === bookId);
       
-      if (existingIndex >= 0) {
-        // Item exists, increment quantity
-        const updated = [...prev];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + 1,
-        };
-        return updated;
+      if (existing) {
+        // Digital book cannot have multiple quantities
+        toast("This digital book is already in your cart", {
+          icon: "ℹ️",
+        });
+        return prev;
       }
       
-      // New item
+      // New item with strictly quantity: 1
       return [
         ...prev,
         {
-          id: book._id,
-          _id: book._id,
+          id: bookId,
+          _id: bookId,
           title: book.title,
-          price: book.price,
-          coverImage: book.coverImage,
+          price: Number(book.price) || 0,
+          coverImage: book.coverImage || book.image,
           quantity: 1,
         },
       ];
@@ -86,20 +87,22 @@ export function CartProvider({ children }) {
 
   // Remove item from cart
   const removeFromCart = useCallback((bookId) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== bookId));
+    setCartItems((prev) => prev.filter((item) => item.id !== bookId && item._id !== bookId));
   }, []);
 
-  // Update quantity of an item
+  // Update quantity of an item (enforcing strict cap: Math.min(1, Math.max(1, qty)))
   const updateQuantity = useCallback((bookId, newQuantity) => {
     if (newQuantity < 1) {
       removeFromCart(bookId);
       return;
     }
+
+    const cappedQuantity = Math.min(1, Math.max(1, newQuantity));
     
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === bookId
-          ? { ...item, quantity: newQuantity }
+        item.id === bookId || item._id === bookId
+          ? { ...item, quantity: cappedQuantity }
           : item
       )
     );
