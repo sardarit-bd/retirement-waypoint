@@ -28,12 +28,14 @@ import { useCheckPurchase } from "@/features/purchases/hooks/usePurchase";
 import { useSession } from "@/hooks/useSession";
 import { BookCTA } from "@/components/book/Book-Cta";
 import { BookPreviewModal } from "@/components/book/BookPreviewModal";
+import { useCart } from "@/context/CartContext";
 
 export const BookDetailsContent = ({ book }) => {
   const router = useRouter();
   const [imageError, setImageError] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const { addToCart } = useCart();
   const { books: featuredBooks, loading: featuredLoading } =
     useFeaturedBooks(4);
   const { session, isLoading: sessionLoading } = useSession();
@@ -82,8 +84,8 @@ export const BookDetailsContent = ({ book }) => {
     }
 
     if (!isAuthenticated) {
-      toast.error("Please login to purchase this book");
-      router.push("/auth");
+      addToCart(book);
+      router.push("/checkout");
       return;
     }
 
@@ -324,9 +326,9 @@ export const BookDetailsContent = ({ book }) => {
             </div>
           </div>
 
-          {/* Reviews Section - Show review form only if user has purchased */}
+          {/* Reviews Section */}
           <div className="mt-12 sm:mt-14 md:mt-16">
-            <ReviewSection bookId={book._id} showReviewForm={hasPurchased} />
+            <ReviewSection bookId={book._id} bookSlug={book.slug} showReviewForm={true} />
           </div>
         </div>
       </div>

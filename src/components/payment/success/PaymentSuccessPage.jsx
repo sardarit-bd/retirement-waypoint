@@ -4,22 +4,36 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, BookOpen, ShoppingBag } from "lucide-react";
+import { CheckCircle, BookOpen, ShoppingBag, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/hooks/useSession";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [orderId, setOrderId] = useState(null);
+  const [token, setToken] = useState(null);
+  const { session } = useSession();
+  const isAuthenticated = !!session?.user;
 
   useEffect(() => {
     const id = searchParams.get("orderId");
+    const downloadToken = searchParams.get("token");
+
     if (id) {
       setOrderId(id);
-    } else {
+    }
+    if (downloadToken) {
+      setToken(downloadToken);
+    }
+
+    if (!id && !downloadToken) {
       router.push("/book");
     }
   }, [searchParams, router]);
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const downloadUrl = token ? `${apiUrl}/api/orders/download/${token}?redirect=true` : null;
 
   return (
     <div id="PaymentSuccessPage" className="min-h-screen bg-[#F8F5EF] flex items-center justify-center px-4 py-32">
@@ -32,7 +46,9 @@ export default function PaymentSuccessPage() {
         
         <h1 className="text-3xl font-bold text-[#1B2B4B]">Payment Successful!</h1>
         <p className="mt-2 text-[#1B2B4B]/60">
-          Thank you for your purchase. Your book is now available in your library.
+          {token
+            ? "Thank you for your purchase! Your digital book is ready for instant download."
+            : "Thank you for your purchase. Your book is now available in your library."}
         </p>
 
         {orderId && (
@@ -42,15 +58,35 @@ export default function PaymentSuccessPage() {
           </div>
         )}
 
-        <div className="mt-8 space-y-3">
-          <Link href="/dashboard/my-books">
-            <Button className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12 mb-6 cursor-pointer">
-              <BookOpen className="mr-2 h-5 w-5" />
-              Go to My Books
-            </Button>
-          </Link>
-          <Link href="/book">
-            <Button variant="outline" className="w-full h-12 cursor-pointer">
+        <div className="mt-8 space-y-4">
+          {token ? (
+            <div className="space-y-3">
+              <a
+                href={downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
+              >
+                <Button className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-14 text-base font-bold shadow-lg hover:shadow-xl transition-all cursor-pointer">
+                  <Download className="mr-2 h-5 w-5" />
+                  Download Your Book (PDF)
+                </Button>
+              </a>
+              <div className="rounded-lg bg-white/80 p-3 text-xs text-[#1B2B4B]/70 border border-[#1B2B4B]/10 leading-relaxed">
+                A backup download link has also been sent to your email. The link remains active for 7 days.
+              </div>
+            </div>
+          ) : isAuthenticated ? (
+            <Link href="/dashboard/my-books" className="block w-full">
+              <Button className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12 cursor-pointer">
+                <BookOpen className="mr-2 h-5 w-5" />
+                Go to My Books
+              </Button>
+            </Link>
+          ) : null}
+
+          <Link href="/book" className="block w-full">
+            <Button variant="outline" className="w-full h-12 cursor-pointer border-[#1B2B4B]/20 text-[#1B2B4B] hover:bg-white">
               <ShoppingBag className="mr-2 h-5 w-5" />
               Continue Shopping
             </Button>
@@ -59,4 +95,4 @@ export default function PaymentSuccessPage() {
       </div>
     </div>
   );
-}
+}

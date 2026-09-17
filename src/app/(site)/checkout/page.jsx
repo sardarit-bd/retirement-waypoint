@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import { useCart } from "@/context/CartContext";
 import { orderApi } from "@/features/orders/api/order.api";
+import { paymentApi } from "@/features/payments/api/payment.api";
 import { useSession } from "@/hooks/useSession";
 
 export default function CheckoutPage() {
@@ -25,6 +26,8 @@ export default function CheckoutPage() {
   const { cartItems, cartSubtotal, clearCart } = useCart();
   const { session, isLoading: userLoading } = useSession();
   const user = session?.user;
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [notes, setNotes] = useState("");
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
@@ -41,11 +44,11 @@ export default function CheckoutPage() {
         router.push("/admin/books");
         return;
       }
-      if (!user || cartItems.length === 0) {
+      if (cartItems.length === 0) {
         router.push("/book");
       }
     }
-  }, [user, isAdmin, cartItems, userLoading, router]);
+  }, [isAdmin, cartItems, userLoading, router]);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
@@ -77,46 +80,75 @@ export default function CheckoutPage() {
       return;
     }
 
+    if (!user) {
+      if (!guestName.trim()) {
+        toast.error("Please enter your full name");
+        return;
+      }
+      if (!guestEmail.trim()) {
+        toast.error("Please enter your email address for book delivery");
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(guestEmail.trim())) {
+        toast.error("Please enter a valid email address");
+        return;
+      }
+    }
+
     setIsProcessing(true);
 
     try {
       // Prepare order data matching backend expectations
       const orderPayload = {
-        items: cartItems.map(item => ({
+        items: cartItems.map((item) => ({
           bookId: item.id,
           quantity: item.quantity,
           price: item.price,
         })),
+        guestName: !user ? guestName.trim() : undefined,
+        guestEmail: !user ? guestEmail.trim().toLowerCase() : undefined,
         notes: notes || undefined,
         couponCode: couponCode || undefined,
       };
 
-      // Call the existing Create Order API
+      // Call Create Order API
       const response = await orderApi.createOrder(orderPayload);
+      const createdOrder = response.data || response;
+      const orderId = createdOrder._id;
 
-      // Check if backend returned Stripe Checkout URL
-      if (response.checkoutUrl) {
+      if (!orderId) {
+        throw new Error("Failed to create order: No order ID returned");
+      }
+
+      // Proceed to Stripe Checkout Session creation
+      const paymentResponse = await paymentApi.createCheckoutSession(orderId);
+      const checkoutUrl = paymentResponse?.checkoutUrl;
+
+      if (checkoutUrl) {
         toast.success("Redirecting to payment...");
-        // Redirect to Stripe Checkout
-        window.location.href = response.checkoutUrl;
+        clearCart();
+        window.location.href = checkoutUrl;
         return;
       }
 
-      // If no checkout URL, handle based on status
-      if (response.status === "PENDING") {
-        setOrderData(response);
+      // If no checkout URL returned, handle based on status
+      if (createdOrder.paymentStatus === "PENDING") {
+        setOrderData(createdOrder);
         toast.success("Order created, payment pending");
-        router.push(`/payment/pending?orderId=${response._id}`);
+        router.push(`/payment/pending?orderId=${orderId}`);
       } else {
-        // Handle other statuses
         toast.success("Order created successfully");
         clearCart();
-        router.push(`/payment/success?orderId=${response._id}`);
+        router.push(`/payment/success?orderId=${orderId}`);
       }
-
     } catch (error) {
       console.error("Order creation error:", error);
-      toast.error(error.response?.data?.message || "Failed to create order. Please try again.");
+      toast.error(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to create order. Please try again.",
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -128,10 +160,6 @@ export default function CheckoutPage() {
         <Loader2 className="h-8 w-8 animate-spin text-[#C9A84C]" />
       </div>
     );
-  }
-
-  if (!user) {
-    return null; // Will redirect
   }
 
   if (cartItems.length === 0) {
@@ -174,24 +202,55 @@ export default function CheckoutPage() {
               <h2 className="text-xl font-semibold text-[#1B2B4B] mb-4">
                 Customer Information
               </h2>
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-[#1B2B4B]">Name</Label>
-                  <Input
-                    value={user.name || "User Name"}
-                    disabled
-                    className="bg-[#F8F5EF] cursor-not-allowed"
-                  />
+              {user ? (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium text-[#1B2B4B]">Name</Label>
+                    <Input
+                      value={user.name || "Logged-in User"}
+                      disabled
+                      className="bg-[#F8F5EF] cursor-not-allowed"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-[#1B2B4B]">Email</Label>
+                    <Input
+                      value={user.email || "user@example.com"}
+                      disabled
+                      className="bg-[#F8F5EF] cursor-not-allowed"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-[#1B2B4B]">Email</Label>
-                  <Input
-                    value={user.email || "user@example.com"}
-                    disabled
-                    className="bg-[#F8F5EF] cursor-not-allowed"
-                  />
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium text-[#1B2B4B]">
+                      Full Name <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      placeholder="e.g. John Doe"
+                      value={guestName}
+                      onChange={(e) => setGuestName(e.target.value)}
+                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-[#1B2B4B]">
+                      Email Address <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      type="email"
+                      placeholder="e.g. john@example.com"
+                      value={guestEmail}
+                      onChange={(e) => setGuestEmail(e.target.value)}
+                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+                    />
+                    <p className="text-xs text-[#1B2B4B]/60 mt-1">
+                      Your secure book download link and receipt will be delivered to this email.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Coupon Section */}

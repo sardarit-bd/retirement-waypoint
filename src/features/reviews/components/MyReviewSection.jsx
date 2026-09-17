@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Pencil, Trash2, X } from "lucide-react";
+import { Star, Pencil, Trash2, X, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -115,6 +115,12 @@ export const MyReviewSection = ({
               <span className="text-sm font-semibold text-[#1B2B4B]">
                 Your Review
               </span>
+              {myReview.isVerifiedPurchase && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                  <span>Verified Buyer</span>
+                </span>
+              )}
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star

@@ -12,8 +12,10 @@ import { ReviewPagination } from "./ReviewPagination";
 import { ReviewSkeleton } from "./ReviewSkeleton";
 import { MyReviewSection } from "./MyReviewSection";
 import { useSession } from "@/hooks/useSession";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
-export const ReviewSection = ({ bookId, showReviewForm = false }) => {
+export const ReviewSection = ({ bookId, bookSlug = "", showReviewForm = true }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 5;
 
@@ -108,7 +110,7 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
       {/* Thin Divider */}
       <div className="border-t border-[#1B2B4B]/10 my-4 sm:my-6" />
 
-      {/* My Review Section (if user has permission to review) */}
+      {/* My Review Section (if user is authenticated) */}
       {isAuthenticated && showReviewForm && (
         <MyReviewSection
           bookId={bookId}
@@ -116,6 +118,23 @@ export const ReviewSection = ({ bookId, showReviewForm = false }) => {
           isLoading={myReviewLoading}
           onReviewUpdate={handleReviewUpdate}
         />
+      )}
+
+      {/* Guest Prompt to Sign in & Review */}
+      {!isAuthenticated && (
+        <div className="py-4 px-5 my-4 rounded-xl bg-white border border-[#1B2B4B]/10 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          <div>
+            <h4 className="font-semibold text-[#1B2B4B] text-base">Have you read this book?</h4>
+            <p className="text-sm text-[#1B2B4B]/70 mt-0.5">
+              Sign in to rate this book and submit your review.
+            </p>
+          </div>
+          <Link href={`/auth?redirect=/books/${bookSlug || ""}`}>
+            <Button className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] font-semibold whitespace-nowrap cursor-pointer">
+              Sign in to Write a Review
+            </Button>
+          </Link>
+        </div>
       )}
 
       {/* Review List */}
