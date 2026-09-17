@@ -199,7 +199,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F8F5EF] pt-28 pb-20 sm:pt-32 sm:pb-24 px-4 sm:px-6 lg:px-8">
+    <main id="checkout" className="min-h-screen bg-[#F8F5EF] pt-28 pb-20 sm:pt-32 sm:pb-24 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Back to Store Link */}
         <div className="pt-6 pb-2">
