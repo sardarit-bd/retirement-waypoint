@@ -5,9 +5,9 @@ export const BookHero = ({
   setSearchQuery,
 }) => {
   return (
-    <section className="bg-[#1B2B4B] px-4 pb-16 pt-32 text-white sm:px-6 lg:px-8">
+    <section className="bg-[#1B2B4B] px-4 pb-14 pt-28 sm:pb-16 sm:pt-32 md:pt-36 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 sm:mb-8 flex items-center justify-between">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#C9A84C]/30 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-xl">
             <span className="text-[#C9A84C]">✦</span>
             Retirement Waypoint Store
@@ -15,11 +15,11 @@ export const BookHero = ({
         </div>
 
         <div>
-          <h1 className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+          <h1 className="text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">
             Retirement Waypoint
             <span className="block text-[#C9A84C]">Book Store</span>
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-white/70">
+          <p className="mt-4 sm:mt-5 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-white/70">
             Books, workbooks, and guides designed to help you navigate
             retirement with confidence, clarity, and purpose.
           </p>
