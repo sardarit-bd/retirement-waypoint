@@ -165,7 +165,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={isSending}
-                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
                   />
                 </div>
 
@@ -174,7 +174,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                 <button
                   type="submit"
                   disabled={isSending}
-                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 cursor-pointer"
+                  className="w-full rounded-2xl bg-[#b59443] hover:bg-[#a38339] active:bg-[#8f7230] py-3.5 text-sm font-medium text-white shadow-md transition-all disabled:opacity-70 cursor-pointer"
                 >
                   {isSending ? (
                     <span className="flex items-center justify-center gap-2">
@@ -200,7 +200,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                       setOtp(e.target.value.replace(/\D/g, ""))
                     }
                     disabled={isResetting}
-                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-center text-lg tracking-[0.5em] text-slate-100 placeholder:tracking-normal placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50 "
+                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-center text-lg tracking-[0.5em] text-slate-100 placeholder:tracking-normal placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
                   />
                 </div>
 
@@ -212,7 +212,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={isResetting}
-                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
                   />
                   <button
                     type="button"
@@ -235,7 +235,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={isResetting}
-                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+                    className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
                   />
                 </div>
 
@@ -244,7 +244,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                 <button
                   type="submit"
                   disabled={isResetting}
-                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 cursor-pointer"
+                  className="w-full rounded-2xl bg-[#b59443] hover:bg-[#a38339] active:bg-[#8f7230] py-3.5 text-sm font-medium text-white shadow-md transition-all disabled:opacity-70 cursor-pointer"
                 >
                   {isResetting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -268,7 +268,7 @@ export function ForgotPasswordModal({ open, onClose }) {
                     type="button"
                     onClick={handleResendCode}
                     disabled={isSending}
-                    className="text-indigo-400 hover:text-indigo-300 disabled:opacity-50 cursor-pointer"
+                    className="text-[#cbb06b] hover:text-[#e4cf93] font-medium disabled:opacity-50 cursor-pointer"
                   >
                     {isSending ? "Sending..." : "Resend code"}
                   </button>

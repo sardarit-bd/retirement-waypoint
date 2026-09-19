@@ -142,9 +142,61 @@ export function CoachingCmsLivePreview({ formData, activeTab }) {
                 </h2>
                 <div className="mt-4 space-y-4 text-sm leading-relaxed text-[#1B2B4B]/70">
                   {(overview.paragraphs?.length ? overview.paragraphs : fallbackOverview.paragraphs).map(
-                    (p, idx) => (
-                      <p key={idx}>{p}</p>
-                    )
+                    (p, idx) => {
+                      if (!p) return null;
+                      const trimmed = typeof p === 'string' ? p.trim() : '';
+                      const isPricing =
+                        trimmed.toLowerCase().startsWith('costs:') ||
+                        trimmed.toLowerCase().startsWith('pricing:');
+
+                      if (isPricing) {
+                        const lines = trimmed
+                          .split('\n')
+                          .map((l) => l.trim())
+                          .filter(Boolean);
+                        const title = lines[0] || 'Costs:';
+                        const items = lines.slice(1);
+
+                        return (
+                          <div
+                            key={idx}
+                            className="my-4 rounded-xl border border-[#C9A84C]/25 bg-[#F8F5EF] p-4 sm:p-5"
+                          >
+                            <h3 className="text-base font-bold text-[#1B2B4B]">
+                              {title}
+                            </h3>
+                            {items.length > 0 ? (
+                              <div className="mt-3 space-y-2">
+                                {items.map((item, itemIdx) => (
+                                  <div
+                                    key={itemIdx}
+                                    className="flex items-start gap-2.5 rounded-lg border border-[#1B2B4B]/10 bg-white p-3 shadow-xs"
+                                  >
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#C9A84C]" />
+                                    <p className="text-xs sm:text-sm leading-relaxed text-[#1B2B4B]/80 font-medium">
+                                      {item}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="mt-2 whitespace-pre-line text-slate-700 leading-relaxed">
+                                {trimmed}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div
+                          key={idx}
+                          className="whitespace-pre-line text-slate-700 leading-relaxed"
+                        >
+                          {p}
+                        </div>
+                      );
+                    }
                   )}
                 </div>
               </div>
@@ -181,9 +233,9 @@ export function CoachingCmsLivePreview({ formData, activeTab }) {
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#C9A84C] mb-2">
                 Assessment Connection
               </h4>
-              <p className="text-sm leading-relaxed text-[#1B2B4B]/75">
+              <div className="text-sm leading-relaxed text-[#1B2B4B]/75 whitespace-pre-line">
                 {assessmentNote.noteText}
-              </p>
+              </div>
             </div>
 
             {/* Eligibility Box */}

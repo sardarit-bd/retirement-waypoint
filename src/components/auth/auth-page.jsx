@@ -18,9 +18,9 @@ export function AuthPage() {
     <div className="relative min-h-screen w-full overflow-hidden bg-slate-950">
       {/* Background blobs */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-indigo-600/20 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-purple-600/20 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-3xl" />
+        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-[#b59443]/15 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full bg-[#a38339]/10 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cbb06b]/10 blur-3xl" />
       </div>
 
       {/* Fixed Logo */}
@@ -45,16 +45,16 @@ export function AuthPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => toggleMode("signin")}
-            className={`relative rounded-full px-5 sm:px-6 lg:px-8 py-2.5 text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap ${
+            className={`relative rounded-full px-5 sm:px-6 lg:px-8 py-2.5 text-sm transition-all duration-300 cursor-pointer whitespace-nowrap ${
               mode === "signin"
-                ? "text-white"
-                : "text-slate-400 hover:text-slate-200"
+                ? "text-white font-medium"
+                : "text-slate-400 hover:text-white transition-colors"
             }`}
           >
             {mode === "signin" && (
               <motion.div
                 layoutId="activeToggle"
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="absolute inset-0 rounded-full bg-[#b59443]"
                 transition={{ type: "spring", duration: 0.5 }}
               />
             )}
@@ -65,16 +65,16 @@ export function AuthPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => toggleMode("signup")}
-            className={`relative rounded-full px-5 sm:px-6 lg:px-8 py-2.5 text-sm font-medium transition-all duration-300 cursor-pointer whitespace-nowrap ${
+            className={`relative rounded-full px-5 sm:px-6 lg:px-8 py-2.5 text-sm transition-all duration-300 cursor-pointer whitespace-nowrap ${
               mode === "signup"
-                ? "text-white"
-                : "text-slate-400 hover:text-slate-200"
+                ? "text-white font-medium"
+                : "text-slate-400 hover:text-white transition-colors"
             }`}
           >
             {mode === "signup" && (
               <motion.div
                 layoutId="activeToggle"
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600"
+                className="absolute inset-0 rounded-full bg-[#b59443]"
                 transition={{ type: "spring", duration: 0.5 }}
               />
             )}

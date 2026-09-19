@@ -114,7 +114,7 @@ export function SignInForm({ onToggle }) {
           <button
             onClick={handleResendVerification}
             disabled={isResending}
-            className="mt-2 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 disabled:opacity-50 transition-colors"
+            className="mt-2 flex items-center gap-2 text-[#cbb06b] hover:text-[#e4cf93] font-medium disabled:opacity-50 transition-colors"
           >
             <RefreshCw
               className={`h-4 w-4 ${isResending ? "animate-spin" : ""}`}
@@ -146,7 +146,7 @@ export function SignInForm({ onToggle }) {
                   email: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
               disabled={isLoading}
             />
           </div>
@@ -171,7 +171,7 @@ export function SignInForm({ onToggle }) {
                   password: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
               disabled={isLoading}
             />
 
@@ -207,7 +207,7 @@ export function SignInForm({ onToggle }) {
                     rememberMe: e.target.checked,
                   })
                 }
-                className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-slate-600 bg-slate-800/50 transition-all duration-200 checked:border-indigo-500 checked:bg-indigo-500 checked:shadow-lg checked:shadow-indigo-500/25 hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-slate-600 bg-slate-800/50 transition-all duration-200 checked:border-[#b59443] checked:bg-[#b59443] hover:border-slate-400 focus:outline-none focus:ring-1 focus:ring-[#b59443] focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={isLoading}
               />
               {/* Custom checkmark */}
@@ -228,7 +228,7 @@ export function SignInForm({ onToggle }) {
 
           <button
             type="button"
-            className="text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50 cursor-pointer"
+            className="text-sm text-[#cbb06b] hover:text-[#e4cf93] font-medium disabled:opacity-50 cursor-pointer"
             disabled={isLoading}
             onClick={() => setShowForgotPassword(true)}
           >
@@ -236,13 +236,13 @@ export function SignInForm({ onToggle }) {
           </button>
         </div>
 
-        {/* Sign In Button - Disabled when needs verification */}
+        {/* Sign In Button */}
         <motion.button
           whileHover={{ scale: isLoading ? 1 : 1.02 }}
           whileTap={{ scale: isLoading ? 1 : 0.98 }}
           type="submit"
           disabled={isLoading || (needsVerification && !isResending)}
-          className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 disabled:hover:scale-100"
+          className="w-full rounded-2xl cursor-pointer bg-[#b59443] hover:bg-[#a38339] active:bg-[#8f7230] py-3.5 text-sm font-medium text-white shadow-md transition-all disabled:opacity-70 disabled:hover:scale-100"
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
@@ -283,7 +283,7 @@ export function SignInForm({ onToggle }) {
           Don&apos;t have an account?{" "}
           <button
             onClick={onToggle}
-            className="font-medium text-indigo-400 hover:text-indigo-300 disabled:opacity-50 cursor-pointer"
+            className="font-medium text-[#cbb06b] hover:text-[#e4cf93] disabled:opacity-50 cursor-pointer"
             disabled={isLoading}
           >
             Sign Up
