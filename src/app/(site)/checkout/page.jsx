@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,11 +28,16 @@ export default function CheckoutPage() {
   const user = session?.user;
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
+  const [errors, setErrors] = useState({ fullName: "", email: "" });
   const [couponCode, setCouponCode] = useState("");
   const [couponError, setCouponError] = useState("");
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [orderData, setOrderData] = useState(null);
+
+  const fullNameInputRef = useRef(null);
+  const emailInputRef = useRef(null);
 
   const isAdmin = user?.role === "admin";
 
@@ -96,17 +101,26 @@ export default function CheckoutPage() {
     }
 
     if (!user) {
-      if (!guestName.trim()) {
-        toast.error("Please enter your full name");
-        return;
-      }
-      if (!guestEmail.trim()) {
-        toast.error("Please enter your email address for book delivery");
-        return;
-      }
+      const newErrors = { fullName: "", email: "" };
+      const trimmedName = guestName.trim();
+      const trimmedEmail = guestEmail.trim();
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(guestEmail.trim())) {
-        toast.error("Please enter a valid email address");
+
+      if (!trimmedName) {
+        newErrors.fullName = "Please enter your full name";
+      }
+
+      if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+        newErrors.email = "Please enter a valid email address";
+      }
+
+      if (newErrors.fullName || newErrors.email) {
+        setErrors(newErrors);
+        if (newErrors.fullName && fullNameInputRef.current) {
+          fullNameInputRef.current.focus();
+        } else if (newErrors.email && emailInputRef.current) {
+          emailInputRef.current.focus();
+        }
         return;
       }
     }
@@ -140,7 +154,8 @@ export default function CheckoutPage() {
       const checkoutUrl = paymentResponse?.checkoutUrl;
 
       if (checkoutUrl) {
-        toast.success("Redirecting to payment...");
+        setIsRedirecting(true);
+        toast.success("Redirecting to secure checkout...");
         clearCart();
         window.location.href = checkoutUrl;
         return;
@@ -152,12 +167,14 @@ export default function CheckoutPage() {
         toast.success("Order created, payment pending");
         router.push(`/payment/pending?orderId=${orderId}`);
       } else {
+        setIsRedirecting(true);
         toast.success("Order created successfully");
         clearCart();
         router.push(`/payment/success?orderId=${orderId}`);
       }
     } catch (error) {
       console.error("Order creation error:", error);
+      setIsRedirecting(false);
       toast.error(
         error.response?.data?.message ||
         error.message ||
@@ -176,7 +193,20 @@ export default function CheckoutPage() {
     );
   }
 
-  if (cartItems.length === 0) {
+  // Smooth Redirecting Overlay when preparing redirect to payment
+  if (isRedirecting) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
+        <div className="w-10 h-10 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-sm font-semibold text-slate-700">
+          Redirecting to secure checkout...
+        </p>
+      </div>
+    );
+  }
+
+  // Only show empty cart when NOT redirecting and NOT processing payment
+  if (!isRedirecting && !isProcessing && cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-[#F8F5EF] pt-32 pb-24 px-4 sm:px-6">
         <div className="mx-auto max-w-md rounded-2xl bg-white p-8 text-center shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
@@ -215,52 +245,93 @@ export default function CheckoutPage() {
           <div className="lg:col-span-2 space-y-6">
             {/* Customer Information Card */}
             <div className="rounded-2xl bg-white p-6 sm:p-7 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
-              <h2 className="text-xl font-semibold text-[#1B2B4B] mb-6">
-                Customer Information
-              </h2>
               {user ? (
-                <div className="space-y-5">
-                  <div>
-                    <Label className="text-sm font-medium text-[#1B2B4B]">
-                      Email Address
-                    </Label>
-                    <Input
-                      value={user.email || "user@example.com"}
-                      disabled
-                      className="bg-[#F8F5EF] cursor-not-allowed h-12 mt-1.5"
-                    />
+                <>
+                  <h2 className="text-xl font-semibold text-[#1B2B4B] mb-6">
+                    Customer Information
+                  </h2>
+                  <div className="space-y-5">
+                    <div>
+                      <Label className="text-sm font-medium text-[#1B2B4B]">
+                        Email Address
+                      </Label>
+                      <Input
+                        value={user.email || "user@example.com"}
+                        disabled
+                        className="bg-[#F8F5EF] cursor-not-allowed h-12 mt-1.5"
+                      />
+                    </div>
                   </div>
-                </div>
+                </>
               ) : (
-                <div className="space-y-5">
+                <>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-slate-800">Customer Information</h3>
+                    <Link className="text-xs sm:text-sm text-amber-600 hover:text-amber-700 font-medium underline" href="/auth?redirect=/checkout">
+                      Already have an account? Log In
+                    </Link>
+                  </div>
+                  <div className="space-y-5">
                   <div>
                     <Label className="text-sm font-medium text-[#1B2B4B]">
                       Full Name <span className="text-red-500">*</span>
                     </Label>
                     <Input
+                      ref={fullNameInputRef}
                       placeholder="Enter Your Full Name"
                       value={guestName}
-                      onChange={(e) => setGuestName(e.target.value)}
-                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C] h-12 mt-1.5"
+                      onChange={(e) => {
+                        setGuestName(e.target.value);
+                        if (errors.fullName) {
+                          setErrors((prev) => ({ ...prev, fullName: "" }));
+                        }
+                      }}
+                      className={`bg-white h-12 mt-1.5 transition-colors ${
+                        errors.fullName
+                          ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                          : "border-slate-200 focus:border-amber-500"
+                      }`}
                     />
+                    {errors.fullName && (
+                      <p className="text-xs text-red-500 mt-1 font-medium">
+                        {errors.fullName}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-[#1B2B4B]">
                       Email Address <span className="text-red-500">*</span>
                     </Label>
                     <Input
+                      ref={emailInputRef}
                       type="email"
                       placeholder="Enter Your Email Address"
                       value={guestEmail}
-                      onChange={(e) => setGuestEmail(e.target.value)}
-                      className="bg-white border-[#1B2B4B]/20 focus:border-[#C9A84C] h-12 mt-1.5"
+                      onChange={(e) => {
+                        setGuestEmail(e.target.value);
+                        if (errors.email) {
+                          setErrors((prev) => ({ ...prev, email: "" }));
+                        }
+                      }}
+                      className={`bg-white h-12 mt-1.5 transition-colors ${
+                        errors.email
+                          ? "border-red-500 focus:border-red-500 focus:ring-red-200"
+                          : "border-slate-200 focus:border-amber-500"
+                      }`}
                     />
-                    <p className="text-xs text-[#1B2B4B]/60 mt-2">
-                      Your secure book download link and receipt will be delivered to this email.
-                    </p>
+                    {errors.email ? (
+                      <p className="text-xs text-red-500 mt-1 font-medium">
+                        {errors.email}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-[#1B2B4B]/60 mt-2">
+                        Your secure book download link and receipt will be delivered to this email.
+                      </p>
+                    )}
                   </div>
                 </div>
-              )}
+              </>
+            )}
             </div>
 
             {/* Coupon Section */}
@@ -437,6 +508,16 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      {/* Smooth Redirecting Overlay */}
+      {isRedirecting && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
+          <div className="w-10 h-10 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-sm font-semibold text-slate-700">
+            Redirecting to secure checkout...
+          </p>
+        </div>
+      )}
     </main>
   );
 }
