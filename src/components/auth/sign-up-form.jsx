@@ -141,7 +141,7 @@ export function SignUpForm({ onToggle }) {
                   name: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
               disabled={isLoading}
             />
           </div>
@@ -166,7 +166,7 @@ export function SignUpForm({ onToggle }) {
                   email: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
               disabled={isLoading}
             />
           </div>
@@ -191,7 +191,7 @@ export function SignUpForm({ onToggle }) {
                   password: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-12 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
               disabled={isLoading}
             />
 
@@ -229,7 +229,7 @@ export function SignUpForm({ onToggle }) {
                   confirmPassword: e.target.value,
                 })
               }
-              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/60 disabled:opacity-50"
+              className="w-full rounded-2xl border border-slate-700/60 bg-slate-800/60 py-3.5 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[#b59443] focus:outline-none focus:ring-1 focus:ring-[#b59443] disabled:opacity-50"
               disabled={isLoading}
             />
           </div>
@@ -247,7 +247,7 @@ export function SignUpForm({ onToggle }) {
           whileTap={{ scale: isLoading ? 1 : 0.98 }}
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-2xl cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-70 disabled:hover:scale-100"
+          className="w-full rounded-2xl cursor-pointer bg-[#b59443] hover:bg-[#a38339] active:bg-[#8f7230] py-3.5 text-sm font-medium text-white shadow-md transition-all disabled:opacity-70 disabled:hover:scale-100"
         >
           {isLoading ? (
             <span className="flex items-center justify-center gap-2">
@@ -287,7 +287,7 @@ export function SignUpForm({ onToggle }) {
           Already have an account?{" "}
           <button
             onClick={onToggle}
-            className="font-medium text-indigo-400 cursor-pointer hover:text-indigo-300"
+            className="font-medium text-[#cbb06b] hover:text-[#e4cf93] cursor-pointer"
             disabled={isLoading}
           >
             Sign In

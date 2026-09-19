@@ -135,11 +135,63 @@ export function CoachingClient({ initialContent }) {
               {overview.headline}
             </h2>
 
-            <div className="mt-6 space-y-5 text-base leading-8 text-[#1B2B4B]/70 sm:text-lg">
+            <div className="mt-6 space-y-6 text-base leading-8 text-[#1B2B4B]/70 sm:text-lg">
               {(overview.paragraphs?.length ? overview.paragraphs : fallbackOverview.paragraphs).map(
-                (p, idx) => (
-                  <p key={idx}>{p}</p>
-                )
+                (p, idx) => {
+                  if (!p) return null;
+                  const trimmed = typeof p === 'string' ? p.trim() : '';
+                  const isPricing =
+                    trimmed.toLowerCase().startsWith('costs:') ||
+                    trimmed.toLowerCase().startsWith('pricing:');
+
+                  if (isPricing) {
+                    const lines = trimmed
+                      .split('\n')
+                      .map((l) => l.trim())
+                      .filter(Boolean);
+                    const title = lines[0] || 'Costs:';
+                    const items = lines.slice(1);
+
+                    return (
+                      <div
+                        key={idx}
+                        className="my-6 rounded-2xl border border-[#C9A84C]/25 bg-[#F8F5EF] p-6 sm:p-8"
+                      >
+                        <h3 className="text-lg sm:text-xl font-bold text-[#1B2B4B]">
+                          {title}
+                        </h3>
+                        {items.length > 0 ? (
+                          <div className="mt-4 space-y-3">
+                            {items.map((item, itemIdx) => (
+                              <div
+                                key={itemIdx}
+                                className="flex items-start gap-3 rounded-xl border border-[#1B2B4B]/10 bg-white p-4 shadow-sm"
+                              >
+                                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#C9A84C]" />
+                                <p className="text-sm sm:text-base leading-relaxed text-[#1B2B4B]/80 font-medium">
+                                  {item}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="mt-3 whitespace-pre-line text-slate-700 leading-relaxed">
+                            {trimmed}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div
+                      key={idx}
+                      className="whitespace-pre-line text-slate-700 leading-relaxed"
+                    >
+                      {p}
+                    </div>
+                  );
+                }
               )}
 
               {/* Five Domains Framework Subsection */}
@@ -175,9 +227,9 @@ export function CoachingClient({ initialContent }) {
               </section>
 
               {/* Assessment Connection Note */}
-              <p className="pt-2">
+              <div className="pt-2 whitespace-pre-line text-slate-700 leading-relaxed">
                 {assessmentNote.noteText}
-              </p>
+              </div>
             </div>
 
             {/* Eligibility Checklist Box */}
