@@ -1,26 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   useBookReviews,
   useReviewSummary,
   useMyReview,
 } from "../hooks/useReviews";
+import { useCheckPurchase } from "@/features/purchases/hooks/usePurchase";
 import { ReviewSummary } from "./ReviewSummary";
 import { ReviewList } from "./ReviewList";
 import { ReviewPagination } from "./ReviewPagination";
 import { ReviewSkeleton } from "./ReviewSkeleton";
 import { MyReviewSection } from "./MyReviewSection";
 import { useSession } from "@/hooks/useSession";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
-export const ReviewSection = ({ bookId, bookSlug = "", showReviewForm = true }) => {
+export const ReviewSection = ({ bookId, showReviewForm = true }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 5;
 
   const { session } = useSession();
   const isAuthenticated = !!session?.user;
+  const isAdmin = session?.user?.role === "admin";
+
+  // Check purchase status for authenticated non-admin users
+  const {
+    data: purchaseData,
+    isLoading: purchaseLoading,
+  } = useCheckPurchase(bookId, isAuthenticated && !isAdmin);
+
+  const hasPurchased = purchaseData?.hasPurchased || false;
 
   // Fetch review summary
   const {
@@ -55,7 +63,6 @@ export const ReviewSection = ({ bookId, bookSlug = "", showReviewForm = true }) 
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Scroll to top of review section on page change
     const reviewElement = document.getElementById("reviews-section");
     if (reviewElement) {
       reviewElement.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -97,6 +104,12 @@ export const ReviewSection = ({ bookId, bookSlug = "", showReviewForm = true }) 
     return null;
   }
 
+  // Only surface review actions if user is authenticated AND (is a verified buyer or already has a review)
+  const shouldRenderMyReview =
+    isAuthenticated &&
+    showReviewForm &&
+    (hasPurchased || !!myReviewData?.data);
+
   return (
     <div id="reviews-section" className="py-6 sm:py-8">
       {/* Customer Reviews Header */}
@@ -107,35 +120,21 @@ export const ReviewSection = ({ bookId, bookSlug = "", showReviewForm = true }) 
       {/* Review Summary */}
       <ReviewSummary summary={summary} totalReviews={totalReviews} />
 
-      {/* Thin Divider */}
-      <div className="border-t border-[#1B2B4B]/10 my-4 sm:my-6" />
-
-      {/* My Review Section (if user is authenticated) */}
-      {isAuthenticated && showReviewForm && (
-        <MyReviewSection
-          bookId={bookId}
-          myReview={myReviewData?.data || null}
-          isLoading={myReviewLoading}
-          onReviewUpdate={handleReviewUpdate}
-        />
-      )}
-
-      {/* Guest Prompt to Sign in & Review */}
-      {!isAuthenticated && (
-        <div className="py-4 px-5 my-4 rounded-xl bg-white border border-[#1B2B4B]/10 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-          <div>
-            <h4 className="font-semibold text-[#1B2B4B] text-base">Have you read this book?</h4>
-            <p className="text-sm text-[#1B2B4B]/70 mt-0.5">
-              Sign in to rate this book and submit your review.
-            </p>
-          </div>
-          <Link href={`/auth?redirect=/books/${bookSlug || ""}`}>
-            <Button className="bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] font-semibold whitespace-nowrap cursor-pointer">
-              Sign in to Write a Review
-            </Button>
-          </Link>
+      {/* My Review Section (only for verified buyers or existing reviews) */}
+      {shouldRenderMyReview && (
+        <div className="pt-5 sm:pt-6 border-t border-[#1B2B4B]/10 mt-5 sm:mt-6">
+          <MyReviewSection
+            bookId={bookId}
+            hasPurchased={hasPurchased}
+            myReview={myReviewData?.data || null}
+            isLoading={myReviewLoading || purchaseLoading}
+            onReviewUpdate={handleReviewUpdate}
+          />
         </div>
       )}
+
+      {/* Thin Divider before reviews list */}
+      <div className="border-t border-[#1B2B4B]/10 my-6 sm:my-8" />
 
       {/* Review List */}
       {reviews.length > 0 ? (

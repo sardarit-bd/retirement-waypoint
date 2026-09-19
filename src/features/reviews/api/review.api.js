@@ -85,6 +85,7 @@ class ReviewApi {
     if (params.search) queryParams.append('search', params.search);
     if (params.rating) queryParams.append('rating', params.rating);
     if (params.approved !== undefined) queryParams.append('approved', params.approved);
+    if (params.status) queryParams.append('status', params.status);
     if (params.bookId) queryParams.append('bookId', params.bookId);
     if (params.userId) queryParams.append('userId', params.userId);
     if (params.sortBy) queryParams.append('sortBy', params.sortBy);
@@ -95,6 +96,16 @@ class ReviewApi {
       : `${this.baseUrl}/admin/reviews`;
 
     const response = await axios.get(url, { withCredentials: true });
+    return response.data;
+  }
+
+  // Admin update review status (APPROVED or REJECTED)
+  async adminUpdateReviewStatus(reviewId, status) {
+    const response = await axios.patch(
+      `${this.baseUrl}/admin/reviews/${reviewId}/status`,
+      { status },
+      { withCredentials: true }
+    );
     return response.data;
   }
 
@@ -135,7 +146,6 @@ class ReviewApi {
     );
     return response.data;
   }
-
 }
 
 export const reviewApi = new ReviewApi();

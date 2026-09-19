@@ -36,6 +36,25 @@ class PaymentApi {
 
     return response.data.data;
   }
+
+  /**
+   * Verify session after checkout redirect and retrieve download info
+   * @param {string} orderId - The order ID
+   * @param {string} sessionId - The Stripe session ID
+   * @returns {Promise<any>}
+   */
+  async verifySession(orderId, sessionId) {
+    const params = new URLSearchParams();
+    if (orderId) params.append("orderId", orderId);
+    if (sessionId) params.append("session_id", sessionId);
+
+    const response = await axios.get(
+      `${this.baseUrl}/verify-session?${params.toString()}`,
+      { withCredentials: true }
+    );
+
+    return response.data.data;
+  }
 }
 
 export const paymentApi = new PaymentApi();

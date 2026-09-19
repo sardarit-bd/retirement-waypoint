@@ -146,6 +146,26 @@ export function useAdminApproveReview() {
   });
 }
 
+// Admin: Update review status
+export function useAdminUpdateReviewStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ reviewId, status }) =>
+      reviewApi.adminUpdateReviewStatus(reviewId, status),
+    onSuccess: (_, { status }) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-review'] });
+      toast.success(`Review marked as ${status} successfully`);
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.message || 'Failed to update review status'
+      );
+    },
+  });
+}
+
 // Admin: Reject review
 export function useAdminRejectReview() {
   const queryClient = useQueryClient();
