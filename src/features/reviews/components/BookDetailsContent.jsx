@@ -28,12 +28,14 @@ import { useCheckPurchase } from "@/features/purchases/hooks/usePurchase";
 import { useSession } from "@/hooks/useSession";
 import { BookCTA } from "@/components/book/Book-Cta";
 import { BookPreviewModal } from "@/components/book/BookPreviewModal";
+import { useCart } from "@/context/CartContext";
 
 export const BookDetailsContent = ({ book }) => {
   const router = useRouter();
   const [imageError, setImageError] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const { addToCart } = useCart();
   const { books: featuredBooks, loading: featuredLoading } =
     useFeaturedBooks(4);
   const { session, isLoading: sessionLoading } = useSession();
@@ -70,7 +72,7 @@ export const BookDetailsContent = ({ book }) => {
 
   const publishedDate = formatDate(book.publishedAt);
 
-  const handleBuyNow = async () => {
+  const handleBuyNow = () => {
     if (isAdmin) {
       toast.error("Administrators cannot purchase their own books.");
       return;
@@ -81,65 +83,8 @@ export const BookDetailsContent = ({ book }) => {
       return;
     }
 
-    if (!isAuthenticated) {
-      toast.error("Please login to purchase this book");
-      router.push("/auth");
-      return;
-    }
-
-    setIsPurchasing(true);
-
-    try {
-      // Step 1: Create order
-      const orderPayload = {
-        items: [
-          {
-            bookId: book._id,
-            quantity: 1,
-            price: book.price,
-          },
-        ],
-      };
-
-      const orderResponse = await orderApi.createOrder(orderPayload);
-
-      // Extract order data (handle different response structures)
-      const orderData = orderResponse.data || orderResponse;
-      const orderId = orderData._id;
-
-      if (!orderId) {
-        throw new Error("Failed to create order: No order ID returned");
-      }
-
-      // Step 2: Create Stripe Checkout Session
-      const paymentResponse = await paymentApi.createCheckoutSession(orderId);
-
-      // Extract checkout URL
-      const checkoutUrl = paymentResponse.checkoutUrl;
-
-      if (!checkoutUrl) {
-        throw new Error(
-          "Failed to create payment session: No checkout URL returned",
-        );
-      }
-
-      // Step 3: Redirect to Stripe Checkout
-      toast.success("Redirecting to payment...");
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      console.error("Purchase error:", error);
-
-      // Handle specific error cases
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else if (error.message) {
-        toast.error(error.message);
-      } else {
-        toast.error("Failed to process purchase. Please try again.");
-      }
-    } finally {
-      setIsPurchasing(false);
-    }
+    addToCart(book);
+    router.push("/checkout");
   };
 
   const handleReadNow = () => {
@@ -324,9 +269,9 @@ export const BookDetailsContent = ({ book }) => {
             </div>
           </div>
 
-          {/* Reviews Section - Show review form only if user has purchased */}
+          {/* Reviews Section */}
           <div className="mt-12 sm:mt-14 md:mt-16">
-            <ReviewSection bookId={book._id} showReviewForm={hasPurchased} />
+            <ReviewSection bookId={book._id} bookSlug={book.slug} showReviewForm={true} />
           </div>
         </div>
       </div>

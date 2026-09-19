@@ -1,6 +1,6 @@
 "use client";
 
-import { Star, ShieldCheck } from "lucide-react";
+import { Star, CheckCircle2 } from "lucide-react";
 import { ReviewAvatar } from "./ReviewAvatar";
 
 export const ReviewItem = ({ review }) => {
@@ -40,10 +40,10 @@ export const ReviewItem = ({ review }) => {
                 {userName}
               </span>
               {isVerifiedPurchase && (
-                <div className="flex items-center gap-0.5 sm:gap-1 text-[10px] sm:text-xs text-green-600">
-                  <ShieldCheck className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                  <span>Verified Purchase</span>
-                </div>
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                  <span>Verified Buyer</span>
+                </span>
               )}
             </div>
 

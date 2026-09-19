@@ -81,8 +81,18 @@ const Navbar = () => {
   const isBookDetailsPage =
     pathname.startsWith("/book/") && pathname !== "/book";
 
+  const lightBgRoutes = [
+    "/checkout",
+    "/payment/success",
+    "/payment/cancel",
+    "/payment/pending",
+  ];
+  const isLightPage = lightBgRoutes.some((route) =>
+    pathname?.startsWith(route)
+  );
+
   useEffect(() => {
-    if (isBookDetailsPage) {
+    if (isBookDetailsPage || isLightPage) {
       setDarkNavbar(true);
       return;
     }
@@ -113,7 +123,7 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleNavbarColor);
       window.removeEventListener("resize", handleNavbarColor);
     };
-  }, [pathname, isBookDetailsPage]);
+  }, [pathname, isBookDetailsPage, isLightPage]);
 
   // ============================================================
   // HANDLERS

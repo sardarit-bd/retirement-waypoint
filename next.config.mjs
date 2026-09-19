@@ -40,6 +40,16 @@ const nextConfig = {
         destination: "/assessment/:slug*",
         permanent: true,
       },
+      {
+        source: "/books",
+        destination: "/book",
+        permanent: true,
+      },
+      {
+        source: "/books/:slug*",
+        destination: "/book/:slug*",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

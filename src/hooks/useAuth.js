@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, signUp, signOut } from "@/lib/auth-client";
 import { useSession } from "@/hooks/useSession";
 import toast from "react-hot-toast";
 
 export function useAuth() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const {
     session,
@@ -56,8 +57,10 @@ export function useAuth() {
                   position: "top-right",
                 });
 
+                const redirectUrl = searchParams?.get("redirect");
                 const destination =
-                  user?.role === "admin" ? "/admin" : "/dashboard";
+                  redirectUrl ||
+                  (user?.role === "admin" ? "/admin" : "/dashboard");
                 router.replace(destination);
 
                 router.refresh();
@@ -99,7 +102,7 @@ export function useAuth() {
         setIsLoading(false);
       }
     },
-    [router, refetchSession],
+    [router, refetchSession, searchParams],
   );
 
   const register = useCallback(
@@ -223,9 +226,14 @@ export function useAuth() {
     setError(null);
 
     try {
+      const redirectUrl = searchParams?.get("redirect");
+      const callbackURL = redirectUrl
+        ? `/auth/callback?redirect=${encodeURIComponent(redirectUrl)}`
+        : "/auth/callback";
+
       await signIn.social({
         provider: "google",
-        callbackURL: "/auth/callback",
+        callbackURL,
       });
     } catch (err) {
       const errorMessage =
@@ -239,7 +247,7 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [searchParams]);
 
   const resendVerification = useCallback(async (email) => {
     setIsLoading(true);

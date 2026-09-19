@@ -67,11 +67,11 @@ export const BookStore = ({
   }
 
   return (
-    <section id="book-store" className="px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+    <section id="book-store" className="scroll-mt-28 px-4 pb-20 pt-8 sm:pt-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div className="mb-8 sm:mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <h2 className="text-3xl font-semibold text-[#1B2B4B]">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#1B2B4B]">
               Explore Books
             </h2>
 
@@ -83,7 +83,7 @@ export const BookStore = ({
 
           <Button
             variant="ghost"
-            className="group w-full cursor-pointer rounded-full bg-[#C9A84C] px-6 py-4 font-semibold text-sm! text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-lg"
+            className="group w-full cursor-pointer rounded-full bg-[#C9A84C] px-6 py-3 sm:py-4 font-semibold text-sm text-[#04103A] shadow-xl transition-all duration-300 hover:bg-[#04103A] hover:text-white hover:shadow-2xl sm:w-auto md:text-base"
             asChild
           >
             <Link
@@ -92,20 +92,25 @@ export const BookStore = ({
             >
               <span>Take Assessment</span>
 
-              <ArrowRight className="ml-2 h-5 w-5 transition-all duration-300 group-hover:translate-x-2" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 group-hover:translate-x-2" />
             </Link>
           </Button>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-6 lg:gap-8 max-w-6xl mx-auto px-4 sm:px-6">
           {books.map((book) => (
-            <BookCard key={book._id} book={book} />
+            <div
+              key={book._id}
+              className="w-full sm:w-[calc(50%-1.5rem)] lg:w-[320px] max-w-[340px] flex"
+            >
+              <BookCard book={book} />
+            </div>
           ))}
         </div>
 
         {loading && books.length > 0 && (
           <div className="mt-8">
-            <BookSkeleton count={2} />
+            <BookSkeleton count={3} />
           </div>
         )}
 
