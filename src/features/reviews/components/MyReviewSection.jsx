@@ -18,6 +18,11 @@ export const MyReviewSection = ({
   myReview,
   isLoading,
   onReviewUpdate,
+  guestMode = false,
+  guestName = "",
+  guestToken = null,
+  guestOrderId = null,
+  onGuestSuccess,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [rating, setRating] = useState(myReview?.rating || 0);
@@ -65,6 +70,9 @@ export const MyReviewSection = ({
       rating,
       title: title.trim(),
       comment: description.trim(),
+      ...(guestMode && guestToken && guestOrderId
+        ? { reviewToken: guestToken, orderId: guestOrderId }
+        : {}),
     };
 
     try {
@@ -77,6 +85,9 @@ export const MyReviewSection = ({
       } else {
         await createReview.mutateAsync(data);
         setIsEditing(false);
+        if (guestMode) {
+          onGuestSuccess?.();
+        }
       }
       onReviewUpdate?.();
     } catch (error) {
@@ -207,15 +218,19 @@ export const MyReviewSection = ({
 
   // 2. If user has NOT reviewed, check if they are a verified purchaser
   if (!hasReview && !isEditing) {
-    // If NOT purchased: hide "Write a Review" button completely
-    if (!hasPurchased) {
+    // If NOT purchased and not in guest mode: hide "Write a Review" button completely
+    if (!hasPurchased && !guestMode) {
       return null;
     }
 
-    // If purchased: Show "Write a Review" CTA
+    // If purchased or guest mode: Show "Write a Review" CTA
+    const bannerTitle = guestMode
+      ? `Verified Buyer: Welcome back, ${guestName || "Valued Reader"}! Share your feedback.`
+      : "Share your thoughts on this book";
+
     return (
       <div>
-        <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-[#FDFBF7] to-white border border-[#C9A84C]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+        <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-[#FDFBF7] to-white border border-[#C9A84C]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-4 w-4 text-[#C9A84C]" />
@@ -224,7 +239,7 @@ export const MyReviewSection = ({
               </span>
             </div>
             <h4 className="font-semibold text-[#1B2B4B] text-base">
-              Share your thoughts on this book
+              {bannerTitle}
             </h4>
             <p className="text-sm text-[#1B2B4B]/70">
               As a verified reader, your review helps others on their retirement journey.
@@ -241,7 +256,7 @@ export const MyReviewSection = ({
     );
   }
 
-  // 3. Review Create / Edit Form (only accessible if hasPurchased or editing existing review)
+  // 3. Review Create / Edit Form (only accessible if hasPurchased, guestMode, or editing existing review)
   if (isEditing) {
     return (
       <div>
@@ -264,6 +279,24 @@ export const MyReviewSection = ({
               <X className="h-4 w-4" />
             </button>
           </div>
+
+          {/* Guest Name Input (Read-only for verified guest) */}
+          {guestMode && (
+            <div>
+              <label className="block text-xs font-medium text-[#1B2B4B]/70 mb-1.5">
+                Reviewer Name
+              </label>
+              <Input
+                value={guestName || "Verified Reader"}
+                disabled
+                readOnly
+                className="bg-slate-50 text-slate-700 border-[#1B2B4B]/20 text-sm cursor-not-allowed font-medium"
+              />
+              <p className="text-[11px] text-[#1B2B4B]/50 mt-1">
+                Verified from your order confirmation.
+              </p>
+            </div>
+          )}
 
           {/* Star Rating Selector */}
           <div>

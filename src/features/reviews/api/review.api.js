@@ -39,6 +39,18 @@ class ReviewApi {
     return response.data;
   }
 
+  // Verify guest review token
+  async verifyToken({ token, orderId, bookId }) {
+    const queryParams = new URLSearchParams({ token, orderId });
+    if (bookId) queryParams.append("bookId", bookId);
+
+    const response = await axios.get(
+      `${this.baseUrl}/verify-token?${queryParams.toString()}`
+    );
+
+    return response.data;
+  }
+
   // Create review
   async createReview(data) {
     const response = await axios.post(

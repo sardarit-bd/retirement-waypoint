@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, BookOpen, ShoppingBag, Download, Loader2, FileText, ShieldCheck } from "lucide-react";
+import { CheckCircle, BookOpen, ShoppingBag, Download, Loader2, FileText, ShieldCheck, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/useSession";
 import { paymentApi } from "@/features/payments/api/payment.api";
@@ -143,6 +143,35 @@ export default function PaymentSuccessPage() {
               </div>
             </div>
           ) : null}
+
+          {/* Review Invitation Card */}
+          {orderInfo?.reviewToken && orderInfo?.book?.slug && !orderInfo?.isReviewSubmitted && (
+            <div className="rounded-xl bg-gradient-to-br from-[#FDFBF7] to-white p-5 text-left border border-[#C9A84C]/30 shadow-sm space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-full bg-[#C9A84C]/15 p-1.5 text-[#C9A84C]">
+                  <Star className="h-4 w-4 fill-[#C9A84C]" />
+                </div>
+                <h3 className="font-semibold text-sm sm:text-base text-[#1B2B4B]">
+                  Enjoyed your purchase?
+                </h3>
+              </div>
+              <p className="text-xs sm:text-sm text-[#1B2B4B]/70 leading-relaxed">
+                Leave a review for fellow readers! Share your insights to help others on their retirement journey.
+              </p>
+              <Link
+                href={`/books/${orderInfo.book.slug}?reviewToken=${orderInfo.reviewToken}&orderId=${orderId || orderInfo.orderId}#reviews`}
+                className="block"
+              >
+                <Button
+                  variant="outline"
+                  className="w-full h-11 border-[#1B2B4B]/20 text-[#1B2B4B] hover:bg-[#1B2B4B] hover:text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
+                >
+                  <Star className="mr-1.5 h-3.5 w-3.5 fill-current" />
+                  Write a Review
+                </Button>
+              </Link>
+            </div>
+          )}
 
           {/* User Library Navigation */}
           {isAuthenticated && (
