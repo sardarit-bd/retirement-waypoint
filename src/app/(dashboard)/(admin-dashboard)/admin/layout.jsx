@@ -37,9 +37,9 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F5EF] relative overflow-hidden">
+    <div className="min-h-screen bg-[#F8F5EF] relative overflow-x-hidden">
       {/* Background Decorative Elements */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-[#C9A84C]/5 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-[#1B2B4B]/5 blur-3xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[800px] w-[800px] rounded-full bg-[#C9A84C]/3 blur-3xl" />
