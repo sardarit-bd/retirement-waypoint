@@ -39,7 +39,7 @@ const NamePage = ({
           </p>
 
           <label className="mb-2 block text-sm font-semibold text-white/70">
-            Your Name (To be added to your report)
+            Your Name (Optional - to be added to your report)
           </label>
           <input
             className={`mb-1 w-full rounded-xl border bg-white/10 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:ring-2 ${
