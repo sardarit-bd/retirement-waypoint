@@ -34,7 +34,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const validateName = (value) => {
   const trimmed = (value || "").trim();
-  if (!trimmed) return "Name is required.";
+  if (!trimmed) return "";
   if (trimmed.length < 2) return "Name must be at least 2 characters.";
   if (trimmed.length > 100) return "Name must be at most 100 characters.";
   if (!NAME_REGEX.test(trimmed)) {
@@ -83,6 +83,7 @@ export default function AssessmentForm({ assessment }) {
           (parsed.user?.name && parsed.screen && parsed.screen !== "cover");
 
         if (hasProgress && parsed.screen !== "results") {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setDraftData(parsed);
           setHasDraft(true);
         }
@@ -266,7 +267,7 @@ export default function AssessmentForm({ assessment }) {
 
     // 3. Build participant object
     const participant = {
-      name: user.name.trim(),
+      name: user.name.trim() || 'Participant',
       email: (user.email || '').trim().toLowerCase(),
     };
 
