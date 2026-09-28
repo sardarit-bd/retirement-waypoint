@@ -55,6 +55,37 @@ class PaymentApi {
 
     return response.data.data;
   }
+
+  /**
+   * Create PayPal Order for an internal order
+   * @param {string} orderId - The internal order ID
+   * @returns {Promise<{paypalOrderId: string, orderId: string, orderNumber: string, totalAmount: number}>}
+   */
+  async createPayPalOrder(orderId) {
+    const response = await axios.post(
+      `${this.baseUrl}/paypal/create-order`,
+      { orderId },
+      { withCredentials: true }
+    );
+
+    return response.data.data;
+  }
+
+  /**
+   * Capture PayPal Order payment after buyer approval
+   * @param {string} paypalOrderId - The PayPal Order ID from SDK
+   * @param {string} orderId - The internal order ID
+   * @returns {Promise<any>}
+   */
+  async capturePayPalOrder(paypalOrderId, orderId) {
+    const response = await axios.post(
+      `${this.baseUrl}/paypal/capture-order`,
+      { paypalOrderId, orderId },
+      { withCredentials: true }
+    );
+
+    return response.data.data;
+  }
 }
 
 export const paymentApi = new PaymentApi();

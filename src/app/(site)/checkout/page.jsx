@@ -20,6 +20,7 @@ import { orderApi } from "@/features/orders/api/order.api";
 import { couponApi } from "@/features/coupons/api/coupon.api";
 import { paymentApi } from "@/features/payments/api/payment.api";
 import { useSession } from "@/hooks/useSession";
+import PayPalButtonsContainer from "@/components/payment/PayPalButtonsContainer";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -35,6 +36,9 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [orderData, setOrderData] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
+  const [pendingOrderId, setPendingOrderId] = useState(null);
+  const isPayPalEnabled = process.env.NEXT_PUBLIC_ENABLE_PAYPAL !== "false";
 
   const fullNameInputRef = useRef(null);
   const emailInputRef = useRef(null);
@@ -89,15 +93,15 @@ export default function CheckoutPage() {
     }
   };
 
-  const handleCompletePayment = async () => {
+  const validateFormInputs = () => {
     if (isAdmin) {
       toast.error("Administrators cannot purchase their own books.");
-      return;
+      return false;
     }
 
     if (cartItems.length === 0) {
       toast.error("Your cart is empty");
-      return;
+      return false;
     }
 
     if (!user) {
@@ -121,24 +125,32 @@ export default function CheckoutPage() {
         } else if (newErrors.email && emailInputRef.current) {
           emailInputRef.current.focus();
         }
-        return;
+        return false;
       }
+    }
+    return true;
+  };
+
+  const buildOrderPayload = () => ({
+    items: cartItems.map((item) => ({
+      bookId: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    })),
+    guestName: !user ? guestName.trim() : undefined,
+    guestEmail: !user ? guestEmail.trim().toLowerCase() : undefined,
+    couponCode: orderData?.discount > 0 ? (orderData?.coupon?.code || couponCode.trim()) : undefined,
+  });
+
+  const handleCompletePayment = async () => {
+    if (!validateFormInputs()) {
+      return;
     }
 
     setIsProcessing(true);
 
     try {
-      // Prepare order data matching backend expectations
-      const orderPayload = {
-        items: cartItems.map((item) => ({
-          bookId: item.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-        guestName: !user ? guestName.trim() : undefined,
-        guestEmail: !user ? guestEmail.trim().toLowerCase() : undefined,
-        couponCode: orderData?.discount > 0 ? (orderData?.coupon?.code || couponCode.trim()) : undefined,
-      };
+      const orderPayload = buildOrderPayload();
 
       // Call Create Order API
       const response = await orderApi.createOrder(orderPayload);
@@ -179,6 +191,50 @@ export default function CheckoutPage() {
         error.response?.data?.message ||
         error.message ||
         "Failed to create order. Please try again.",
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleCreatePayPalOrder = async () => {
+    const orderPayload = buildOrderPayload();
+    const response = await orderApi.createOrder(orderPayload);
+    const createdOrder = response.data || response;
+    const orderId = createdOrder._id;
+
+    if (!orderId) {
+      throw new Error("Failed to create order: No order ID returned");
+    }
+
+    setPendingOrderId(orderId);
+
+    const paymentResponse = await paymentApi.createPayPalOrder(orderId);
+    return paymentResponse.paypalOrderId;
+  };
+
+  const handleApprovePayPalPayment = async (data) => {
+    setIsProcessing(true);
+    try {
+      const targetOrderId = pendingOrderId || data.orderID;
+      const captureResult = await paymentApi.capturePayPalOrder(
+        data.orderID,
+        targetOrderId
+      );
+
+      toast.success("Payment completed successfully!");
+      clearCart();
+
+      const token = captureResult?.downloadToken || "";
+      const orderId = captureResult?.orderId || targetOrderId;
+
+      router.push(`/payment/success?orderId=${orderId}${token ? `&token=${token}` : ""}`);
+    } catch (err) {
+      console.error("PayPal capture error:", err);
+      toast.error(
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to finalize PayPal payment. Please check your account."
       );
     } finally {
       setIsProcessing(false);
@@ -468,38 +524,113 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Method */}
-              <div className="mt-6 rounded-lg bg-[#F8F5EF] p-4 space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <CreditCard className="h-4 w-4 text-[#1B2B4B]" />
-                  <span className="font-medium text-[#1B2B4B]">Payment Method</span>
+              {/* Payment Method Selection */}
+              <div className="mt-6 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-[#1B2B4B]">Payment Method</span>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Shield className="h-3.5 w-3.5 text-emerald-600" />
+                    <span>256-bit Encrypted</span>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground">Credit / Debit Card</p>
-                <p className="text-xs text-muted-foreground">Powered by Stripe</p>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Shield className="h-3 w-3" />
-                  <span>Secure payment</span>
+
+                <div className="grid grid-cols-1 gap-2.5">
+                  {/* Option 1: Credit / Debit Card (Stripe) */}
+                  <div
+                    onClick={() => setPaymentMethod("stripe")}
+                    className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      paymentMethod === "stripe"
+                        ? "border-[#C9A84C] bg-[#FDFBF7] shadow-sm"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`h-4 w-4 rounded-full border flex items-center justify-center ${
+                          paymentMethod === "stripe"
+                            ? "border-[#C9A84C] bg-[#C9A84C]"
+                            : "border-slate-300"
+                        }`}
+                      >
+                        {paymentMethod === "stripe" && (
+                          <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-[#1B2B4B]">Credit / Debit Card</p>
+                        <p className="text-xs text-muted-foreground">Visa, Mastercard, Amex via Stripe</p>
+                      </div>
+                    </div>
+                    <CreditCard className="h-5 w-5 text-slate-500" />
+                  </div>
+
+                  {/* Option 2: PayPal */}
+                  {isPayPalEnabled && (
+                    <div
+                      onClick={() => setPaymentMethod("paypal")}
+                      className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                        paymentMethod === "paypal"
+                          ? "border-[#C9A84C] bg-[#FDFBF7] shadow-sm"
+                          : "border-slate-200 bg-white hover:border-slate-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`h-4 w-4 rounded-full border flex items-center justify-center ${
+                            paymentMethod === "paypal"
+                              ? "border-[#C9A84C] bg-[#C9A84C]"
+                              : "border-slate-300"
+                          }`}
+                        >
+                          {paymentMethod === "paypal" && (
+                            <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-[#1B2B4B]">PayPal</p>
+                          <p className="text-xs text-muted-foreground">Pay with PayPal wallet, bank, or card</p>
+                        </div>
+                      </div>
+                      <div className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs tracking-tight">
+                        PayPal
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Complete Payment Button */}
-              <Button
-                onClick={handleCompletePayment}
-                disabled={isProcessing || cartItems.length === 0}
-                className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12 text-base font-bold mt-6"
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Processing...
-                  </>
+              {/* Action Buttons: Stripe or PayPal */}
+              <div className="mt-6">
+                {paymentMethod === "stripe" ? (
+                  <Button
+                    onClick={handleCompletePayment}
+                    disabled={isProcessing || cartItems.length === 0}
+                    className="w-full bg-[#C9A84C] text-[#1B2B4B] hover:bg-[#D6B45A] h-12 text-base font-bold cursor-pointer"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="mr-2 h-5 w-5" />
+                        Complete Payment
+                      </>
+                    )}
+                  </Button>
                 ) : (
-                  <>
-                    <Lock className="mr-2 h-5 w-5" />
-                    Complete Payment
-                  </>
+                  <PayPalButtonsContainer
+                    disabled={isProcessing || cartItems.length === 0}
+                    isProcessing={isProcessing}
+                    onBeforeCreate={validateFormInputs}
+                    onCreateOrder={handleCreatePayPalOrder}
+                    onApprovePayment={handleApprovePayPalPayment}
+                    onCancelPayment={() => toast.error("PayPal checkout was cancelled")}
+                    onErrorPayment={(msg) => toast.error(msg || "PayPal payment failed")}
+                  />
                 )}
-              </Button>
+              </div>
 
               <p className="text-center text-xs text-muted-foreground mt-4">
                 Your payment is secure and encrypted
