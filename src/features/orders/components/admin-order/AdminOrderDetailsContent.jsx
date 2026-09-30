@@ -346,19 +346,22 @@ export function AdminOrderDetailsContent({ order, isLoading }) {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-[#1B2B4B]/60">Method</span>
-                  <span className="font-medium text-[#1B2B4B]">
-                    {order.paymentMethod || 'Stripe'}
+                  <span className="font-medium text-[#1B2B4B] capitalize">
+                    {order.paymentMethod === 'paypal' ? 'PayPal' : order.paymentMethod || 'Stripe'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#1B2B4B]/60">Status</span>
                   <OrderStatusBadge status={order.paymentStatus} type="payment" />
                 </div>
-                {order.stripePaymentIntentId && (
+                {(order.paypalCaptureId || order.stripePaymentIntentId || order.paypalOrderId) && (
                   <div className="flex justify-between">
                     <span className="text-[#1B2B4B]/60">Transaction ID</span>
-                    <span className="text-xs font-mono text-[#1B2B4B] truncate max-w-[140px]">
-                      {order.stripePaymentIntentId}
+                    <span
+                      className="text-xs font-mono text-[#1B2B4B] truncate max-w-[140px]"
+                      title={order.paypalCaptureId || order.stripePaymentIntentId || order.paypalOrderId}
+                    >
+                      {order.paypalCaptureId || order.stripePaymentIntentId || order.paypalOrderId}
                     </span>
                   </div>
                 )}

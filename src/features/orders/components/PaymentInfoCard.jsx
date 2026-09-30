@@ -33,16 +33,19 @@ export function PaymentInfoCard({ order }) {
 
         <div className="flex items-center justify-between">
           <span className="text-sm text-[#1B2B4B]/60">Method</span>
-          <span className="text-sm font-medium text-[#1B2B4B]">
-            {order.paymentMethod || 'Stripe'}
+          <span className="text-sm font-medium text-[#1B2B4B] capitalize">
+            {order.paymentMethod === 'paypal' ? 'PayPal' : order.paymentMethod || 'Stripe'}
           </span>
         </div>
 
-        {order.stripePaymentIntentId && (
+        {(order.paypalCaptureId || order.stripePaymentIntentId || order.paypalOrderId) && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-[#1B2B4B]/60">Transaction ID</span>
-            <span className="text-xs font-mono text-[#1B2B4B] truncate max-w-[140px]">
-              {order.stripePaymentIntentId}
+            <span
+              className="text-xs font-mono text-[#1B2B4B] truncate max-w-[140px]"
+              title={order.paypalCaptureId || order.stripePaymentIntentId || order.paypalOrderId}
+            >
+              {order.paypalCaptureId || order.stripePaymentIntentId || order.paypalOrderId}
             </span>
           </div>
         )}

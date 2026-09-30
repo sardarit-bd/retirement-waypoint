@@ -126,7 +126,6 @@ export function ForgotPasswordModal({ open, onClose }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={handleClose}
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -148,7 +147,9 @@ export function ForgotPasswordModal({ open, onClose }) {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={handleClose}
+                aria-label="Close"
                 className="text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 <X className="h-5 w-5" />
