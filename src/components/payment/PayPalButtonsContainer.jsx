@@ -17,8 +17,44 @@ export default function PayPalButtonsContainer({
   onCancelPayment,
   onErrorPayment,
 }) {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+  const envClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+  const [clientId, setClientId] = useState(envClientId);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(!envClientId);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!clientId) {
+      fetch("/api/payments/paypal/config")
+        .then((res) => res.json())
+        .then((json) => {
+          if (isMounted && json?.data?.clientId) {
+            setClientId(json.data.clientId);
+          }
+        })
+        .catch((err) => {
+          console.warn("Could not fetch remote PayPal config:", err);
+        })
+        .finally(() => {
+          if (isMounted) {
+            setIsLoadingConfig(false);
+          }
+        });
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [clientId]);
+
+  if (isLoadingConfig) {
+    return (
+      <div className="flex items-center justify-center p-6 text-sm text-slate-500">
+        <Loader2 className="mr-2 h-5 w-5 animate-spin text-[#C9A84C]" />
+        <span>Loading PayPal options...</span>
+      </div>
+    );
+  }
 
   if (!clientId) {
     return (
@@ -39,6 +75,7 @@ export default function PayPalButtonsContainer({
     currency: "USD",
     intent: "capture",
     components: "buttons",
+    "disable-funding": "card,credit,paylater,venmo",
   };
 
   return (
@@ -52,6 +89,7 @@ export default function PayPalButtonsContainer({
       <PayPalScriptProvider options={initialOptions}>
         <div className={`relative ${disabled || isProcessing ? "opacity-60 pointer-events-none" : ""}`}>
           <PayPalButtons
+            fundingSource="paypal"
             style={{
               layout: "vertical",
               color: "gold",
@@ -61,17 +99,19 @@ export default function PayPalButtonsContainer({
               tagline: false,
             }}
             disabled={disabled || isProcessing}
-            createOrder={async (data, actions) => {
-              setErrorMessage("");
-
-              // 1. Run form validation (guest email, name, etc.)
+            onClick={(data, actions) => {
               if (onBeforeCreate && !onBeforeCreate()) {
                 // Abort PayPal popup if required fields are missing
                 return actions.reject();
               }
+              // Allow the popup to open and proceed to createOrder
+              return actions.resolve();
+            }}
+            createOrder={async () => {
+              setErrorMessage("");
 
               try {
-                // 2. Call parent callback which creates internal order and PayPal order
+                // Call parent callback which creates internal order and PayPal order
                 const paypalOrderId = await onCreateOrder();
                 if (!paypalOrderId) {
                   throw new Error("No PayPal order ID generated");
@@ -84,7 +124,7 @@ export default function PayPalButtonsContainer({
                   "Failed to create PayPal payment session";
                 setErrorMessage(msg);
                 if (onErrorPayment) onErrorPayment(msg);
-                return actions.reject();
+                throw new Error(msg);
               }
             }}
             onApprove={async (data, actions) => {

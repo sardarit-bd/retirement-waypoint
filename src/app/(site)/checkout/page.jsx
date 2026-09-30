@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
-  CreditCard,
   Shield,
   Lock,
   Loader2
@@ -21,6 +20,13 @@ import { couponApi } from "@/features/coupons/api/coupon.api";
 import { paymentApi } from "@/features/payments/api/payment.api";
 import { useSession } from "@/hooks/useSession";
 import PayPalButtonsContainer from "@/components/payment/PayPalButtonsContainer";
+import {
+  VisaLogo,
+  MastercardLogo,
+  AmexLogo,
+  PayPalLogo,
+  StripeBadge,
+} from "@/components/payment/PaymentLogos";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -538,15 +544,15 @@ export default function CheckoutPage() {
                   {/* Option 1: Credit / Debit Card (Stripe) */}
                   <div
                     onClick={() => setPaymentMethod("stripe")}
-                    className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                    className={`flex items-start justify-between gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
                       paymentMethod === "stripe"
                         ? "border-[#C9A84C] bg-[#FDFBF7] shadow-sm"
                         : "border-slate-200 bg-white hover:border-slate-300"
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start gap-3 min-w-0">
                       <div
-                        className={`h-4 w-4 rounded-full border flex items-center justify-center ${
+                        className={`h-4 w-4 shrink-0 rounded-full border mt-0.5 flex items-center justify-center ${
                           paymentMethod === "stripe"
                             ? "border-[#C9A84C] bg-[#C9A84C]"
                             : "border-slate-300"
@@ -556,27 +562,34 @@ export default function CheckoutPage() {
                           <div className="h-1.5 w-1.5 rounded-full bg-white" />
                         )}
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold text-[#1B2B4B]">Credit / Debit Card</p>
-                        <p className="text-xs text-muted-foreground">Visa, Mastercard, Amex via Stripe</p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-[#1B2B4B] leading-tight">Credit / Debit Card</p>
+                        <div className="flex flex-col gap-0.5 mt-1">
+                          <span className="text-xs text-muted-foreground">Visa, Mastercard, Amex</span>
+                          <StripeBadge />
+                        </div>
                       </div>
                     </div>
-                    <CreditCard className="h-5 w-5 text-slate-500" />
+                    <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+                      <VisaLogo />
+                      <MastercardLogo />
+                      <AmexLogo />
+                    </div>
                   </div>
 
                   {/* Option 2: PayPal */}
                   {isPayPalEnabled && (
                     <div
                       onClick={() => setPaymentMethod("paypal")}
-                      className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
+                      className={`flex items-center justify-between gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
                         paymentMethod === "paypal"
                           ? "border-[#C9A84C] bg-[#FDFBF7] shadow-sm"
                           : "border-slate-200 bg-white hover:border-slate-300"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
                         <div
-                          className={`h-4 w-4 rounded-full border flex items-center justify-center ${
+                          className={`h-4 w-4 shrink-0 rounded-full border flex items-center justify-center ${
                             paymentMethod === "paypal"
                               ? "border-[#C9A84C] bg-[#C9A84C]"
                               : "border-slate-300"
@@ -586,13 +599,15 @@ export default function CheckoutPage() {
                             <div className="h-1.5 w-1.5 rounded-full bg-white" />
                           )}
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold text-[#1B2B4B]">PayPal</p>
-                          <p className="text-xs text-muted-foreground">Pay with PayPal wallet, bank, or card</p>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-[#1B2B4B] leading-tight">PayPal</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            Wallet, bank, or card
+                          </p>
                         </div>
                       </div>
-                      <div className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-xs tracking-tight">
-                        PayPal
+                      <div className="shrink-0">
+                        <PayPalLogo />
                       </div>
                     </div>
                   )}
