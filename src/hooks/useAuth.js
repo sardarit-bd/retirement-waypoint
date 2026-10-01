@@ -52,7 +52,7 @@ export function useAuth() {
 
                 await refetchSession();
 
-                toast.success("👋 Welcome back!", {
+                toast.success("Welcome back!", {
                   duration: 3000,
                   position: "top-right",
                 });
