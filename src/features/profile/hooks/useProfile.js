@@ -41,6 +41,21 @@ export function useUpdatePassword() {
   });
 }
 
+export function useSetPassword() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: profileApi.setPassword,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY_LINKED_ACCOUNTS] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.USER_PROFILE] });
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to set password');
+    },
+  });
+}
+
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
 

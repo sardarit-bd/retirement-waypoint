@@ -39,4 +39,12 @@ export const profileApi = {
     });
     return response.data;
   },
+
+  // Set password (for OAuth accounts without password)
+  setPassword: async ({ newPassword }) => {
+    const response = await api.post(API_ENDPOINTS.AUTH.SET_PASSWORD, {
+      newPassword,
+    });
+    return response.data;
+  },
 };
