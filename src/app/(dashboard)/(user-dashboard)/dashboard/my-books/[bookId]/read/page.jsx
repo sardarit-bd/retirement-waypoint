@@ -57,9 +57,9 @@ export default function ReadBookPage() {
   const pdfUrl = readData.pdfUrl;
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col space-y-3">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4 pb-1">
+      <div className="flex items-center justify-between flex-wrap gap-4 pb-1 shrink-0">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -79,7 +79,7 @@ export default function ReadBookPage() {
       </div>
 
       {/* PDF Viewer */}
-      <div className="h-[calc(100vh-190px)] min-h-[600px] rounded-2xl overflow-hidden border border-[#1B2B4B]/10 bg-[#2A2B2E] shadow-xl">
+      <div className="h-[calc(100vh-170px)] min-h-[500px] rounded-2xl overflow-hidden border border-[#1B2B4B]/10 bg-[#2A2B2E] shadow-xl">
         <PDFViewer
           pdfUrl={pdfUrl} 
           bookTitle={book.title}
