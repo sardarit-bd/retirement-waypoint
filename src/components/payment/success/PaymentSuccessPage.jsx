@@ -37,29 +37,66 @@ export default function PaymentSuccessPage() {
     }
 
     // Verify session and retrieve direct download link if session_id or orderId present
+    let pollTimer = null;
+    let isCancelled = false;
+    const MAX_ATTEMPTS = 8;
+    const POLL_INTERVAL = 2000;
+
+    const pollVerification = async (attempt = 1) => {
+      try {
+        const data = await paymentApi.verifySession(id, sessionId);
+        if (isCancelled) return;
+
+        setOrderInfo(data);
+        if (data?.orderId && !id) {
+          setOrderId(data.orderId);
+        }
+
+        if (data?.downloadToken) {
+          setToken(data.downloadToken);
+        }
+
+        // If download token or url is ready, stop polling
+        if (data?.downloadToken || data?.downloadUrl) {
+          setIsVerifying(false);
+          return;
+        }
+
+        // If not ready and attempts remaining, poll again
+        if (attempt < MAX_ATTEMPTS) {
+          pollTimer = setTimeout(() => {
+            pollVerification(attempt + 1);
+          }, POLL_INTERVAL);
+        } else {
+          setIsVerifying(false);
+        }
+      } catch (err) {
+        if (isCancelled) return;
+        console.error(`Payment session verification error (attempt ${attempt}):`, err);
+        if (attempt < MAX_ATTEMPTS) {
+          pollTimer = setTimeout(() => {
+            pollVerification(attempt + 1);
+          }, POLL_INTERVAL);
+        } else {
+          setIsVerifying(false);
+        }
+      }
+    };
+
     if (id || sessionId) {
       setIsVerifying(true);
-      paymentApi
-        .verifySession(id, sessionId)
-        .then((data) => {
-          setOrderInfo(data);
-          if (data?.downloadToken) {
-            setToken(data.downloadToken);
-          }
-          if (data?.orderId && !id) {
-            setOrderId(data.orderId);
-          }
-        })
-        .catch((err) => {
-          console.error("Payment session verification error:", err);
-        })
-        .finally(() => {
-          setIsVerifying(false);
-        });
+      pollVerification(1);
     }
+
+    return () => {
+      isCancelled = true;
+      if (pollTimer) {
+        clearTimeout(pollTimer);
+      }
+    };
   }, [searchParams, router]);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const apiUrl = "";
 
   // Build the streaming download link
   let downloadUrl = null;
