@@ -34,15 +34,26 @@ export function MyBookGrid({ books, isLoading, error, refetch }) {
     return <MyBookEmptyState />;
   }
 
+  const isFewBooks = books.length <= 2;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      className={
+        isFewBooks
+          ? "flex flex-wrap justify-center gap-6"
+          : "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      }
     >
       {books.map((book, index) => (
-        <MyBookCard key={book.bookId} book={book} index={index} />
+        <div
+          key={book.bookId}
+          className={isFewBooks ? "w-full sm:w-[340px] max-w-[360px]" : "w-full"}
+        >
+          <MyBookCard book={book} index={index} />
+        </div>
       ))}
     </motion.div>
   );

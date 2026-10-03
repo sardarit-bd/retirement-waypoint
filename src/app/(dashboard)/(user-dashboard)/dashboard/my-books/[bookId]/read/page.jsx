@@ -59,25 +59,27 @@ export default function ReadBookPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col items-center gap-4">
+      <div className="flex items-center justify-between flex-wrap gap-4 pb-1">
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
+            size="sm"
             onClick={() => router.push(`/dashboard/my-books/${bookId}`)}
-            className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer border border-gray-200"
+            className="gap-2 text-[#1B2B4B]/70 hover:text-[#1B2B4B] hover:bg-white/80 rounded-full border border-[#1B2B4B]/10 px-3.5 py-1.5 cursor-pointer shadow-sm"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            Exit Reader
           </Button>
-        </div>
+          <div className="h-4 w-[1px] bg-[#1B2B4B]/15 hidden sm:block" />
           <div>
-            <h1 className="text-xl font-bold text-[#1B2B4B]">{book.title}</h1>
-            <p className="text-sm text-[#1B2B4B]/60">by {book.authorName}</p>
+            <h1 className="text-lg font-bold text-[#1B2B4B] line-clamp-1">{book.title}</h1>
+            <p className="text-xs text-[#1B2B4B]/60">by {book.authorName}</p>
           </div>
+        </div>
       </div>
 
       {/* PDF Viewer */}
-      <div className="h-[calc(100vh-220px)] min-h-[500px] rounded-2xl overflow-hidden border border-[#1B2B4B]/10 bg-[#F8F5EF]">
+      <div className="h-[calc(100vh-190px)] min-h-[600px] rounded-2xl overflow-hidden border border-[#1B2B4B]/10 bg-[#2A2B2E] shadow-xl">
         <PDFViewer
           pdfUrl={pdfUrl} 
           bookTitle={book.title}

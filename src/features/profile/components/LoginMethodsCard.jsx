@@ -22,17 +22,17 @@ import { authClient } from '@/lib/auth-client';
 import { QUERY_KEYS } from '@/lib/query-client';
 import { useLinkedAccounts, QUERY_KEY_LINKED_ACCOUNTS } from '../hooks/useProfile';
 import { ChangePasswordDialog } from './ChangePasswordDialog';
+import { SetPasswordDialog } from './SetPasswordDialog';
 import toast from 'react-hot-toast';
 import { FiChrome } from 'react-icons/fi';
-import { ForgotPasswordModal } from '@/components/auth/forgot-password-modal';
 
 export function LoginMethodsCard({ profile }) {
   const queryClient = useQueryClient();
   const { data: accounts, isLoading: accountsLoading } = useLinkedAccounts();
   const [isLinking, setIsLinking] = useState(false);
   const [isUnlinking, setIsUnlinking] = useState(false);
-  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
-  const [forgotPasswordModalOpen, setForgotPasswordModalOpen] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [setPasswordModalOpen, setSetPasswordModalOpen] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const handledError = useRef(false);
 
@@ -159,7 +159,7 @@ export function LoginMethodsCard({ profile }) {
                           Connected
                         </Badge>
                         <Button
-                          onClick={() => setPasswordModalOpen(true)}
+                          onClick={() => setChangePasswordModalOpen(true)}
                           variant="outline"
                           size="sm"
                           className="rounded-full border-[#1B2B4B]/15 text-[#1B2B4B] hover:border-[#C9A84C]/30 cursor-pointer"
@@ -174,7 +174,7 @@ export function LoginMethodsCard({ profile }) {
                           Not set
                         </Badge>
                         <Button
-                          onClick={() => setForgotPasswordModalOpen(true)}
+                          onClick={() => setSetPasswordModalOpen(true)}
                           variant="outline"
                           size="sm"
                           className="rounded-full border-[#1B2B4B]/15 text-[#C9A84C] hover:border-[#C9A84C]/30 cursor-pointer"
@@ -281,15 +281,9 @@ export function LoginMethodsCard({ profile }) {
         </Card>
       </motion.div>
 
-      <ChangePasswordDialog open={passwordModalOpen} onOpenChange={setPasswordModalOpen} />
+      <ChangePasswordDialog open={changePasswordModalOpen} onOpenChange={setChangePasswordModalOpen} />
 
-      <ForgotPasswordModal
-        open={forgotPasswordModalOpen}
-        onClose={() => {
-          setForgotPasswordModalOpen(false);
-          invalidateQueries();
-        }}
-      />
+      <SetPasswordDialog open={setPasswordModalOpen} onOpenChange={setSetPasswordModalOpen} />
 
       <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
         <AlertDialogContent>

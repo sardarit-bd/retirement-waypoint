@@ -72,102 +72,156 @@ export default function MyBookDetailPage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="space-y-6"
+      transition={{ duration: 0.35 }}
+      className="space-y-6 max-w-6xl mx-auto"
     >
-      {/* Back Button */}
-      <Button
-        variant="ghost"
-        onClick={() => router.back()}
-        className="gap-2 text-[#1B2B4B]/60 hover:text-[#1B2B4B] cursor-pointer"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Library
-      </Button>
+      {/* Top Navigation */}
+      <div className="flex items-center gap-2 text-sm text-[#1B2B4B]/60">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()}
+          className="gap-2 text-[#1B2B4B]/70 hover:text-[#1B2B4B] hover:bg-white/60 rounded-full px-3 cursor-pointer"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Library
+        </Button>
+        <span className="text-[#1B2B4B]/30">/</span>
+        <span className="text-[#1B2B4B]/90 font-medium truncate max-w-[240px] sm:max-w-md">
+          {book.title}
+        </span>
+      </div>
 
-      {/* Book Details */}
-      <div className="grid gap-6 sm:gap-8 lg:grid-cols-[300px_1fr]">
-        {/* Cover */}
-        <div className="relative aspect-[3/4] max-w-[300px] mx-auto w-full overflow-hidden rounded-3xl bg-[#F8F5EF] shadow-xl">
-          <Image
-            src={coverImage}
-            alt={book.title}
-            fill
-            className="object-cover"
-            onError={() => setImageError(true)}
-            sizes="(max-width: 640px) 100vw, 300px"
-          />
-          <div className="absolute top-3 left-3">
-            <Badge className="bg-emerald-500/90 text-white border-0 px-3 py-1.5 text-xs font-medium backdrop-blur-sm">
-              <CheckCircle className="mr-1 h-3 w-3" />
-              Purchased
-            </Badge>
+      {/* Main Details Grid */}
+      <div className="grid gap-8 lg:grid-cols-[320px_1fr] items-start">
+        {/* Cover Column with Premium Depth */}
+        <div className="relative group max-w-[320px] mx-auto w-full">
+          {/* Ambient Lighting Glow */}
+          <div className="absolute -inset-1.5 rounded-[34px] bg-gradient-to-tr from-[#C9A84C]/25 via-transparent to-[#1B2B4B]/15 blur-xl opacity-70 transition duration-500 group-hover:opacity-100" />
+
+          {/* Book Cover Frame */}
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[28px] bg-gradient-to-b from-[#F8F5EF] to-[#EFEAE0] p-2.5 ring-1 ring-black/5 shadow-[0_25px_60px_-15px_rgba(4,16,58,0.25),0_10px_20px_rgba(201,168,76,0.1)]">
+            <div className="relative h-full w-full overflow-hidden rounded-[20px] shadow-inner">
+              <Image
+                src={coverImage}
+                alt={book.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                onError={() => setImageError(true)}
+                sizes="(max-width: 640px) 100vw, 320px"
+                priority
+              />
+              {/* Soft Spine & Sheen Highlights */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/20 pointer-events-none" />
+              <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-black/30 via-black/10 to-transparent pointer-events-none" />
+            </div>
+
+            {/* Ownership Badge */}
+            <div className="absolute top-4 left-4 z-10">
+              <Badge className="bg-emerald-600/90 text-white border border-white/25 px-3 py-1 text-xs font-semibold backdrop-blur-md shadow-md">
+                <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                Purchased Edition
+              </Badge>
+            </div>
           </div>
         </div>
 
-        {/* Info */}
-        <div className="space-y-4 sm:space-y-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#1B2B4B] break-words">{book.title}</h1>
-            <p className="text-base sm:text-lg text-[#1B2B4B]/60">by {book.authorName}</p>
+        {/* Content Column */}
+        <div className="space-y-6">
+          {/* Header Typography */}
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C9A84C]/10 text-[#C9A84C] text-xs font-bold uppercase tracking-wider">
+              <BookOpen className="h-3.5 w-3.5" />
+              Digital Library
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#1B2B4B] tracking-tight leading-tight break-words">
+              {book.title}
+            </h1>
+            <p className="text-base sm:text-lg text-[#1B2B4B]/70 font-medium">
+              Written by <span className="text-[#1B2B4B] font-semibold">{book.authorName}</span>
+            </p>
           </div>
 
+          {/* Unified Metadata Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            {/* Pages Card */}
+            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-white/75 backdrop-blur-md p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 text-[#1B2B4B]/60 text-xs font-medium">
+                <FileText className="h-4 w-4 text-[#C9A84C]" />
+                <span>Length</span>
+              </div>
+              <p className="mt-1.5 text-base sm:text-lg font-bold text-[#1B2B4B]">
+                {book.pageCount ? `${book.pageCount} Pages` : 'Complete'}
+              </p>
+            </div>
+
+            {/* Price Card */}
+            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-white/75 backdrop-blur-md p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 text-[#1B2B4B]/60 text-xs font-medium">
+                <CheckCircle className="h-4 w-4 text-emerald-500" />
+                <span>Price</span>
+              </div>
+              <p className="mt-1.5 text-base sm:text-lg font-bold text-[#C9A84C]">
+                ${book.price}
+              </p>
+            </div>
+
+            {/* Order Number */}
+            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-white/75 backdrop-blur-md p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 text-[#1B2B4B]/60 text-xs font-medium">
+                <Hash className="h-4 w-4 text-[#1B2B4B]/60" />
+                <span>Order #</span>
+              </div>
+              <p className="mt-1.5 text-xs sm:text-sm font-bold text-[#1B2B4B] truncate" title={book.orderNumber || 'Direct'}>
+                {book.orderNumber ? book.orderNumber : 'Confirmed'}
+              </p>
+            </div>
+
+            {/* Purchase Date */}
+            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-white/75 backdrop-blur-md p-4 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 text-[#1B2B4B]/60 text-xs font-medium">
+                <Calendar className="h-4 w-4 text-[#1B2B4B]/60" />
+                <span>Acquired</span>
+              </div>
+              <p className="mt-1.5 text-xs sm:text-sm font-bold text-[#1B2B4B] truncate">
+                {formatDate(book.purchasedAt)}
+              </p>
+            </div>
+          </div>
+
+          {/* Book Description */}
           {book.description && (
-            <p className="text-[#1B2B4B]/70 leading-relaxed">
-              {book.description}
-            </p>
+            <div className="rounded-2xl border border-[#1B2B4B]/8 bg-white/60 backdrop-blur-md p-5 sm:p-6 shadow-sm">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B2B4B]/50 mb-2.5">
+                Overview &amp; Synopsis
+              </h3>
+              <p className="text-[#1B2B4B]/80 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                {book.description}
+              </p>
+            </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-4">
-              <p className="text-sm text-[#1B2B4B]/60">Pages</p>
-              <p className="text-lg font-semibold text-[#1B2B4B]">{book.pageCount || 'N/A'}</p>
-            </div>
-            <div className="rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-4">
-              <p className="text-sm text-[#1B2B4B]/60">Price</p>
-              <p className="text-lg font-semibold text-[#C9A84C]">${book.price}</p>
-            </div>
-          </div>
-
-          <div className="space-y-2 text-sm text-[#1B2B4B]/50">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>Purchased: {formatDate(book.purchasedAt)}</span>
-            </div>
-            {book.orderNumber && (
-              <div className="flex items-center gap-2">
-                <Hash className="h-4 w-4" />
-                <span>Order: {book.orderNumber}</span>
-              </div>
-            )}
-            {book.invoiceNumber && (
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                <span>Invoice: {book.invoiceNumber}</span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-wrap gap-3 pt-4 border-t border-[#1B2B4B]/10">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-[#1B2B4B]/10">
             <Button
               asChild
-              className="rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-8 py-6 text-base font-semibold text-[#04103A] shadow-lg shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all"
+              className="rounded-full bg-gradient-to-r from-[#C9A84C] via-[#D6B45A] to-[#C9A84C] px-8 py-6 text-base font-bold text-[#04103A] shadow-xl shadow-[#C9A84C]/20 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
               <Link href={`/dashboard/my-books/${book.bookId}/read`}>
                 <BookOpen className="mr-2 h-5 w-5" />
-                Read Book
+                Read Online
               </Link>
             </Button>
             <Button
               onClick={handleDownload}
               disabled={isDownloading}
               variant="outline"
-              className="rounded-full border-[#1B2B4B]/15 px-8 py-6 text-base font-semibold text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 cursor-pointer"
+              className="rounded-full border-2 border-[#1B2B4B]/15 bg-white/80 hover:bg-white hover:border-[#C9A84C] px-8 py-6 text-base font-semibold text-[#1B2B4B] shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
             >
-              <Download className={cn('mr-2 h-5 w-5', isDownloading && 'animate-pulse')} />
-              {isDownloading ? 'Downloading...' : 'Download PDF'}
+              <Download className={cn('mr-2 h-5 w-5', isDownloading && 'animate-pulse text-[#C9A84C]')} />
+              {isDownloading ? 'Preparing Download...' : 'Download PDF'}
             </Button>
           </div>
         </div>
