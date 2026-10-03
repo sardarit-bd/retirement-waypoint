@@ -41,18 +41,24 @@ const cardClass =
 
 function AdminBooksSkeleton() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       <div className={`${cardClass} p-6`}>
         <Skeleton className="h-8 w-64" />
         <Skeleton className="mt-3 h-5 w-80" />
       </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className={`${cardClass} p-5`}>
-            <Skeleton className="h-40 w-full rounded-2xl" />
-            <Skeleton className="mt-4 h-5 w-32" />
-            <Skeleton className="mt-3 h-4 w-full" />
-            <Skeleton className="mt-2 h-4 w-3/4" />
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+        {Array.from({ length: 10 }).map((_, index) => (
+          <div key={index} className={`${cardClass} overflow-hidden`}>
+            <Skeleton className="aspect-[3/4] w-full" />
+            <div className="p-4 space-y-3">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <div className="flex gap-1.5">
+                <Skeleton className="h-5 w-12 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -150,7 +156,7 @@ export function AdminBooksContent() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="space-y-6"
+      className="space-y-6 max-w-7xl mx-auto"
     >
       {/* Header */}
       <div className={`${cardClass} p-6`}>
@@ -234,7 +240,7 @@ export function AdminBooksContent() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {books.map((book) => {
             const isPublished = book.status === 'PUBLISHED';
             const isArchived = book.status === 'ARCHIVED';
@@ -247,14 +253,14 @@ export function AdminBooksContent() {
                 animate={{ opacity: 1, y: 0 }}
                 className={`${cardClass} overflow-hidden transition-all duration-300 hover:shadow-[0_20px_60px_rgba(4,16,58,0.12)]`}
               >
-                <div className="relative aspect-[4/3] bg-[#F8F5EF]">
+                <div className="relative aspect-[3/4] bg-[#F8F5EF] overflow-hidden">
                   {book.coverImage ? (
                     <Image
                       src={book.coverImage}
                       alt={book.title}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 300px"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1536px) 25vw, 20vw"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-sm font-semibold text-[#1B2B4B]/30">
