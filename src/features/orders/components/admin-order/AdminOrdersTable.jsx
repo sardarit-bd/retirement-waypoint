@@ -89,7 +89,16 @@ export function AdminOrdersTable({ orders, isLoading }) {
           </TableHeader>
           <TableBody>
             {orders.map((order) => {
-              const userName = order.user?.name || `User ${order.userId?.slice(0, 8)}`;
+              // If the order was made via guest checkout, ALWAYS show the guest details they typed, 
+              // even if the system successfully linked a userId in the background.
+              const isGuestOrder = order.isGuest;
+              const userName = isGuestOrder 
+                ? (order.guestName || 'Guest User') 
+                : (order.user?.name || order.guestName || `User ${order.userId?.slice(0, 8) || 'Unknown'}`);
+                  
+              const userEmail = isGuestOrder 
+                ? (order.guestEmail || 'No email') 
+                : (order.user?.email || order.guestEmail || 'No email');
               const userInitial = getInitials(userName);
 
               return (
@@ -115,7 +124,7 @@ export function AdminOrdersTable({ orders, isLoading }) {
                           {userName}
                         </span>
                         <span className="text-xs text-[#1B2B4B]/40 truncate max-w-[140px]">
-                          {order.user?.email || 'No email'}
+                          {userEmail}
                         </span>
                       </div>
                     </div>
@@ -183,7 +192,16 @@ export function AdminOrdersTable({ orders, isLoading }) {
       {/* Mobile Card View - Visible only on mobile/tablet */}
       <div className="lg:hidden divide-y divide-[#1B2B4B]/5">
         {orders.map((order) => {
-          const userName = order.user?.name || `User ${order.userId?.slice(0, 8)}`;
+          // If the order was made via guest checkout, ALWAYS show the guest details they typed, 
+          // even if the system successfully linked a userId in the background.
+          const isGuestOrder = order.isGuest;
+          const userName = isGuestOrder 
+            ? (order.guestName || 'Guest User') 
+            : (order.user?.name || order.guestName || `User ${order.userId?.slice(0, 8) || 'Unknown'}`);
+              
+          const userEmail = isGuestOrder 
+            ? (order.guestEmail || 'No email') 
+            : (order.user?.email || order.guestEmail || 'No email');
           const userInitial = getInitials(userName);
           const isExpanded = expandedMobile[order._id];
 
@@ -275,7 +293,7 @@ export function AdminOrdersTable({ orders, isLoading }) {
                   <div>
                     <p className="text-xs font-medium text-[#1B2B4B]/60 mb-1">Contact</p>
                     <p className="text-sm text-[#1B2B4B]/70 truncate">
-                      {order.user?.email || 'No email'}
+                      {userEmail}
                     </p>
                   </div>
 
