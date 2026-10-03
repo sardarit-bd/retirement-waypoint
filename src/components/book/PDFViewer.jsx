@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 // Set worker source for pdf.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -222,6 +223,56 @@ const PDFViewer = ({ pdfUrl, bookTitle, onError }) => {
   const [scale, setScale] = useState(1.15);
   const [rotation, setRotation] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  // Programmatic PDF download with guaranteed .pdf extension
+  const handleDownload = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!pdfUrl || isDownloading) return;
+
+    try {
+      setIsDownloading(true);
+      toast.loading('Preparing PDF download...', { id: 'pdf-viewer-download' });
+
+      let blob;
+      if (pdfDocument && typeof pdfDocument.getData === 'function') {
+        const rawData = await pdfDocument.getData();
+        blob = new Blob([rawData], { type: 'application/pdf' });
+      } else {
+        const response = await fetch(pdfUrl);
+        if (!response.ok) throw new Error('Failed to fetch PDF document');
+        blob = await response.blob();
+      }
+
+      // Sanitize book title and guarantee .pdf extension
+      const safeTitle = (bookTitle || 'book')
+        .replace(/[/\\?%*:|"<>]/g, '-')
+        .trim();
+      const filename = safeTitle.toLowerCase().endsWith('.pdf')
+        ? safeTitle
+        : `${safeTitle}.pdf`;
+
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+
+      toast.success('Download started!', { id: 'pdf-viewer-download' });
+    } catch (err) {
+      console.error('PDF download error:', err);
+      toast.error('Download failed. Opening PDF directly...', { id: 'pdf-viewer-download' });
+      window.open(pdfUrl, '_blank');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // Load PDF document
   useEffect(() => {
@@ -379,13 +430,16 @@ const PDFViewer = ({ pdfUrl, bookTitle, onError }) => {
         </p>
         {pdfUrl && (
           <Button
-            asChild
-            className="rounded-full bg-[#C9A84C] text-[#04103A] hover:bg-[#D6B45A] font-semibold"
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="rounded-full bg-[#C9A84C] text-[#04103A] hover:bg-[#D6B45A] font-semibold cursor-pointer disabled:opacity-50"
           >
-            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" download>
+            {isDownloading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
               <Download className="mr-2 h-4 w-4" />
-              Download Offline Copy
-            </a>
+            )}
+            Download Offline Copy
           </Button>
         )}
       </div>
@@ -513,15 +567,18 @@ const PDFViewer = ({ pdfUrl, bookTitle, onError }) => {
 
           {pdfUrl && (
             <Button
-              asChild
               variant="ghost"
               size="icon"
-              className="h-7 w-7 text-[#C9A84C] hover:text-[#D6B45A] hover:bg-white/10 cursor-pointer"
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="h-7 w-7 text-[#C9A84C] hover:text-[#D6B45A] hover:bg-white/10 cursor-pointer disabled:opacity-50"
               title="Download PDF"
             >
-              <a href={pdfUrl} target="_blank" rel="noopener noreferrer" download>
+              {isDownloading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
                 <Download className="h-3.5 w-3.5" />
-              </a>
+              )}
             </Button>
           )}
         </div>

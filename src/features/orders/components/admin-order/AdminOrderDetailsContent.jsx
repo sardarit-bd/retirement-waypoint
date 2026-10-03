@@ -169,15 +169,23 @@ export function AdminOrderDetailsContent({ order, isLoading }) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-[#1B2B4B]">
                   <User className="h-4 w-4 text-[#C9A84C]" />
-                  <span className="font-medium">{order.user?.name || 'Unknown'}</span>
+                  <span className="font-medium">
+                    {order.isGuest
+                      ? (order.guestName || 'Guest User')
+                      : (order.user?.name || order.guestName || 'Unknown')}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-[#1B2B4B]/60">
                   <Mail className="h-4 w-4 text-[#C9A84C]" />
-                  <span>{order.user?.email || 'No email'}</span>
+                  <span>
+                    {order.isGuest
+                      ? (order.guestEmail || 'No email')
+                      : (order.user?.email || order.guestEmail || 'No email')}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-[#1B2B4B]/60">
                   <Receipt className="h-4 w-4 text-[#C9A84C]" />
-                  <span className="text-xs font-mono">ID: {order.userId}</span>
+                  <span className="text-xs font-mono">ID: {order.userId || 'Guest'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-[#1B2B4B]/60">
                   <Calendar className="h-4 w-4 text-[#C9A84C]" />

@@ -4,11 +4,13 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, Download, ChevronRight } from 'lucide-react';
+import { BookOpen, Download, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDownloadBook } from '@/features/my-books/hooks/useMyBooks';
 
 export function RecentBooksCard({ books }) {
   const [imageErrors, setImageErrors] = useState({});
+  const { mutate: downloadBook, isPending: isDownloading, variables: downloadingBookId } = useDownloadBook();
 
   if (!books || books.length === 0) {
     return (
@@ -100,21 +102,26 @@ export function RecentBooksCard({ books }) {
                 <Button
                   asChild
                   size="sm"
-                  className="rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-3 text-[#04103A] font-semibold shadow-sm shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all"
+                  title="Read Book"
+                  className="rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-3 text-[#04103A] font-semibold shadow-sm shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all cursor-pointer"
                 >
                   <Link href={`/dashboard/my-books/${book.bookId || book._id}`}>
                     <BookOpen className="h-3.5 w-3.5" />
                   </Link>
                 </Button>
                 <Button
-                  asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full border-[#1B2B4B]/15 px-3 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30"
+                  title="Download PDF"
+                  onClick={() => downloadBook(book.bookId || book._id)}
+                  disabled={isDownloading && downloadingBookId === (book.bookId || book._id)}
+                  className="rounded-full border-[#1B2B4B]/15 px-3 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 cursor-pointer disabled:opacity-50"
                 >
-                  <Link href={`/dashboard/my-books/${book.bookId || book._id}/download`}>
+                  {isDownloading && downloadingBookId === (book.bookId || book._id) ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-[#C9A84C]" />
+                  ) : (
                     <Download className="h-3.5 w-3.5" />
-                  </Link>
+                  )}
                 </Button>
               </div>
             </motion.div>
