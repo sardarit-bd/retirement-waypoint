@@ -4,11 +4,13 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { BookOpen, Download, Lock } from 'lucide-react';
+import { BookOpen, Download, Lock, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDownloadBook } from '@/features/my-books/hooks/useMyBooks';
 
 export function OrderItemCard({ item, index, orderId, isAccessible = false }) {
   const [imageError, setImageError] = useState(false);
+  const { mutate: downloadBook, isPending: isDownloading } = useDownloadBook();
   const coverImage = imageError ? null : item.bookCoverImage;
 
   return (
@@ -60,23 +62,31 @@ export function OrderItemCard({ item, index, orderId, isAccessible = false }) {
             <Button
               asChild
               size="sm"
-              className="rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-4 text-[#04103A] font-semibold shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all"
+              className="rounded-full bg-gradient-to-r from-[#C9A84C] to-[#D6B45A] px-4 text-[#04103A] font-semibold shadow-md shadow-[#C9A84C]/20 hover:shadow-[#C9A84C]/30 transition-all cursor-pointer"
             >
-              <Link href={`/dashboard/my-books/${item.bookId}`}>
+              <Link href={`/dashboard/my-books/${item.bookId}/read`}>
                 <BookOpen className="mr-2 h-4 w-4" />
                 Read Book
               </Link>
             </Button>
             <Button
-              asChild
               variant="outline"
               size="sm"
-              className="rounded-full border-[#1B2B4B]/15 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30"
+              onClick={() => downloadBook(item.bookId)}
+              disabled={isDownloading}
+              className="rounded-full border-[#1B2B4B]/15 text-[#1B2B4B] hover:bg-[#F8F5EF] hover:border-[#C9A84C]/30 cursor-pointer"
             >
-              <Link href={`/dashboard/my-books/${item.bookId}/download`}>
-                <Download className="mr-2 h-4 w-4" />
-                Download
-              </Link>
+              {isDownloading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin text-[#C9A84C]" />
+                  Downloading...
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </>
+              )}
             </Button>
           </>
         ) : (

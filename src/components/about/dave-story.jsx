@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Brain } from "lucide-react";
+import defaultDaveImage from "../../../public/images/about/dave-story-2.png";
 
 const defaultCredentials = [
   "40+ Years Experience",
@@ -15,6 +16,16 @@ const defaultBioParagraphs = [
   "Dave started Retirement Waypoint after going through his own transition out of full-time consulting. As he moved from a long, demanding career toward retirement, he found surprisingly few resources built to help with the psychological side of that shift — the questions of identity, the loss of daily structure and purpose, and the work of building a genuinely fulfilling life after work. Drawing on decades spent researching what makes people thrive professionally, he created Retirement Waypoint to close that gap: a resource grounded in psychological science, not just financial planning, to help other professionals move into retirement with the same clarity and intention they brought to their careers.",
 ];
 
+const optimizeCloudinaryUrl = (url) => {
+  if (!url || typeof url !== "string") return url;
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    if (!url.includes("/upload/f_auto") && !url.includes("/upload/q_auto") && !url.includes("/upload/w_")) {
+      return url.replace("/upload/", "/upload/f_auto,q_auto,w_900,c_limit/");
+    }
+  }
+  return url;
+};
+
 const DaveStory = ({ content }) => {
   const badge = content?.badge || "Psychology Meets Purpose";
   const title =
@@ -25,8 +36,10 @@ const DaveStory = ({ content }) => {
   const credentials = content?.credentials?.length
     ? content.credentials
     : defaultCredentials;
-  const profileImage =
-    content?.profileImage || "/images/about/dave-story-2.png";
+  
+  const rawImage = content?.profileImage;
+  const isCustomImage = Boolean(rawImage && rawImage !== "/images/about/dave-story-2.png");
+  const imageSource = isCustomImage ? optimizeCloudinaryUrl(rawImage) : defaultDaveImage;
 
   return (
     <section id="story" className="relative bg-[#1B2B4B] py-28 sm:py-24 lg:py-28">
@@ -34,14 +47,17 @@ const DaveStory = ({ content }) => {
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
         <div className="relative order-2 lg:order-1">
-          <div className="overflow-hidden rounded-[32px] shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+          <div className="overflow-hidden rounded-[32px] bg-[#142038] shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             <Image
-              src={profileImage}
+              src={imageSource}
               alt="Dave, retirement transition specialist"
               width={900}
               height={1050}
               className="h-[420px] w-full object-cover sm:h-[560px]"
-              unoptimized={profileImage.startsWith("http")}
+              priority={true}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+              placeholder="blur"
+              blurDataURL={typeof imageSource === "string" ? defaultDaveImage.blurDataURL : undefined}
             />
           </div>
         </div>
