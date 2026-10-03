@@ -274,12 +274,24 @@ const PDFViewer = ({ pdfUrl, bookTitle, onError }) => {
     setPageInput(String(pageNum));
   }, []);
 
-  // Smooth scroll directly to a specific page
+  // Smooth scroll directly to a specific page inside the container only
   const scrollToPage = useCallback((pageNum) => {
     const target = Math.max(1, Math.min(pageNum, totalPages));
+    const container = scrollContainerRef.current;
     const targetElement = document.getElementById(`pdf-page-${target}`);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (container && targetElement) {
+      if (target === 1) {
+        container.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const containerRect = container.getBoundingClientRect();
+        const targetRect = targetElement.getBoundingClientRect();
+        const offsetTop = targetRect.top - containerRect.top + container.scrollTop;
+
+        container.scrollTo({
+          top: Math.max(0, offsetTop - 12),
+          behavior: 'smooth',
+        });
+      }
     }
   }, [totalPages]);
 
@@ -383,10 +395,10 @@ const PDFViewer = ({ pdfUrl, bookTitle, onError }) => {
   return (
     <div
       ref={viewerContainerRef}
-      className="flex flex-col h-full w-full bg-[#2A2B2E] overflow-hidden select-text"
+      className="flex flex-col h-full w-full bg-[#2A2B2E] overflow-hidden select-text relative"
     >
       {/* Sticky Top Toolbar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between px-3 sm:px-6 py-2.5 bg-[#1E2024]/95 text-white/90 backdrop-blur-md border-b border-white/10 shadow-md flex-wrap gap-2">
+      <header className="sticky top-0 z-50 flex items-center justify-between px-3 sm:px-6 py-2.5 bg-[#1E2024]/95 text-white/90 backdrop-blur-md border-b border-white/10 shadow-md flex-wrap gap-2">
         {/* Left: Book Title & Quick Navigation */}
         <div className="flex items-center gap-3">
           <span className="hidden sm:inline-block font-semibold text-xs text-[#C9A84C] max-w-[200px] lg:max-w-xs truncate" title={bookTitle}>

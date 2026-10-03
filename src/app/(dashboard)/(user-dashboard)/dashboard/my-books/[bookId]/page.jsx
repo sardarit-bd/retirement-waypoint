@@ -57,10 +57,10 @@ export default function MyBookDetailPage() {
       <div className="rounded-3xl border border-red-500/20 bg-red-500/5 backdrop-blur-xl p-8 text-center">
         <p className="text-red-500">Failed to load book details</p>
         <Button
-          onClick={() => router.back()}
+          onClick={() => router.push('/dashboard/my-books')}
           className="mt-4 rounded-full bg-[#C9A84C] px-6 py-2 text-sm font-semibold text-[#04103A] hover:bg-[#D6B45A] transition-colors"
         >
-          Go Back
+          Back to Library
         </Button>
       </div>
     );
@@ -82,7 +82,7 @@ export default function MyBookDetailPage() {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => router.back()}
+          onClick={() => router.push('/dashboard/my-books')}
           className="gap-2 text-[#1B2B4B]/70 hover:text-[#1B2B4B] hover:bg-white/60 rounded-full px-3 cursor-pointer"
         >
           <ArrowLeft className="h-4 w-4" />
