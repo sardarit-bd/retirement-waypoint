@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Pencil, Trash2, X, CheckCircle2, Clock, ShieldCheck } from "lucide-react";
+import { Star, Pencil, Trash2, X, CheckCircle2, Clock, ShieldCheck, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,7 @@ export const MyReviewSection = ({
   const [title, setTitle] = useState(myReview?.title || "");
   const [description, setDescription] = useState(myReview?.comment || "");
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [errors, setErrors] = useState({});
 
   // Sync state when myReview changes
   useEffect(() => {
@@ -54,16 +55,30 @@ export const MyReviewSection = ({
     (myReview.status === "APPROVED" || myReview.isApproved);
   const isRejected = myReview && myReview.status === "REJECTED";
 
+  const validate = () => {
+    const newErrors = {};
+    if (!rating || rating < 1 || rating > 5) {
+      newErrors.rating = "Please select an overall rating of at least 1 star.";
+    }
+    if (!description.trim()) {
+      newErrors.description = "Please write a review comment.";
+    } else if (description.trim().length > 2000) {
+      newErrors.description = "Review cannot exceed 2000 characters.";
+    }
+    if (title.trim().length > 150) {
+      newErrors.title = "Review title cannot exceed 150 characters.";
+    }
+    return newErrors;
+  };
+
   const handleSubmit = async () => {
-    if (rating === 0) {
-      toast.error("Please select a rating");
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
-    if (!description.trim()) {
-      toast.error("Please write a review");
-      return;
-    }
+    setErrors({});
 
     const data = {
       bookId,
@@ -91,7 +106,15 @@ export const MyReviewSection = ({
       }
       onReviewUpdate?.();
     } catch (error) {
-      // Error handled by mutation
+      const serverErrors = error.response?.data?.errors;
+      if (serverErrors && typeof serverErrors === "object") {
+        setErrors((prev) => ({
+          ...prev,
+          ...(serverErrors.rating ? { rating: serverErrors.rating } : {}),
+          ...(serverErrors.title ? { title: serverErrors.title } : {}),
+          ...(serverErrors.comment ? { description: serverErrors.comment } : {}),
+        }));
+      }
     }
   };
 
@@ -301,17 +324,22 @@ export const MyReviewSection = ({
           {/* Star Rating Selector */}
           <div>
             <label className="block text-xs font-medium text-[#1B2B4B]/70 mb-1.5">
-              Overall Rating *
+              Overall Rating <span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-1">
+            <div className="flex gap-1" role="group" aria-label="Review rating">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   type="button"
                   key={star}
-                  onClick={() => setRating(star)}
+                  onClick={() => {
+                    setRating(star);
+                    if (errors.rating) setErrors((prev) => ({ ...prev, rating: undefined }));
+                  }}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
                   className="focus:outline-none p-0.5 cursor-pointer"
+                  aria-label={`Rate ${star} stars`}
+                  aria-pressed={rating === star}
                 >
                   <Star
                     className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors ${star <= (hoveredRating || rating)
@@ -322,34 +350,92 @@ export const MyReviewSection = ({
                 </button>
               ))}
             </div>
+            {errors.rating && (
+              <p
+                id="my-review-rating-error"
+                role="alert"
+                className="mt-1 flex items-center gap-1 text-xs text-red-500 font-medium"
+              >
+                <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+                <span>{errors.rating}</span>
+              </p>
+            )}
           </div>
 
           {/* Review Title Input */}
           <div>
-            <label className="block text-xs font-medium text-[#1B2B4B]/70 mb-1.5">
+            <label htmlFor="my-review-title" className="block text-xs font-medium text-[#1B2B4B]/70 mb-1.5">
               Review Title (Optional)
             </label>
             <Input
+              id="my-review-title"
+              name="title"
               placeholder="Summarize your review in a headline..."
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                if (errors.title) setErrors((prev) => ({ ...prev, title: undefined }));
+              }}
               maxLength={150}
-              className="border-[#1B2B4B]/20 focus:border-[#C9A84C] text-sm"
+              aria-invalid={Boolean(errors.title)}
+              aria-describedby={errors.title ? "my-review-title-error" : undefined}
+              className={`text-sm ${
+                errors.title
+                  ? "border-red-500 bg-red-50/20 focus:border-red-600 focus:ring-1 focus:ring-red-500"
+                  : "border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+              }`}
             />
+            {errors.title && (
+              <p
+                id="my-review-title-error"
+                role="alert"
+                className="mt-1 flex items-center gap-1 text-xs text-red-500 font-medium"
+              >
+                <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+                <span>{errors.title}</span>
+              </p>
+            )}
           </div>
 
           {/* Review Description Textarea */}
           <div>
-            <label className="block text-xs font-medium text-[#1B2B4B]/70 mb-1.5">
-              Your Review *
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="my-review-comment" className="block text-xs font-medium text-[#1B2B4B]/70">
+                Your Review <span className="text-red-500">*</span>
+              </label>
+              <span className="text-[11px] text-[#1B2B4B]/50">
+                {description.trim().length}/2000 max
+              </span>
+            </div>
             <Textarea
+              id="my-review-comment"
+              name="comment"
               placeholder="What did you like or dislike? What should other readers know?"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                if (errors.description) setErrors((prev) => ({ ...prev, description: undefined }));
+              }}
               maxLength={2000}
-              className="min-h-[100px] border-[#1B2B4B]/20 focus:border-[#C9A84C] text-sm leading-relaxed"
+              aria-required="true"
+              aria-invalid={Boolean(errors.description)}
+              aria-describedby={errors.description ? "my-review-comment-error" : undefined}
+              className={`min-h-[100px] text-sm leading-relaxed ${
+                errors.description
+                  ? "border-red-500 bg-red-50/20 focus:border-red-600 focus:ring-1 focus:ring-red-500"
+                  : "border-[#1B2B4B]/20 focus:border-[#C9A84C]"
+              }`}
             />
+            {errors.description && (
+              <p
+                id="my-review-comment-error"
+                role="alert"
+                className="mt-1 flex items-center gap-1 text-xs text-red-500 font-medium"
+              >
+                <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
+                <span>{errors.description}</span>
+              </p>
+            )}
           </div>
 
           {/* Moderation note */}
