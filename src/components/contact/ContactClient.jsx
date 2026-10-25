@@ -1,18 +1,17 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import Lottie from 'lottie-react';
 import {
   ArrowRight,
   Mail,
   Phone,
   Send,
   MessageCircle,
+  AlertCircle,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import sendAnimation from '@/animations/message-sent.json';
 import { useSubmitContactMessage } from '@/features/contact/hooks/useContact';
 import { useContactCms } from '@/features/contact-cms/hooks/useContactCms';
 import toast from 'react-hot-toast';
@@ -65,69 +64,128 @@ export function ContactClient({ initialContent }) {
     subject: '',
     message: '',
   });
-
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
-  const lottieRef = useRef(null);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
   const submitContactMessage = useSubmitContactMessage();
   const isSending = submitContactMessage.isPending;
 
-  // Reset animation states when not sending
-  useEffect(() => {
-    if (!isSending && !showAnimation) {
-      setIsAnimationComplete(false);
+  const validateField = (field, value) => {
+    const trimmed = typeof value === 'string' ? value.trim() : '';
+    switch (field) {
+      case 'name':
+        if (!trimmed) return 'Please enter your name.';
+        if (trimmed.length < 3) return 'Please enter a name with at least 3 characters.';
+        if (trimmed.length > 100) return 'Name cannot exceed 100 characters.';
+        return '';
+      case 'email':
+        if (!trimmed) return 'Please enter your email address.';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return 'Please enter a valid email address.';
+        if (trimmed.length > 255) return 'Email cannot exceed 255 characters.';
+        return '';
+      case 'subject':
+        if (!trimmed) return 'Please enter a subject.';
+        if (trimmed.length < 5) return 'Please enter a subject of at least 5 characters.';
+        if (trimmed.length > 150) return 'Subject cannot exceed 150 characters.';
+        return '';
+      case 'message':
+        if (!trimmed) return 'Please enter your message.';
+        if (trimmed.length < 20) return 'Please enter a message of at least 20 characters.';
+        if (trimmed.length > 3000) return 'Message cannot exceed 3000 characters.';
+        return '';
+      default:
+        return '';
     }
-  }, [isSending, showAnimation]);
+  };
+
+  const handleFieldChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      const errorMsg = validateField(field, value);
+      setErrors((prev) => ({ ...prev, [field]: errorMsg || undefined }));
+    }
+  };
+
+  const handleBlur = (field) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const errorMsg = validateField(field, form[field]);
+    if (errorMsg) {
+      setErrors((prev) => ({ ...prev, [field]: errorMsg }));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Start animation immediately
-    setShowAnimation(true);
-    setIsAnimationComplete(false);
+    // Prevent duplicate submissions while a request is in flight
+    if (isSending) {
+      return;
+    }
+
+    const newErrors = {
+      name: validateField('name', form.name),
+      email: validateField('email', form.email),
+      subject: validateField('subject', form.subject),
+      message: validateField('message', form.message),
+    };
+
+    const activeErrors = Object.fromEntries(
+      Object.entries(newErrors).filter(([, msg]) => Boolean(msg))
+    );
+
+    if (Object.keys(activeErrors).length > 0) {
+      setErrors(activeErrors);
+      setTouched({ name: true, email: true, subject: true, message: true });
+      const firstInvalidKey = Object.keys(activeErrors)[0];
+      const el = document.getElementById(`contact-${firstInvalidKey}`);
+      if (el) el.focus();
+      return;
+    }
+
+    setErrors({});
 
     submitContactMessage.mutate(form, {
-      onSuccess: () => {
-        // Success handled in animation callback
+      onSuccess: (response) => {
+        // Show success toast immediately upon confirmed API response
+        toast.success(
+          response?.message || "Message sent successfully! We'll get back to you soon.",
+          {
+            duration: 4000,
+            position: 'top-right',
+          }
+        );
+
+        // Reset form fields only after confirmed success
+        setForm({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+        setErrors({});
+        setTouched({});
+        submitContactMessage.reset();
       },
       onError: (error) => {
+        // Preserve user input on failure; map field errors if returned from backend
+        const serverErrors = error.response?.data?.errors;
+        if (serverErrors && typeof serverErrors === 'object') {
+          setErrors((prev) => ({ ...prev, ...serverErrors }));
+          const firstKey = Object.keys(serverErrors)[0];
+          if (firstKey) {
+            const el = document.getElementById(`contact-${firstKey}`);
+            if (el) el.focus();
+          }
+        }
+
         toast.error(
           error.response?.data?.message ||
-            'Failed to send message. Please try again.',
+            'Failed to send message. Please review the highlighted fields and try again.',
           { duration: 5000, position: 'top-right' }
         );
       },
     });
   };
-
-  // Handle animation completion
-  const handleAnimationComplete = () => {
-    setIsAnimationComplete(true);
-    setShowAnimation(false);
-
-    if (submitContactMessage.isSuccess) {
-      toast.success("Message sent successfully! We'll get back to you soon.", {
-        duration: 4000,
-        position: 'top-right',
-      });
-      setForm({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
-      });
-      submitContactMessage.reset();
-    }
-  };
-
-  const handleLottieComplete = () => {
-    if (showAnimation) {
-      handleAnimationComplete();
-    }
-  };
-
-  const shouldShowLoading = isSending || showAnimation;
 
   return (
     <main className="min-h-screen bg-[#F8F5EF]">
@@ -224,86 +282,169 @@ export function ContactClient({ initialContent }) {
 
             <div className="mt-8 grid gap-5 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
-                  Full Name
+                <label htmlFor="contact-name" className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="contact-name"
+                  name="name"
                   required
+                  minLength={3}
+                  maxLength={100}
                   type="text"
                   value={form.name}
-                  onChange={(e) =>
-                    setForm({ ...form, name: e.target.value })
-                  }
+                  onChange={(e) => handleFieldChange('name', e.target.value)}
+                  onBlur={() => handleBlur('name')}
                   placeholder="Your name"
-                  className="h-13 w-full rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] px-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                  aria-required="true"
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                  className={`h-13 w-full rounded-2xl border px-4 text-[#1B2B4B] outline-none transition ${
+                    errors.name
+                      ? 'border-red-500 bg-red-50/20 focus:border-red-600 focus:ring-1 focus:ring-red-500'
+                      : 'border-[#1B2B4B]/10 bg-[#F8F5EF] focus:border-[#C9A84C]'
+                  }`}
                 />
+                {errors.name && (
+                  <p
+                    id="contact-name-error"
+                    role="alert"
+                    className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.name}</span>
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
-                  Email Address
+                <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="contact-email"
+                  name="email"
                   required
                   type="email"
                   value={form.email}
-                  onChange={(e) =>
-                    setForm({ ...form, email: e.target.value })
-                  }
+                  onChange={(e) => handleFieldChange('email', e.target.value)}
+                  onBlur={() => handleBlur('email')}
                   placeholder="you@example.com"
-                  className="h-13 w-full rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] px-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                  aria-required="true"
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                  className={`h-13 w-full rounded-2xl border px-4 text-[#1B2B4B] outline-none transition ${
+                    errors.email
+                      ? 'border-red-500 bg-red-50/20 focus:border-red-600 focus:ring-1 focus:ring-red-500'
+                      : 'border-[#1B2B4B]/10 bg-[#F8F5EF] focus:border-[#C9A84C]'
+                  }`}
                 />
+                {errors.email && (
+                  <p
+                    id="contact-email-error"
+                    role="alert"
+                    className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.email}</span>
+                  </p>
+                )}
               </div>
 
               <div className="sm:col-span-2">
-                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
-                  Subject
+                <label htmlFor="contact-subject" className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
+                  Subject <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="contact-subject"
+                  name="subject"
                   required
+                  minLength={5}
+                  maxLength={150}
                   type="text"
                   value={form.subject}
-                  onChange={(e) =>
-                    setForm({ ...form, subject: e.target.value })
-                  }
+                  onChange={(e) => handleFieldChange('subject', e.target.value)}
+                  onBlur={() => handleBlur('subject')}
                   placeholder="How can we help?"
-                  className="h-13 w-full rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] px-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                  aria-required="true"
+                  aria-invalid={Boolean(errors.subject)}
+                  aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
+                  className={`h-13 w-full rounded-2xl border px-4 text-[#1B2B4B] outline-none transition ${
+                    errors.subject
+                      ? 'border-red-500 bg-red-50/20 focus:border-red-600 focus:ring-1 focus:ring-red-500'
+                      : 'border-[#1B2B4B]/10 bg-[#F8F5EF] focus:border-[#C9A84C]'
+                  }`}
                 />
+                {errors.subject && (
+                  <p
+                    id="contact-subject-error"
+                    role="alert"
+                    className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.subject}</span>
+                  </p>
+                )}
               </div>
 
               <div className="sm:col-span-2">
-                <label className="mb-2 block text-sm font-semibold text-[#1B2B4B]">
-                  Message
-                </label>
+                <div className="mb-2 flex items-center justify-between">
+                  <label htmlFor="contact-message" className="block text-sm font-semibold text-[#1B2B4B]">
+                    Message <span className="text-red-500">*</span>
+                  </label>
+                  <span
+                    className={`text-xs ${
+                      form.message.trim().length > 0 && form.message.trim().length < 20
+                        ? 'font-medium text-amber-600'
+                        : 'text-[#1B2B4B]/50'
+                    }`}
+                  >
+                    {form.message.trim().length}/20 min characters
+                  </span>
+                </div>
                 <textarea
+                  id="contact-message"
+                  name="message"
                   required
+                  minLength={20}
+                  maxLength={3000}
                   rows={7}
                   value={form.message}
-                  onChange={(e) =>
-                    setForm({ ...form, message: e.target.value })
-                  }
-                  placeholder="Write your message..."
-                  className="w-full resize-none rounded-2xl border border-[#1B2B4B]/10 bg-[#F8F5EF] p-4 text-[#1B2B4B] outline-none transition focus:border-[#C9A84C]"
+                  onChange={(e) => handleFieldChange('message', e.target.value)}
+                  onBlur={() => handleBlur('message')}
+                  placeholder="Write your message (minimum 20 characters)..."
+                  aria-required="true"
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                  className={`w-full resize-none rounded-2xl border p-4 text-[#1B2B4B] outline-none transition ${
+                    errors.message
+                      ? 'border-red-500 bg-red-50/20 focus:border-red-600 focus:ring-1 focus:ring-red-500'
+                      : 'border-[#1B2B4B]/10 bg-[#F8F5EF] focus:border-[#C9A84C]'
+                  }`}
                 />
+                {errors.message && (
+                  <p
+                    id="contact-message-error"
+                    role="alert"
+                    className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600"
+                  >
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span>{errors.message}</span>
+                  </p>
+                )}
               </div>
             </div>
 
             <Button
               type="submit"
-              disabled={shouldShowLoading}
+              disabled={isSending}
               className="group mt-6 h-13 cursor-pointer rounded-full bg-[#C9A84C] px-6 text-base font-semibold text-[#1B2B4B] transition-all duration-300 hover:bg-[#04103A] hover:text-white disabled:pointer-events-none disabled:opacity-90"
             >
-              <span>{formInfo.submitButtonText || 'Send Message'}</span>
+              <span>{isSending ? 'Sending...' : formInfo.submitButtonText || 'Send Message'}</span>
 
-              <span className="ml-2 flex h-8 w-8 items-center justify-center overflow-visible">
-                {shouldShowLoading ? (
-                  <Lottie
-                    lottieRef={lottieRef}
-                    animationData={sendAnimation}
-                    loop={false}
-                    className="h-8 w-8"
-                    onComplete={handleLottieComplete}
-                  />
+              <span className="ml-2 flex items-center justify-center">
+                {isSending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Send className="h-4 w-4 transition-all duration-300 group-hover:translate-x-1.5" />
                 )}
