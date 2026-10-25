@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Mail, Loader2 } from "lucide-react";
+import { ArrowRight, Mail, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ import { useSubscribeNewsletter } from "@/features/newsletter/hooks/useNewslette
 
 const NewsletterSection = ({ content }) => {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const subscribeNewsletter = useSubscribeNewsletter();
   const isSubscribing = subscribeNewsletter.isPending;
 
@@ -22,8 +23,19 @@ const NewsletterSection = ({ content }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const trimmed = email.trim();
+    if (!trimmed) {
+      setError("Please enter your email address.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    setError("");
     subscribeNewsletter.mutate(
-      { email, source: "homepage" },
+      { email: trimmed, source: "homepage" },
       {
         onSuccess: () => {
           toast.success("You've successfully subscribed to our newsletter!", {
@@ -31,13 +43,15 @@ const NewsletterSection = ({ content }) => {
             position: "top-right",
           });
           setEmail("");
+          setError("");
         },
-        onError: (error) => {
-          toast.error(
-            error.response?.data?.message ||
-              "Failed to subscribe. Please try again.",
-            { duration: 5000, position: "top-right" }
-          );
+        onError: (err) => {
+          const serverMsg =
+            err.response?.data?.errors?.email ||
+            err.response?.data?.message ||
+            "Failed to subscribe. Please try again.";
+          setError(serverMsg);
+          toast.error(serverMsg, { duration: 5000, position: "top-right" });
         },
       }
     );
@@ -77,15 +91,25 @@ const NewsletterSection = ({ content }) => {
 
         <form
           onSubmit={handleSubmit}
-          className="mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl bg-white/95 p-3 shadow-2xl backdrop-blur sm:flex-row sm:items-center"
+          className={`mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl bg-white/95 p-3 shadow-2xl backdrop-blur transition-all sm:flex-row sm:items-center ${
+            error ? "ring-2 ring-red-500/80" : ""
+          }`}
         >
           <Input
+            id="newsletter-email"
+            name="email"
             type="email"
             placeholder="Your Email Address"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (error) setError("");
+            }}
             required
             disabled={isSubscribing}
+            aria-required="true"
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? "newsletter-email-error" : undefined}
             className="h-12 flex-1 border-0 bg-transparent px-4 text-sm text-[#1B2B4B] shadow-none outline-none placeholder:text-[#1B2B4B]/45 focus-visible:ring-0 disabled:opacity-60 sm:h-14 sm:px-5 sm:text-base"
           />
 
@@ -107,6 +131,17 @@ const NewsletterSection = ({ content }) => {
             )}
           </Button>
         </form>
+
+        {error && (
+          <p
+            id="newsletter-email-error"
+            role="alert"
+            className="mx-auto mt-3 flex max-w-md items-center justify-center gap-1.5 rounded-lg bg-red-950/40 px-3 py-1.5 text-xs font-medium text-red-200 border border-red-500/30"
+          >
+            <AlertCircle className="h-3.5 w-3.5 shrink-0 text-red-400" aria-hidden="true" />
+            <span>{error}</span>
+          </p>
+        )}
       </div>
     </section>
   );
