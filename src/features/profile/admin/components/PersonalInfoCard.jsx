@@ -32,6 +32,7 @@ export function PersonalInfoCard({ profile, isLoading }) {
 
   useEffect(() => {
     if (profile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: profile.name || '',
         email: profile.email || '',
@@ -99,14 +100,21 @@ export function PersonalInfoCard({ profile, isLoading }) {
       },
     };
 
-    await updateProfile.mutateAsync(data, {
-      onSuccess: () => {
-        setIsEditing(false);
-        if (emailChanged) {
-          setPendingEmail(trimmedEmail);
-        }
-      },
-    });
+    try {
+      await updateProfile.mutateAsync(data, {
+        onSuccess: () => {
+          setIsEditing(false);
+          if (emailChanged) {
+            setPendingEmail(trimmedEmail);
+          }
+        },
+      });
+    } catch (err) {
+      const serverErrors = err?.response?.data?.errors;
+      if (serverErrors && typeof serverErrors === 'object') {
+        setErrors((prev) => ({ ...prev, ...serverErrors }));
+      }
+    }
   };
 
   const handleChange = (field, value) => {
